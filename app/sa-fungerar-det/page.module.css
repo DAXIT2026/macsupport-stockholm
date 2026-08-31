@@ -1,0 +1,2451 @@
+.page {
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 83% 8%,
+      rgba(68, 190, 221, .08),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 10% 35%,
+      rgba(107, 192, 78, .07),
+      transparent 30%
+    ),
+    #fafcf9;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+  position: relative;
+
+  padding:
+    clamp(76px, 8vw, 118px)
+    0
+    clamp(72px, 8vw, 110px);
+
+  border-bottom:
+    1px solid
+    rgba(48, 78, 53, .07);
+}
+
+
+.heroGrid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.02fr)
+    minmax(430px, .98fr);
+
+  gap:
+    clamp(55px, 8vw, 125px);
+
+  align-items: center;
+}
+
+
+.heroCopy {
+  position: relative;
+
+  z-index: 2;
+}
+
+
+.heroCopy h1 {
+  max-width: 9.2ch;
+
+  margin:
+    12px 0 0;
+
+  color:
+    var(--premium-ink);
+
+  font-size:
+    clamp(
+      60px,
+      6.7vw,
+      100px
+    );
+
+  line-height:
+    .91;
+
+  letter-spacing:
+    -.064em;
+}
+
+
+.heroLead {
+  max-width:
+    630px;
+
+  margin:
+    27px 0 0;
+
+  color:
+    var(--premium-muted);
+
+  font-size:
+    clamp(
+      17px,
+      1.45vw,
+      21px
+    );
+
+  line-height:
+    1.65;
+}
+
+
+.heroActions {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 11px;
+
+  margin-top:
+    31px;
+}
+
+
+.heroActions :global(.premium-button) {
+  min-width:
+    175px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap:
+    18px;
+}
+
+
+/* =========================================================
+   BENEFITS
+   ========================================================= */
+
+.heroBenefits {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap:
+    8px;
+
+  margin-top:
+    25px;
+}
+
+
+.heroBenefits span {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap:
+    8px;
+
+  padding:
+    8px 11px;
+
+  border:
+    1px solid
+    rgba(55, 87, 60, .10);
+
+  border-radius:
+    999px;
+
+  color:
+    #566258;
+
+  background:
+    rgba(255,255,255,.69);
+
+  font-size:
+    10px;
+
+  font-weight:
+    650;
+}
+
+
+.heroBenefits i {
+  width:
+    7px;
+
+  height:
+    7px;
+
+  border-radius:
+    50%;
+
+  background:
+    #73b751;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(115,183,81,.08);
+}
+
+
+/* =========================================================
+   HERO PROCESS VISUAL
+   ========================================================= */
+
+.processVisual {
+  position: relative;
+
+  width:
+    min(100%, 520px);
+
+  aspect-ratio:
+    1;
+
+  justify-self: end;
+
+  display: grid;
+
+  place-items: center;
+
+  isolation: isolate;
+}
+
+
+.visualGlow {
+  position: absolute;
+
+  width: 76%;
+  height: 76%;
+
+  border-radius:
+    50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(105, 201, 78, .14),
+      rgba(61, 187, 216, .08) 42%,
+      transparent 70%
+    );
+
+  filter:
+    blur(26px);
+
+  animation:
+    visualGlow 6s ease-in-out infinite;
+}
+
+
+.orbitOuter,
+.orbitMiddle,
+.orbitInner {
+  position: absolute;
+
+  border-radius:
+    50%;
+
+  pointer-events:
+    none;
+}
+
+
+.orbitOuter {
+  width: 84%;
+  height: 84%;
+
+  border:
+    1px solid
+    rgba(79, 157, 77, .22);
+
+  animation:
+    orbitSpin 22s linear infinite;
+}
+
+
+.orbitMiddle {
+  width: 62%;
+  height: 62%;
+
+  border:
+    1px solid
+    rgba(66, 177, 205, .21);
+
+  animation:
+    orbitSpinReverse 17s linear infinite;
+}
+
+
+.orbitInner {
+  width: 40%;
+  height: 40%;
+
+  border:
+    1px dashed
+    rgba(103, 185, 78, .18);
+
+  animation:
+    orbitSpin 12s linear infinite;
+}
+
+
+.visualCenter {
+  position: relative;
+
+  z-index: 4;
+
+  width:
+    clamp(130px, 11vw, 166px);
+
+  height:
+    clamp(130px, 11vw, 166px);
+
+  display: grid;
+
+  place-content: center;
+
+  text-align: center;
+
+  border:
+    1px solid
+    rgba(66, 103, 69, .12);
+
+  border-radius:
+    30px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.98),
+      rgba(240,249,238,.97)
+    );
+
+  box-shadow:
+    0 25px 58px
+    rgba(24, 51, 30, .11),
+    inset 0 1px 0
+    rgba(255,255,255,.9);
+
+  animation:
+    centerFloat 5s ease-in-out infinite;
+}
+
+
+.visualCenter span,
+.visualNode span {
+  color:
+    var(--premium-green-dark);
+
+  font-size:
+    9px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    .12em;
+}
+
+
+.visualCenter strong {
+  display: block;
+
+  margin-top:
+    8px;
+
+  color:
+    var(--premium-ink);
+
+  font-size:
+    20px;
+}
+
+
+.visualCenter small {
+  display: block;
+
+  margin-top:
+    5px;
+
+  color:
+    var(--premium-muted);
+
+  font-size:
+    8px;
+}
+
+
+.visualNode {
+  position: absolute;
+
+  z-index: 3;
+
+  width:
+    108px;
+
+  min-height:
+    66px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding:
+    13px 15px;
+
+  border:
+    1px solid
+    rgba(56, 87, 60, .10);
+
+  border-radius:
+    17px;
+
+  background:
+    rgba(255,255,255,.91);
+
+  box-shadow:
+    0 15px 35px
+    rgba(27, 48, 31, .075);
+
+  -webkit-backdrop-filter:
+    blur(13px);
+
+  backdrop-filter:
+    blur(13px);
+}
+
+
+.visualNode strong {
+  display: block;
+
+  margin-top:
+    4px;
+
+  color:
+    var(--premium-ink);
+
+  font-size:
+    11px;
+}
+
+
+.nodeOne {
+  right: 0;
+  top: 21%;
+
+  animation:
+    nodeFloatA 6s ease-in-out infinite;
+}
+
+
+.nodeTwo {
+  right: 1%;
+  bottom: 23%;
+
+  animation:
+    nodeFloatB 6.7s ease-in-out infinite;
+}
+
+
+.nodeThree {
+  left: 1%;
+  bottom: 18%;
+
+  animation:
+    nodeFloatA 7.2s ease-in-out infinite reverse;
+}
+
+
+.visualDot {
+  position: absolute;
+
+  z-index: 5;
+
+  width:
+    8px;
+
+  height:
+    8px;
+
+  border-radius:
+    50%;
+
+  background:
+    #6eb34f;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(110,179,79,.08),
+    0 0 15px
+    rgba(110,179,79,.22);
+}
+
+
+.dotOne {
+  top: 16%;
+  left: 37%;
+
+  animation:
+    dotPulse 2.8s ease-in-out infinite;
+}
+
+
+.dotTwo {
+  top: 58%;
+  right: 12%;
+
+  background:
+    #53b4c7;
+
+  animation:
+    dotPulse 3.1s ease-in-out infinite .4s;
+}
+
+
+.dotThree {
+  bottom: 11%;
+  left: 34%;
+
+  animation:
+    dotPulse 2.6s ease-in-out infinite .8s;
+}
+
+
+/* =========================================================
+   STEPS
+   ========================================================= */
+
+.stepsSection {
+  padding:
+    clamp(84px, 9vw, 132px)
+    0;
+}
+
+
+.sectionHeading {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.15fr)
+    minmax(300px, .85fr);
+
+  gap:
+    clamp(40px, 7vw, 100px);
+
+  align-items: end;
+
+  margin-bottom:
+    44px;
+}
+
+
+.sectionHeading h2 {
+  max-width:
+    10ch;
+
+  margin:
+    10px 0 0;
+
+  color:
+    var(--premium-ink);
+
+  font-size:
+    clamp(
+      48px,
+      5vw,
+      74px
+    );
+
+  line-height:
+    .95;
+
+  letter-spacing:
+    -.055em;
+}
+
+
+.sectionHeading > p {
+  max-width:
+    440px;
+
+  margin: 0;
+
+  color:
+    var(--premium-muted);
+
+  font-size:
+    14px;
+
+  line-height:
+    1.7;
+}
+
+
+/* =========================================================
+   STEP CARDS
+   ========================================================= */
+
+.stepsGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap:
+    15px;
+}
+
+
+.stepCard {
+  position: relative;
+
+  min-height:
+    360px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  padding:
+    clamp(24px, 2.5vw, 34px);
+
+  border:
+    1px solid
+    rgba(47, 76, 52, .10);
+
+  border-radius:
+    28px;
+
+  background:
+    radial-gradient(
+      circle at 88% 8%,
+      rgba(66, 184, 212, .06),
+      transparent 28%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.99),
+      rgba(247,251,246,.97)
+    );
+
+  box-shadow:
+    0 18px 48px
+    rgba(24, 45, 29, .045);
+
+  transition:
+    transform .26s ease,
+    border-color .26s ease,
+    box-shadow .26s ease;
+}
+
+
+.stepCard:hover {
+  transform:
+    translateY(-5px);
+
+  border-color:
+    rgba(96, 169, 74, .23);
+
+  box-shadow:
+    0 26px 60px
+    rgba(24, 45, 29, .08);
+}
+
+
+.stepTop {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap:
+    15px;
+}
+
+
+.stepNumber {
+  width:
+    46px;
+
+  height:
+    46px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    14px;
+
+  color:
+    var(--premium-green-dark);
+
+  background:
+    linear-gradient(
+      145deg,
+      #eef8e9,
+      #e2f2ec
+    );
+
+  font-size:
+    10px;
+
+  font-weight:
+    900;
+}
+
+
+.stepLabel {
+  color:
+    #76906f;
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .08em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.stepGraphic {
+  position: relative;
+
+  width:
+    118px;
+
+  height:
+    118px;
+
+  display: grid;
+
+  place-items: center;
+
+  margin:
+    26px 0 30px;
+}
+
+
+.stepGraphicRing {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+
+  border:
+    1px solid
+    rgba(95, 171, 76, .16);
+
+  border-radius:
+    50%;
+
+  animation:
+    graphicPulse 4s ease-in-out infinite;
+}
+
+
+.stepGraphicCore {
+  position: relative;
+
+  z-index: 2;
+
+  width:
+    64px;
+
+  height:
+    64px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius:
+    21px;
+
+  color:
+    #426c37;
+
+  background:
+    linear-gradient(
+      145deg,
+      #edf7e8,
+      #dcefe8
+    );
+
+  box-shadow:
+    0 12px 27px
+    rgba(49, 99, 52, .08);
+
+  font-size:
+    16px;
+
+  font-weight:
+    900;
+}
+
+
+.stepCopy {
+  margin-top:
+    auto;
+}
+
+
+.stepCopy h3 {
+  max-width:
+    22ch;
+
+  margin: 0;
+
+  color:
+    var(--premium-ink);
+
+  font-size:
+    clamp(
+      22px,
+      2.2vw,
+      31px
+    );
+
+  line-height:
+    1.08;
+
+  letter-spacing:
+    -.04em;
+}
+
+
+.stepCopy p {
+  max-width:
+    54ch;
+
+  margin:
+    14px 0 0;
+
+  color:
+    var(--premium-muted);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.65;
+}
+
+
+/* =========================================================
+   CTA
+   ========================================================= */
+
+.cta {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0,1fr)
+    auto;
+
+  gap:
+    30px;
+
+  align-items: center;
+
+  margin-top:
+    18px;
+
+  padding:
+    clamp(25px, 3vw, 36px);
+
+  border:
+    1px solid
+    rgba(55, 85, 59, .10);
+
+  border-radius:
+    26px;
+
+  background:
+    linear-gradient(
+      115deg,
+      rgba(238,248,233,.98),
+      rgba(250,252,249,.97),
+      rgba(229,243,248,.94)
+    );
+
+  box-shadow:
+    0 16px 42px
+    rgba(25,47,30,.05);
+}
+
+
+.cta h2 {
+  max-width:
+    19ch;
+
+  margin:
+    6px 0 0;
+
+  color:
+    var(--premium-ink);
+
+  font-size:
+    clamp(
+      26px,
+      3vw,
+      42px
+    );
+
+  line-height:
+    1;
+
+  letter-spacing:
+    -.045em;
+}
+
+
+.cta > div > p:last-child {
+  max-width:
+    580px;
+
+  margin:
+    12px 0 0;
+
+  color:
+    var(--premium-muted);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.6;
+}
+
+
+.cta :global(.premium-button) {
+  min-width:
+    185px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap:
+    20px;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .heroGrid {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      50px;
+  }
+
+
+  .heroCopy h1 {
+    max-width:
+      10ch;
+  }
+
+
+  .processVisual {
+    justify-self:
+      center;
+
+    width:
+      min(82vw, 500px);
+  }
+
+
+  .sectionHeading {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      22px;
+  }
+
+
+  .sectionHeading h2 {
+    max-width:
+      12ch;
+  }
+
+
+  .stepsGrid {
+    grid-template-columns:
+      repeat(2, minmax(0,1fr));
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .hero {
+    padding:
+      62px 0 70px;
+  }
+
+
+  .heroCopy h1 {
+    max-width: none;
+
+    font-size:
+      clamp(
+        48px,
+        13vw,
+        66px
+      );
+  }
+
+
+  .heroLead {
+    font-size:
+      16px;
+  }
+
+
+  .heroActions {
+    display: grid;
+
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .heroActions :global(.premium-button) {
+    width: 100%;
+  }
+
+
+  .heroBenefits {
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, minmax(0,1fr));
+  }
+
+
+  .heroBenefits span {
+    justify-content:
+      flex-start;
+  }
+
+
+  .processVisual {
+    width:
+      min(100%, 390px);
+  }
+
+
+  .visualNode {
+    width:
+      91px;
+
+    min-height:
+      58px;
+
+    padding:
+      10px 12px;
+  }
+
+
+  .visualCenter {
+    width:
+      122px;
+
+    height:
+      122px;
+  }
+
+
+  .stepsSection {
+    padding:
+      72px 0;
+  }
+
+
+  .sectionHeading h2 {
+    max-width: none;
+
+    font-size:
+      clamp(
+        42px,
+        11vw,
+        58px
+      );
+  }
+
+
+  .stepsGrid {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      12px;
+  }
+
+
+  .stepCard {
+    min-height:
+      330px;
+
+    border-radius:
+      23px;
+  }
+
+
+  .cta {
+    grid-template-columns:
+      1fr;
+
+    align-items:
+      stretch;
+
+    border-radius:
+      23px;
+  }
+
+
+  .cta :global(.premium-button) {
+    width:
+      100%;
+  }
+
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes orbitSpin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+
+@keyframes orbitSpinReverse {
+  to {
+    transform:
+      rotate(-360deg);
+  }
+}
+
+
+@keyframes visualGlow {
+  0%,
+  100% {
+    transform:
+      scale(.93);
+
+    opacity:
+      .65;
+  }
+
+  50% {
+    transform:
+      scale(1.08);
+
+    opacity:
+      1;
+  }
+}
+
+
+@keyframes centerFloat {
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(-7px);
+  }
+}
+
+
+@keyframes nodeFloatA {
+  0%,
+  100% {
+    transform:
+      translate3d(0,0,0);
+  }
+
+  50% {
+    transform:
+      translate3d(0,-8px,0);
+  }
+}
+
+
+@keyframes nodeFloatB {
+  0%,
+  100% {
+    transform:
+      translate3d(0,0,0);
+  }
+
+  50% {
+    transform:
+      translate3d(6px,-5px,0);
+  }
+}
+
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    transform:
+      scale(.8);
+
+    opacity:
+      .55;
+  }
+
+  50% {
+    transform:
+      scale(1.35);
+
+    opacity:
+      1;
+  }
+}
+
+
+@keyframes graphicPulse {
+  0%,
+  100% {
+    transform:
+      scale(.94);
+
+    opacity:
+      .55;
+  }
+
+  50% {
+    transform:
+      scale(1.05);
+
+    opacity:
+      1;
+  }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .visualGlow,
+  .orbitOuter,
+  .orbitMiddle,
+  .orbitInner,
+  .visualCenter,
+  .visualNode,
+  .visualDot,
+  .stepGraphicRing {
+    animation:
+      none !important;
+  }
+
+
+  .stepCard {
+    transition:
+      none;
+  }
+
+}
+
+/* =========================================================
+   PROCESS VISUAL V2
+   Premium orbital / laser / depth animation
+   ========================================================= */
+
+.processVisual {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+
+/* soft ambient field */
+
+.processVisual::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 5%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(104, 209, 79, .15),
+      rgba(70, 193, 219, .08) 34%,
+      rgba(113, 98, 210, .035) 54%,
+      transparent 72%
+    );
+
+  filter: blur(26px);
+
+  animation:
+    processAmbient 7s ease-in-out infinite;
+
+  pointer-events: none;
+}
+
+
+/* luminous rotating energy ring */
+
+.processVisual::after {
+  content: "";
+
+  position: absolute;
+
+  width: 72%;
+  height: 72%;
+
+  border-radius: 50%;
+
+  padding: 1px;
+
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(108, 213, 79, .12) 40deg,
+      rgba(108, 213, 79, .75) 76deg,
+      rgba(61, 191, 218, .55) 108deg,
+      transparent 150deg,
+      transparent 250deg,
+      rgba(124, 104, 220, .24) 300deg,
+      transparent 360deg
+    );
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  filter:
+    drop-shadow(
+      0 0 10px
+      rgba(90, 203, 76, .18)
+    );
+
+  animation:
+    processEnergySpin 13s linear infinite;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   ORBITS
+   ========================================================= */
+
+.orbitOuter,
+.orbitMiddle,
+.orbitInner {
+  transform-style: preserve-3d;
+}
+
+
+.orbitOuter {
+  border-color:
+    rgba(91, 168, 79, .22);
+
+  box-shadow:
+    inset 0 0 22px
+    rgba(95, 191, 78, .025),
+    0 0 18px
+    rgba(81, 176, 72, .025);
+
+  animation:
+    processOrbitOuter
+    24s linear infinite;
+}
+
+
+.orbitMiddle {
+  border-color:
+    rgba(62, 181, 210, .22);
+
+  box-shadow:
+    0 0 24px
+    rgba(61, 179, 211, .045);
+
+  animation:
+    processOrbitMiddle
+    18s linear infinite;
+}
+
+
+.orbitInner {
+  border-style: solid;
+
+  border-color:
+    rgba(99, 187, 79, .15);
+
+  box-shadow:
+    inset 0 0 18px
+    rgba(105, 195, 81, .04);
+
+  animation:
+    processOrbitInner
+    12s linear infinite;
+}
+
+
+/* orbit highlights */
+
+.orbitOuter::before,
+.orbitMiddle::before,
+.orbitInner::before {
+  content: "";
+
+  position: absolute;
+
+  width: 8px;
+  height: 8px;
+
+  top: 50%;
+  left: -4px;
+
+  border-radius: 50%;
+
+  background:
+    #76c957;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(118, 201, 87, .07),
+    0 0 18px
+    rgba(118, 201, 87, .42);
+}
+
+
+.orbitMiddle::before {
+  width: 6px;
+  height: 6px;
+
+  left: auto;
+  right: -3px;
+
+  background:
+    #55b9cc;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(85, 185, 204, .06),
+    0 0 18px
+    rgba(85, 185, 204, .38);
+}
+
+
+.orbitInner::before {
+  top: -3px;
+  left: 50%;
+
+  width: 6px;
+  height: 6px;
+
+  background:
+    #87cc65;
+}
+
+
+/* =========================================================
+   CENTER
+   ========================================================= */
+
+.visualCenter {
+  overflow: hidden;
+
+  transform-style: preserve-3d;
+
+  border:
+    1px solid
+    rgba(78, 123, 75, .15);
+
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      rgba(255,255,255,.99),
+      rgba(247,252,245,.98) 52%,
+      rgba(230,244,232,.96)
+    );
+
+  box-shadow:
+    0 28px 65px
+    rgba(25, 53, 30, .13),
+    0 0 0 10px
+    rgba(111, 198, 80, .025),
+    0 0 34px
+    rgba(101, 203, 77, .12),
+    inset 0 1px 0
+    rgba(255,255,255,.95);
+
+  animation:
+    processCenterFloat
+    5.3s ease-in-out infinite;
+}
+
+
+.visualCenter::before {
+  content: "";
+
+  position: absolute;
+
+  width: 130%;
+  height: 34%;
+
+  top: -30%;
+  left: -15%;
+
+  transform:
+    rotate(-14deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.72),
+      transparent
+    );
+
+  filter: blur(6px);
+
+  animation:
+    processCenterShine
+    5.5s ease-in-out infinite;
+}
+
+
+.visualCenter::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 8px;
+
+  border:
+    1px solid
+    rgba(104, 188, 82, .08);
+
+  border-radius:
+    23px;
+
+  pointer-events: none;
+}
+
+
+.visualCenter strong {
+  position: relative;
+  z-index: 2;
+
+  font-size:
+    21px;
+}
+
+
+.visualCenter small,
+.visualCenter span {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* =========================================================
+   FLOATING STEP NODES
+   ========================================================= */
+
+.visualNode {
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(61, 96, 66, .12);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.97),
+      rgba(246,250,245,.93)
+    );
+
+  box-shadow:
+    0 18px 40px
+    rgba(25, 48, 30, .09),
+    inset 0 1px 0
+    rgba(255,255,255,.86);
+
+  transform-style: preserve-3d;
+}
+
+
+.visualNode::before {
+  content: "";
+
+  position: absolute;
+
+  width: 60px;
+  height: 60px;
+
+  top: -28px;
+  right: -24px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(94, 194, 76, .13),
+      transparent 68%
+    );
+
+  pointer-events: none;
+}
+
+
+.visualNode::after {
+  content: "";
+
+  position: absolute;
+
+  left: 11px;
+  right: 11px;
+  bottom: 7px;
+
+  height: 1px;
+
+  border-radius: 100px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(107, 195, 79, .58),
+      rgba(64, 185, 213, .25),
+      transparent
+    );
+
+  transform-origin: left center;
+
+  animation:
+    processNodeLine
+    4s ease-in-out infinite;
+}
+
+
+.nodeOne {
+  animation:
+    processNodeOne
+    6.2s ease-in-out infinite;
+}
+
+
+.nodeTwo {
+  animation:
+    processNodeTwo
+    7.1s ease-in-out infinite;
+}
+
+
+.nodeThree {
+  animation:
+    processNodeThree
+    6.8s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   MOVING SIGNAL DOTS
+   ========================================================= */
+
+.visualDot {
+  z-index: 6;
+
+  width: 7px;
+  height: 7px;
+
+  background:
+    #77c857;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(119, 200, 87, .07),
+    0 0 22px
+    rgba(119, 200, 87, .48);
+
+  animation:
+    processSignalPulse
+    2.7s ease-in-out infinite;
+}
+
+
+.dotTwo {
+  background:
+    #54bacc;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(84, 186, 204, .06),
+    0 0 22px
+    rgba(84, 186, 204, .42);
+
+  animation-delay:
+    -.8s;
+}
+
+
+.dotThree {
+  animation-delay:
+    -1.5s;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes processAmbient {
+
+  0%,
+  100% {
+    transform:
+      scale(.94)
+      translate3d(-6px, 4px, 0);
+
+    opacity: .63;
+  }
+
+  50% {
+    transform:
+      scale(1.08)
+      translate3d(7px, -5px, 0);
+
+    opacity: .95;
+  }
+
+}
+
+
+@keyframes processEnergySpin {
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+
+}
+
+
+@keyframes processOrbitOuter {
+
+  from {
+    transform:
+      rotateX(62deg)
+      rotateZ(0deg);
+  }
+
+  to {
+    transform:
+      rotateX(62deg)
+      rotateZ(360deg);
+  }
+
+}
+
+
+@keyframes processOrbitMiddle {
+
+  from {
+    transform:
+      rotateY(12deg)
+      rotateZ(360deg);
+  }
+
+  to {
+    transform:
+      rotateY(12deg)
+      rotateZ(0deg);
+  }
+
+}
+
+
+@keyframes processOrbitInner {
+
+  from {
+    transform:
+      rotateX(-8deg)
+      rotateZ(0deg);
+  }
+
+  to {
+    transform:
+      rotateX(-8deg)
+      rotateZ(360deg);
+  }
+
+}
+
+
+@keyframes processCenterFloat {
+
+  0%,
+  100% {
+    transform:
+      translate3d(0,0,28px)
+      rotateX(0deg);
+  }
+
+  50% {
+    transform:
+      translate3d(0,-7px,38px)
+      rotateX(1.5deg);
+  }
+
+}
+
+
+@keyframes processCenterShine {
+
+  0%,
+  20% {
+    transform:
+      translateY(-35px)
+      rotate(-14deg);
+
+    opacity: 0;
+  }
+
+  45% {
+    opacity: .8;
+  }
+
+  70%,
+  100% {
+    transform:
+      translateY(170px)
+      rotate(-14deg);
+
+    opacity: 0;
+  }
+
+}
+
+
+@keyframes processNodeOne {
+
+  0%,
+  100% {
+    transform:
+      translate3d(0,0,18px)
+      rotate(-.4deg);
+  }
+
+  50% {
+    transform:
+      translate3d(5px,-9px,26px)
+      rotate(.7deg);
+  }
+
+}
+
+
+@keyframes processNodeTwo {
+
+  0%,
+  100% {
+    transform:
+      translate3d(0,0,15px)
+      rotate(.5deg);
+  }
+
+  50% {
+    transform:
+      translate3d(7px,-6px,24px)
+      rotate(-.6deg);
+  }
+
+}
+
+
+@keyframes processNodeThree {
+
+  0%,
+  100% {
+    transform:
+      translate3d(0,0,18px)
+      rotate(-.3deg);
+  }
+
+  50% {
+    transform:
+      translate3d(-5px,-8px,26px)
+      rotate(.6deg);
+  }
+
+}
+
+
+@keyframes processNodeLine {
+
+  0%,
+  100% {
+    transform:
+      scaleX(.18);
+
+    opacity: .2;
+  }
+
+  50% {
+    transform:
+      scaleX(1);
+
+    opacity: .78;
+  }
+
+}
+
+
+@keyframes processSignalPulse {
+
+  0%,
+  100% {
+    transform:
+      scale(.72);
+
+    opacity: .46;
+  }
+
+  50% {
+    transform:
+      scale(1.35);
+
+    opacity: 1;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .processVisual::after {
+    width: 68%;
+    height: 68%;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .processVisual {
+    perspective:
+      900px;
+  }
+
+
+  .processVisual::before {
+    inset:
+      10%;
+  }
+
+
+  .processVisual::after {
+    width:
+      70%;
+
+    height:
+      70%;
+  }
+
+
+  .visualNode::after {
+    display: none;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .processVisual::before,
+  .processVisual::after,
+  .orbitOuter,
+  .orbitMiddle,
+  .orbitInner,
+  .visualCenter,
+  .visualCenter::before,
+  .visualNode,
+  .visualNode::after,
+  .visualDot {
+    animation:
+      none !important;
+  }
+
+}
+
+/* =========================================================
+   GRAPHIC AREA
+   ========================================================= */
+
+.stepGraphic {
+  position: relative;
+
+  width: 142px;
+  height: 142px;
+
+  display: grid;
+
+  place-items: center;
+
+  margin:
+    23px 0 28px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(105, 197, 80, .08),
+      rgba(61, 183, 213, .035) 48%,
+      transparent 70%
+    );
+}
+
+.stepGraphic::before,
+.stepGraphic::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.stepGraphic::before {
+  width: 112px;
+  height: 112px;
+
+  border:
+    1px solid
+    rgba(91, 165, 78, .15);
+
+  animation:
+    stepOrbitOne
+    11s linear infinite;
+}
+
+.stepGraphic::after {
+  width: 134px;
+  height: 134px;
+
+  border:
+    1px dashed
+    rgba(66, 179, 207, .13);
+
+  animation:
+    stepOrbitTwo
+    15s linear infinite reverse;
+}
+
+.stepGraphicRing {
+  width: 88px;
+  height: 88px;
+
+  border:
+    1px solid
+    rgba(108, 190, 84, .18);
+
+  box-shadow:
+    0 0 24px
+    rgba(104, 194, 78, .04);
+
+  animation:
+    stepGraphicBreath
+    4.4s ease-in-out infinite;
+}
+
+.stepGraphicRing::before {
+  content: "";
+
+  position: absolute;
+
+  top: 50%;
+  left: -4px;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background:
+    #73bc53;
+
+  box-shadow:
+    0 0 0 5px
+    rgba(115,188,83,.06),
+    0 0 16px
+    rgba(115,188,83,.34);
+}
+
+.stepGraphicCore {
+  width: 70px;
+  height: 70px;
+
+  border:
+    1px solid
+    rgba(74, 120, 72, .11);
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(248,253,246,.99),
+      rgba(224,241,232,.98)
+    );
+
+  box-shadow:
+    0 13px 30px
+    rgba(45, 91, 49, .10),
+    inset 0 1px 0
+    rgba(255,255,255,.92);
+
+  animation:
+    stepCoreFloat
+    4.8s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   EACH STEP GETS ITS OWN CHARACTER
+   ========================================================= */
+
+.stepCard:nth-child(1)
+.stepGraphicCore {
+  background:
+    linear-gradient(
+      145deg,
+      #f1faec,
+      #dcefd9
+    );
+}
+
+.stepCard:nth-child(2)
+.stepGraphicCore {
+  background:
+    linear-gradient(
+      145deg,
+      #eef8f8,
+      #dceff2
+    );
+}
+
+.stepCard:nth-child(3)
+.stepGraphicCore {
+  background:
+    linear-gradient(
+      145deg,
+      #f3f8ed,
+      #e4f0dc
+    );
+}
+
+.stepCard:nth-child(4)
+.stepGraphicCore {
+  background:
+    linear-gradient(
+      145deg,
+      #eff9ee,
+      #e1f1e8
+    );
+}
+
+
+/* animated number */
+
+.stepGraphicCore {
+  position: relative;
+
+  overflow: hidden;
+}
+
+.stepGraphicCore::after {
+  content: "";
+
+  position: absolute;
+
+  width: 140%;
+  height: 28%;
+
+  top: -34%;
+  left: -20%;
+
+  transform:
+    rotate(-18deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.74),
+      transparent
+    );
+
+  filter: blur(5px);
+
+  animation:
+    stepCoreShine
+    5.7s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   COPY
+   ========================================================= */
+
+.stepCopy h3 {
+  transition:
+    color .2s ease,
+    transform .2s ease;
+}
+
+.stepCard:hover
+.stepCopy h3 {
+  color:
+    #264a25;
+
+  transform:
+    translateX(2px);
+}
+
+.stepCopy p {
+  max-width: 48ch;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.stepCard:hover
+.stepGraphic {
+  filter:
+    saturate(1.06);
+}
+
+.stepCard:hover
+.stepGraphicCore {
+  box-shadow:
+    0 18px 38px
+    rgba(46, 94, 49, .13),
+    0 0 22px
+    rgba(100, 199, 76, .08);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes stepStatusPulse {
+
+  0%,
+  100% {
+    transform: scale(.86);
+    opacity: .58;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+
+@keyframes stepOrbitOne {
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+@keyframes stepOrbitTwo {
+
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+
+@keyframes stepGraphicBreath {
+
+  0%,
+  100% {
+    transform: scale(.95);
+
+    opacity: .72;
+  }
+
+  50% {
+    transform: scale(1.04);
+
+    opacity: 1;
+  }
+}
+
+
+@keyframes stepCoreFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+
+@keyframes stepCoreShine {
+
+  0%,
+  26% {
+    transform:
+      translateY(-40px)
+      rotate(-18deg);
+
+    opacity: 0;
+  }
+
+  45% {
+    opacity: .85;
+  }
+
+  68%,
+  100% {
+    transform:
+      translateY(120px)
+      rotate(-18deg);
+
+    opacity: 0;
+  }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .stepGraphic {
+    width: 132px;
+    height: 132px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .stepGraphic {
+    width: 120px;
+    height: 120px;
+
+    margin:
+      18px 0 24px;
+  }
+
+  .stepGraphic::before {
+    width: 98px;
+    height: 98px;
+  }
+
+  .stepGraphic::after {
+    width: 116px;
+    height: 116px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .stepLabel::before,
+  .stepGraphic::before,
+  .stepGraphic::after,
+  .stepGraphicRing,
+  .stepGraphicCore,
+  .stepGraphicCore::after {
+    animation:
+      none !important;
+  }
+
+}
