@@ -41031,3 +41031,13 @@ header .premium-shell {
 
 /* HOME HERO VISUAL SCALE END */
 
+
+/* LOGO ASPECT RATIO FIX START */
+
+img[src="/logos/logo-dark.png"],
+img[src="/logos/logo-light.png"] {
+  height: auto !important;
+  object-fit: contain;
+}
+
+/* LOGO ASPECT RATIO FIX END */

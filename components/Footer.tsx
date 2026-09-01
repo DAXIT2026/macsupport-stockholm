@@ -79,6 +79,8 @@ export default function Footer() {
                   width={310}
                   height={110}
                   sizes="240px"
+                
+                  style={{ height: "auto" }}
                 />
               </Link>
 
