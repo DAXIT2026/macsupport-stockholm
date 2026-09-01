@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
@@ -49,7 +49,7 @@ export default function SplashIntro() {
 
       document.documentElement.style.overflow =
         previousOverflow;
-    }, 4800);
+    }, 5000);
 
     return () => {
       window.clearTimeout(timer);

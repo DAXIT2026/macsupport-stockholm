@@ -1,4 +1,4 @@
-﻿export type AudiencePage = {
+export type AudiencePage = {
   slug: string;
   eyebrow: string;
   title: string;
@@ -71,19 +71,19 @@ export const audiences: AudiencePage[] = [
     services: [
       {
         title: "Microsoft 365",
-        text: "Outlook, Teams, OneDrive, SharePoint och administration av användare.",
+        text: "Vi hjälper företag att få ut mer av Microsoft 365 med rätt struktur, säkerhet och administration. Support för Outlook, Teams, OneDrive och SharePoint – från användarkonton till den dagliga driften.",
       },
       {
         title: "Nätverk",
-        text: "Stabilt WiFi, nätverksinstallation, UniFi och felsökning.",
+        text: "Vi bygger stabila och säkra nätverk för kontor och verksamheter. WiFi, nätverksinstallation, UniFi och felsökning anpassas efter hur företaget faktiskt arbetar.",
       },
       {
         title: "Säkerhet",
-        text: "Backup, tvåstegsverifiering, kontosäkerhet och bättre IT-rutiner.",
+        text: "Vi stärker företagets IT-säkerhet med backup, tvåstegsverifiering och bättre rutiner. Fokus ligger på att minska risker och göra skyddet enkelt att använda i vardagen.",
       },
       {
         title: "Löpande support",
-        text: "En kontakt när personalen behöver hjälp med teknik och datorer.",
+        text: "Få en trygg kontakt när personalen behöver teknisk hjälp. Vi hjälper till med datorer, program, konton och vardagliga IT-problem så att arbetet kan fortsätta utan onödiga stopp.",
       },
     ],
     reassurance:

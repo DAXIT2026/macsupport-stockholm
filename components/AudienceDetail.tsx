@@ -1,10 +1,17 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import type { AudiencePage } from "../lib/audiences";
 
 type Props = {
   audience: AudiencePage;
 };
+
+const businessServiceImages = [
+  "/images/foretag/microsoft-365.png",
+  "/images/foretag/network.png",
+  "/images/foretag/security.png",
+  "/images/foretag/lopande-support.png",
+];
 
 export default function AudienceDetail({ audience }: Props) {
   return (
@@ -120,18 +127,51 @@ export default function AudienceDetail({ audience }: Props) {
 
           <div className="audience-service-grid">
 
-            {audience.services.map((service, index) => (
-              <article key={service.title}>
+            {audience.services.map((service, index) => {
+              const imageSrc =
+                audience.slug === "foretag"
+                  ? businessServiceImages[index]
+                  : null;
 
-                <span className="audience-service-number">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+              return (
+                <article
+                  key={service.title}
+                  className={
+                    imageSrc
+                      ? "audience-service-card business-service-card"
+                      : "audience-service-card"
+                  }
+                >
 
-                <h3>{service.title}</h3>
-                <p>{service.text}</p>
+                  <span className="audience-service-number">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-              </article>
-            ))}
+                  {imageSrc && (
+                    <div
+                      className="business-service-media"
+                      aria-hidden="true"
+                    >
+                      <Image
+                        src={imageSrc}
+                        alt=""
+                        fill
+                        sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 25vw"
+                        className="business-service-image"
+                      />
+
+                      <span className="business-service-media-aura" />
+                    </div>
+                  )}
+
+                  <div className="business-service-copy">
+                    <h3>{service.title}</h3>
+                    <p>{service.text}</p>
+                  </div>
+
+                </article>
+              );
+            })}
 
           </div>
 
