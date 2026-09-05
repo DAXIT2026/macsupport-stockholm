@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 
 import Header from "../../components/Header";
@@ -67,14 +67,14 @@ export default function TjansterPage() {
               <div className="services-overview-actions">
 
                 <Link
-                  href="/#booking"
+                  href="/boka"
                   className="premium-button primary"
                 >
                   Boka support
                 </Link>
 
                 <Link
-                  href="/#kontakt"
+                  href="/kontakt"
                   className="premium-button secondary"
                 >
                   Kontakta oss
@@ -255,7 +255,7 @@ export default function TjansterPage() {
               <div className="services-guide-actions">
 
                 <Link
-                  href="/#booking"
+                  href="/boka"
                   className="premium-button primary"
                 >
                   Beskriv problemet

@@ -1,14 +1,11 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 
 export default function AudienceSection() {
   return (
     <section className="premium-section audience-zone">
-
       <div className="premium-shell">
-
         <div className="premium-heading">
-
           <p className="premium-eyebrow">
             HJÄLP PÅ DINA VILLKOR
           </p>
@@ -20,16 +17,13 @@ export default function AudienceSection() {
           </h2>
 
           <p>
-            Olika kunder behöver olika typ av hjälp.
+            Olika kunder behöver olika typer av hjälp.
             Därför har vi gjort det enkelt att hitta rätt väg.
           </p>
-
         </div>
 
         <div className="audience-cards">
-
           <article id="privat" className="audience-card">
-
             <Link
               href="/privat"
               className="audience-image"
@@ -39,12 +33,11 @@ export default function AudienceSection() {
                 src="/images/private-support.jpg"
                 alt="IT-support för privatpersoner"
                 fill
-                  sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
               />
             </Link>
 
             <div className="audience-content">
-
               <span>PRIVATPERSONER</span>
 
               <h3>
@@ -57,16 +50,12 @@ export default function AudienceSection() {
               </p>
 
               <Link href="/privat">
-                Utforska privat support →
+                Utforska privatsupport →
               </Link>
-
             </div>
-
           </article>
 
-
           <article id="foretag" className="audience-card">
-
             <Link
               href="/foretag"
               className="audience-image"
@@ -76,12 +65,11 @@ export default function AudienceSection() {
                 src="/images/business-support.jpg"
                 alt="IT-support för företag"
                 fill
-                  sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
               />
             </Link>
 
             <div className="audience-content">
-
               <span>FÖRETAG</span>
 
               <h3>
@@ -96,14 +84,10 @@ export default function AudienceSection() {
               <Link href="/foretag">
                 Utforska företagssupport →
               </Link>
-
             </div>
-
           </article>
 
-
           <article className="audience-card audience-card-senior">
-
             <Link
               href="/seniorer"
               className="audience-image"
@@ -113,12 +97,11 @@ export default function AudienceSection() {
                 src="/images/senior-support.jpg"
                 alt="Teknikhjälp för seniorer"
                 fill
-                  sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
               />
             </Link>
 
             <div className="audience-content">
-
               <span>SENIORER</span>
 
               <h3>
@@ -133,15 +116,10 @@ export default function AudienceSection() {
               <Link href="/seniorer">
                 Se seniorhjälp →
               </Link>
-
             </div>
-
           </article>
-
         </div>
-
       </div>
-
     </section>
   );
 }

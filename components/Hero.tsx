@@ -1,17 +1,14 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Hero() {
   return (
     <section className="premium-hero" id="top">
-
       <div className="hero-ambient hero-ambient-one" />
       <div className="hero-ambient hero-ambient-two" />
 
       <div className="premium-shell hero-layout">
-
         <div className="hero-copy">
-
           <p className="premium-eyebrow">
             IT-SUPPORT SOM FÖRENKLAR DIN VARDAG
           </p>
@@ -35,19 +32,17 @@ export default function Hero() {
           </div>
 
           <div className="hero-actions">
-            <Link href="#kontakt" className="premium-button primary">
-              Boka supportsamtal
+            <Link href="/kontakt" className="premium-button primary">
+              Boka support
             </Link>
 
             <Link href="#tjanster" className="premium-button secondary">
               Våra tjänster →
             </Link>
           </div>
-
         </div>
 
         <div className="hero-visual">
-
           <div className="hero-soft-bg" />
 
           <Image
@@ -72,9 +67,7 @@ export default function Hero() {
             <strong>12 år i rad på Reco</strong>
             <span>2015–2026 · rekommenderat företag</span>
           </div>
-
         </div>
-
       </div>
     </section>
   );

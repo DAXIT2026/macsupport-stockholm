@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import Header from "../../components/Header";
@@ -32,7 +32,7 @@ const contactOptions = [
     label: "E-POST",
     title: "Skicka ett meddelande",
     text: "Bra för frågor som inte är akuta.",
-    href: "mailto:kontakt@mindatorsupport.se",
+    href: "mailto:kontakt@macsupportstockholm.se",
     action: "Skriv e-post",
     icon: "✉",
   },
@@ -189,11 +189,11 @@ export default function KontaktPage() {
 
                 <div>
                   <strong>
-                    4,8 / 5
+                    Personlig
                   </strong>
 
                   <span>
-                    kundomdömen
+                    support med tydliga besked
                   </span>
                 </div>
 

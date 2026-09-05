@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 
 const faqs = [
@@ -175,7 +175,7 @@ export default function FaqContactSection() {
 
 
               <Link
-                href="/#booking"
+                href="/boka"
                 className="contact-secondary-action"
               >
                 <span
@@ -199,7 +199,7 @@ export default function FaqContactSection() {
 
 
               <a
-                href="mailto:kontakt@mindatorsupport.se"
+                href="mailto:kontakt@macsupportstockholm.se"
                 className="contact-secondary-action"
               >
                 <span

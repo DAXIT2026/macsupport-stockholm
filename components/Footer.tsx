@@ -31,9 +31,8 @@ export default function Footer() {
             <div className="footer-v3-cta-actions">
 
               <a
-                href={siteConfig.bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={siteConfig.bookingPath}
+                
                 className="footer-v3-book"
               >
                 <span>
@@ -81,6 +80,7 @@ export default function Footer() {
                   sizes="240px"
                 
                   style={{ height: "auto" }}
+                
                 />
               </Link>
 
@@ -277,9 +277,8 @@ export default function Footer() {
 
 
         <a
-          href={siteConfig.bookingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={siteConfig.bookingPath}
+          
           className="mobile-v5-action mobile-v5-booking"
           aria-label="Boka support"
         >

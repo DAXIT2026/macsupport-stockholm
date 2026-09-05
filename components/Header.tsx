@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -100,6 +100,12 @@ export default function Header() {
   const closeButtonRef =
     useRef<HTMLButtonElement>(null);
 
+  const menuButtonRef =
+    useRef<HTMLButtonElement>(null);
+
+  const mobileDrawerRef =
+    useRef<HTMLElement>(null);
+
   useEffect(() => {
     if (!mobileOpen) {
       document.body.style.overflow = "";
@@ -116,6 +122,55 @@ export default function Header() {
       if (event.key === "Escape") {
         setMobileOpen(false);
         setMobileServicesOpen(false);
+
+        window.requestAnimationFrame(() => {
+          menuButtonRef.current?.focus();
+        });
+
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const drawer = mobileDrawerRef.current;
+
+      if (!drawer) {
+        return;
+      }
+
+      const focusableElements = Array.from(
+        drawer.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => {
+        return element.offsetParent !== null;
+      });
+
+      if (focusableElements.length === 0) {
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement =
+        focusableElements[focusableElements.length - 1];
+
+      if (
+        event.shiftKey &&
+        document.activeElement === firstElement
+      ) {
+        event.preventDefault();
+        lastElement.focus();
+        return;
+      }
+
+      if (
+        !event.shiftKey &&
+        document.activeElement === lastElement
+      ) {
+        event.preventDefault();
+        firstElement.focus();
       }
     }
 
@@ -133,6 +188,26 @@ export default function Header() {
     };
   }, [mobileOpen]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant",
+    });
+  }, [pathname]);
+
+  function handleBrandClick() {
+    closeMobileMenu();
+
+    if (pathname === "/") {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+    }
+  }
+
   function isActive(href: string) {
     return (
       pathname === href ||
@@ -140,9 +215,15 @@ export default function Header() {
     );
   }
 
-  function closeMobileMenu() {
+  function closeMobileMenu(restoreFocus = false) {
     setMobileOpen(false);
     setMobileServicesOpen(false);
+
+    if (restoreFocus) {
+      window.requestAnimationFrame(() => {
+        menuButtonRef.current?.focus();
+      });
+    }
   }
 
   const servicesActive =
@@ -187,6 +268,7 @@ export default function Header() {
             href="/"
             className="header-v4-brand"
             aria-label="Macsupport Stockholm – startsida"
+            onClick={handleBrandClick}
           >
             <span
               className="header-v4-brand-glow"
@@ -234,6 +316,8 @@ export default function Header() {
               <Link
                 href="/tjanster"
                 className="header-v4-services-trigger"
+                aria-haspopup="true"
+                aria-controls="header-v4-services-menu"
               >
                 <span>Tjänster</span>
 
@@ -248,7 +332,10 @@ export default function Header() {
 
               <div className="header-v4-mega-shell">
 
-                <div className="header-v4-mega">
+                <div
+                  className="header-v4-mega"
+                  id="header-v4-services-menu"
+                >
 
                   <div className="header-v4-mega-intro">
 
@@ -357,9 +444,8 @@ export default function Header() {
 
 
           <a
-            href={siteConfig.bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={siteConfig.bookingPath}
+            
             className="header-v4-book"
           >
             <span>
@@ -373,6 +459,7 @@ export default function Header() {
 
 
           <button
+            ref={menuButtonRef}
             type="button"
             className="header-v4-menu-button"
             aria-label="Öppna meny"
@@ -400,11 +487,12 @@ export default function Header() {
             type="button"
             className="header-v4-mobile-backdrop"
             aria-label="Stäng meny"
-            onClick={closeMobileMenu}
+            onClick={() => closeMobileMenu(true)}
           />
 
 
           <aside
+            ref={mobileDrawerRef}
             className="header-v4-mobile-drawer"
             role="dialog"
             aria-modal="true"
@@ -416,7 +504,7 @@ export default function Header() {
               <Link
                 href="/"
                 className="header-v4-mobile-logo"
-                onClick={closeMobileMenu}
+                onClick={handleBrandClick}
               >
                 <Image
                   src="/logos/logo-light.png"
@@ -432,7 +520,7 @@ export default function Header() {
                 type="button"
                 className="header-v4-mobile-close"
                 aria-label="Stäng meny"
-                onClick={closeMobileMenu}
+                onClick={() => closeMobileMenu(true)}
               >
                 ×
               </button>
@@ -467,7 +555,7 @@ export default function Header() {
                       ? "header-v4-mobile-link active"
                       : "header-v4-mobile-link"
                   }
-                  onClick={closeMobileMenu}
+                  onClick={() => closeMobileMenu()}
                 >
                   <span>
                     {item.label}
@@ -521,7 +609,7 @@ export default function Header() {
                   <Link
                     href="/tjanster"
                     className="header-v4-mobile-all-services"
-                    onClick={closeMobileMenu}
+                    onClick={() => closeMobileMenu()}
                   >
                     Alla tjänster
                     <span aria-hidden="true">
@@ -550,7 +638,7 @@ export default function Header() {
                               ? "active"
                               : ""
                           }
-                          onClick={closeMobileMenu}
+                          onClick={() => closeMobileMenu()}
                         >
                           <strong>
                             {item.label}
@@ -579,7 +667,7 @@ export default function Header() {
                       ? "header-v4-mobile-link active"
                       : "header-v4-mobile-link"
                   }
-                  onClick={closeMobileMenu}
+                  onClick={() => closeMobileMenu()}
                 >
                   <span>
                     {item.label}
@@ -615,9 +703,8 @@ export default function Header() {
 
 
               <a
-                href={siteConfig.bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={siteConfig.bookingPath}
+                
                 className="header-v4-mobile-book"
               >
                 <span>
@@ -639,3 +726,15 @@ export default function Header() {
     </header>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

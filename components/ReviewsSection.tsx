@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 const reviews = [
   {
@@ -166,7 +166,7 @@ export default function ReviewsSection() {
           </div>
 
           <Link
-            href="#booking"
+            href="/boka"
             className="premium-button primary"
           >
             Boka support

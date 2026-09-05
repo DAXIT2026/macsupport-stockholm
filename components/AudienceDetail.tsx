@@ -13,6 +13,13 @@ const businessServiceImages = [
   "/images/foretag/lopande-support.png",
 ];
 
+const privateServiceImages = [
+  "/images/privat/dator-mac.png",
+  "/images/privat/wifi-hemma.png",
+  "/images/privat/epost-konton.png",
+  "/images/privat/sakerhet.png",
+];
+
 export default function AudienceDetail({ audience }: Props) {
   return (
     <main className="audience-detail">
@@ -46,7 +53,7 @@ export default function AudienceDetail({ audience }: Props) {
 
             <div className="audience-detail-actions">
               <Link
-                href="/#booking"
+                href="/boka"
                 className="premium-button primary"
               >
                 Boka support
@@ -131,7 +138,9 @@ export default function AudienceDetail({ audience }: Props) {
               const imageSrc =
                 audience.slug === "foretag"
                   ? businessServiceImages[index]
-                  : null;
+                  : audience.slug === "privat"
+                    ? privateServiceImages[index]
+                    : null;
 
               return (
                 <article
@@ -200,7 +209,7 @@ export default function AudienceDetail({ audience }: Props) {
           <div className="audience-final-actions">
 
             <Link
-              href="/#booking"
+              href="/boka"
               className="premium-button primary"
             >
               Boka support

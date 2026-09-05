@@ -33,19 +33,19 @@ export const audiences: AudiencePage[] = [
     services: [
       {
         title: "Dator & Mac",
-        text: "Felsökning, installation, uppdateringar, backup och långsamma datorer.",
+        text: "Vi hjälper dig med felsökning, installationer, uppdateringar och backup på Mac och PC. Målet är att få datorn att fungera stabilt och smidigt i vardagen.",
       },
       {
         title: "WiFi hemma",
-        text: "Bättre täckning, routerhjälp och stabil internetanslutning.",
+        text: "Vi förbättrar täckning och stabilitet i hemmets WiFi och hjälper till med router, anslutning och placering. Du får en lösning som fungerar bättre i hela bostaden.",
       },
       {
         title: "E-post & konton",
-        text: "Outlook, Apple Mail, lösenord, konton och synkronisering.",
+        text: "Vi hjälper med Outlook, Apple Mail, lösenord, konton och synkronisering mellan dina enheter. Du får ordning på e-post och konton utan onödigt krångel.",
       },
       {
         title: "Säkerhet",
-        text: "Backup, lösenord, tvåstegsverifiering och skydd av viktiga filer.",
+        text: "Vi hjälper dig att skydda viktiga filer, konton och personliga uppgifter med backup, säkrare lösenord och tvåstegsverifiering. Säkerheten ska vara trygg utan att bli komplicerad.",
       },
     ],
     reassurance:

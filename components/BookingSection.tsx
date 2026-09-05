@@ -1,6 +1,7 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
+import { siteConfig } from "../lib/site-config";
 
 type SupportType =
   | "Mac-support"
@@ -23,32 +24,38 @@ const supportTypes: {
   {
     label: "Mac-support",
     icon: "⌘",
-    description: "Mac, macOS, installation, backup och felsökning.",
+    description:
+      "Mac, macOS, installation, backup och felsökning.",
   },
   {
     label: "WiFi & nätverk",
     icon: "◉",
-    description: "Router, täckning, mesh, internet och nätverk.",
+    description:
+      "Router, täckning, mesh, internet och nätverk.",
   },
   {
     label: "IT-säkerhet",
     icon: "◇",
-    description: "Säkerhet, backup, lösenord och skydd.",
+    description:
+      "Säkerhet, backup, lösenord och skydd.",
   },
   {
     label: "Microsoft 365",
     icon: "▦",
-    description: "Outlook, Teams, OneDrive och företagskonton.",
+    description:
+      "Outlook, Teams, OneDrive och företagskonton.",
   },
   {
     label: "Fjärrsupport",
     icon: "↗",
-    description: "Snabb hjälp direkt via säker fjärranslutning.",
+    description:
+      "Snabb hjälp direkt via säker fjärranslutning.",
   },
   {
     label: "Annat problem",
     icon: "+",
-    description: "Beskriv problemet så hjälper vi dig vidare.",
+    description:
+      "Beskriv problemet så hjälper vi dig vidare.",
   },
 ];
 
@@ -60,34 +67,21 @@ const helpModes: {
   {
     label: "Hembesök",
     icon: "⌂",
-    description: "Vi kommer hem till dig i Stockholmsområdet.",
+    description:
+      "Vi kommer hem till dig i Stockholmsområdet.",
   },
   {
     label: "Support på distans",
     icon: "◫",
-    description: "Snabb och säker hjälp via fjärranslutning.",
+    description:
+      "Snabb och säker hjälp via fjärranslutning.",
   },
   {
     label: "Företagsbesök",
     icon: "▥",
-    description: "Support direkt på kontoret eller arbetsplatsen.",
+    description:
+      "Support direkt på kontoret eller arbetsplatsen.",
   },
-];
-
-const dates = [
-  { day: "Mån", date: "31 aug" },
-  { day: "Tis", date: "1 sep" },
-  { day: "Ons", date: "2 sep" },
-  { day: "Tor", date: "3 sep" },
-];
-
-const times = [
-  "09:00",
-  "10:30",
-  "12:00",
-  "13:30",
-  "15:00",
-  "16:30",
 ];
 
 export default function BookingSection() {
@@ -99,35 +93,23 @@ export default function BookingSection() {
   const [helpMode, setHelpMode] =
     useState<HelpMode | null>(null);
 
-  const [selectedDate, setSelectedDate] =
-    useState<string | null>(null);
-
-  const [selectedTime, setSelectedTime] =
-    useState<string | null>(null);
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-
   const progress = useMemo(
-    () => `${Math.min(step, 5) * 20}%`,
+    () => `${Math.min(step, 3) * (100 / 3)}%`,
     [step]
   );
 
   const canContinue =
     (step === 1 && supportType) ||
-    (step === 2 && helpMode) ||
-    (step === 3 && selectedDate && selectedTime) ||
-    (step === 4 && name && email && phone);
+    (step === 2 && helpMode);
 
   function nextStep() {
-    if (step < 5 && canContinue) {
+    if (step < 3 && canContinue) {
       setStep((current) => current + 1);
     }
   }
 
   function previousStep() {
-    if (step > 1 && step < 5) {
+    if (step > 1) {
       setStep((current) => current - 1);
     }
   }
@@ -152,8 +134,9 @@ export default function BookingSection() {
             </h2>
 
             <p>
-              Välj vad du behöver hjälp med och en tid som passar.
-              Det tar bara några minuter.
+              Välj vad du behöver hjälp med.
+              Därefter visar vi den riktiga kalendern
+              med aktuella lediga tider.
             </p>
           </div>
 
@@ -161,13 +144,15 @@ export default function BookingSection() {
             <span>✓</span>
 
             <div>
-              <strong>Trygg bokning</strong>
+              <strong>Riktiga lediga tider</strong>
+
               <small>
-                Tydliga steg. Ingen betalning online.
+                Kalendern uppdateras via vårt bokningssystem.
               </small>
             </div>
           </div>
         </div>
+
 
         <div className="booking-shell">
 
@@ -183,15 +168,7 @@ export default function BookingSection() {
               </span>
 
               <span className={step >= 3 ? "active" : ""}>
-                Tid
-              </span>
-
-              <span className={step >= 4 ? "active" : ""}>
-                Uppgifter
-              </span>
-
-              <span className={step >= 5 ? "active" : ""}>
-                Klart
+                Lediga tider
               </span>
             </div>
 
@@ -201,12 +178,14 @@ export default function BookingSection() {
 
           </div>
 
+
           <div className="booking-content">
 
             {step === 1 && (
               <div className="booking-step">
+
                 <p className="booking-step-number">
-                  STEG 1 AV 4
+                  STEG 1 AV 3
                 </p>
 
                 <h3>
@@ -214,10 +193,12 @@ export default function BookingSection() {
                 </h3>
 
                 <p className="booking-step-lead">
-                  Välj det alternativ som ligger närmast ditt problem.
+                  Välj det alternativ som ligger närmast
+                  ditt problem.
                 </p>
 
                 <div className="booking-options booking-options-services">
+
                   {supportTypes.map((item) => (
                     <button
                       type="button"
@@ -245,14 +226,18 @@ export default function BookingSection() {
                       </span>
                     </button>
                   ))}
+
                 </div>
+
               </div>
             )}
 
+
             {step === 2 && (
               <div className="booking-step">
+
                 <p className="booking-step-number">
-                  STEG 2 AV 4
+                  STEG 2 AV 3
                 </p>
 
                 <h3>
@@ -264,6 +249,7 @@ export default function BookingSection() {
                 </p>
 
                 <div className="booking-options booking-help-modes">
+
                   {helpModes.map((item) => (
                     <button
                       type="button"
@@ -290,167 +276,33 @@ export default function BookingSection() {
                       </span>
                     </button>
                   ))}
+
                 </div>
+
               </div>
             )}
+
 
             {step === 3 && (
-              <div className="booking-step">
+              <div className="booking-step booking-live-calendar">
+
                 <p className="booking-step-number">
-                  STEG 3 AV 4
+                  STEG 3 AV 3
                 </p>
 
                 <h3>
-                  Välj datum och tid.
+                  Välj en ledig tid.
                 </h3>
 
                 <p className="booking-step-lead">
-                  Tillgängliga tider visas nedan.
+                  Kalendern visar aktuella lediga tider.
+                  Redan bokade eller passerade tider
+                  kan inte väljas.
                 </p>
 
-                <div className="booking-date-grid">
-                  {dates.map((item) => {
-                    const value =
-                      `${item.day} ${item.date}`;
 
-                    return (
-                      <button
-                        key={value}
-                        type="button"
-                        className={
-                          selectedDate === value
-                            ? "booking-date selected"
-                            : "booking-date"
-                        }
-                        onClick={() =>
-                          setSelectedDate(value)
-                        }
-                      >
-                        <small>{item.day}</small>
-                        <strong>{item.date}</strong>
-                      </button>
-                    );
-                  })}
-                </div>
+                <div className="booking-live-summary">
 
-                <div className="booking-time-grid">
-                  {times.map((time) => (
-                    <button
-                      key={time}
-                      type="button"
-                      className={
-                        selectedTime === time
-                          ? "booking-time selected"
-                          : "booking-time"
-                      }
-                      onClick={() =>
-                        setSelectedTime(time)
-                      }
-                    >
-                      {time}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {step === 4 && (
-              <div className="booking-step">
-                <p className="booking-step-number">
-                  STEG 4 AV 4
-                </p>
-
-                <h3>
-                  Vem ska vi hjälpa?
-                </h3>
-
-                <p className="booking-step-lead">
-                  Vi använder uppgifterna för din bokningsbekräftelse.
-                </p>
-
-                <div className="booking-form">
-
-                  <label>
-                    <span>Namn</span>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(event) =>
-                        setName(event.target.value)
-                      }
-                      placeholder="För- och efternamn"
-                      autoComplete="name"
-                    />
-                  </label>
-
-                  <div className="booking-form-row">
-                    <label>
-                      <span>E-post</span>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(event) =>
-                          setEmail(event.target.value)
-                        }
-                        placeholder="namn@email.se"
-                        autoComplete="email"
-                      />
-                    </label>
-
-                    <label>
-                      <span>Mobilnummer</span>
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(event) =>
-                          setPhone(event.target.value)
-                        }
-                        placeholder="+46 70 123 45 67"
-                        autoComplete="tel"
-                      />
-                    </label>
-                  </div>
-
-                  <label>
-                    <span>
-                      Kort beskrivning
-                      <small> valfritt</small>
-                    </span>
-
-                    <textarea
-                      rows={5}
-                      placeholder="Berätta gärna lite kort om problemet..."
-                    />
-                  </label>
-
-                </div>
-              </div>
-            )}
-
-            {step === 5 && (
-              <div className="booking-success">
-
-                <div className="booking-success-icon">
-                  ✓
-                </div>
-
-                <p className="premium-eyebrow">
-                  BOKNING KLAR
-                </p>
-
-                <h3>
-                  Tack {name}.
-                  <br />
-                  Vi ses snart.
-                </h3>
-
-                <p>
-                  Din bokningsförfrågan är registrerad.
-                  Nästa steg blir att automatiskt skicka
-                  bekräftelse via SMS och e-post.
-                </p>
-
-                <div className="booking-summary">
                   <div>
                     <span>Support</span>
                     <strong>{supportType}</strong>
@@ -461,71 +313,114 @@ export default function BookingSection() {
                     <strong>{helpMode}</strong>
                   </div>
 
-                  <div>
-                    <span>Datum</span>
-                    <strong>{selectedDate}</strong>
-                  </div>
-
-                  <div>
-                    <span>Tid</span>
-                    <strong>{selectedTime}</strong>
-                  </div>
                 </div>
 
-                <button
-                  type="button"
-                  className="premium-button secondary booking-reset"
-                  onClick={() => {
-                    setStep(1);
-                    setSupportType(null);
-                    setHelpMode(null);
-                    setSelectedDate(null);
-                    setSelectedTime(null);
-                    setName("");
-                    setEmail("");
-                    setPhone("");
-                  }}
-                >
-                  Tillbaka till bokningen
-                </button>
+
+                <div className="booking-live-panel">
+
+                  <div className="booking-live-icon">
+                    <span aria-hidden="true">◷</span>
+                  </div>
+
+                  <div className="booking-live-copy">
+
+                    <p className="premium-eyebrow">
+                      LIVEKALENDER
+                    </p>
+
+                    <h4>
+                      Se tider som faktiskt är lediga.
+                    </h4>
+
+                    <p>
+                      Bokningssystemet kontrollerar
+                      kalendern i realtid så att du inte
+                      behöver välja bland tider som redan
+                      är upptagna.
+                    </p>
+
+                  </div>
+
+
+                  <a
+                    href={siteConfig.bookingPath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="premium-button primary booking-live-button"
+                  >
+                    Visa lediga tider
+                    <span aria-hidden="true">→</span>
+                  </a>
+
+                </div>
+
+
+                <div className="booking-contact-fallback">
+
+                  <div>
+                    <small>Vill du hellre prata med oss?</small>
+
+                    <a href={siteConfig.phoneHref}>
+                      {siteConfig.phoneDisplay}
+                    </a>
+                  </div>
+
+                  <div>
+                    <small>Frågor före bokning?</small>
+
+                    <a href={siteConfig.emailHref}>
+                      {siteConfig.email}
+                    </a>
+                  </div>
+
+                </div>
 
               </div>
             )}
 
           </div>
 
-          {step < 5 && (
-            <div className="booking-footer">
 
-              <button
-                type="button"
-                className="booking-back"
-                onClick={previousStep}
-                disabled={step === 1}
-              >
-                ← Tillbaka
-              </button>
+          <div className="booking-footer">
 
-              <div className="booking-footer-note">
-                <span>🔒</span>
-                <small>
-                  Dina uppgifter behandlas säkert.
-                </small>
-              </div>
+            <button
+              type="button"
+              className="booking-back"
+              onClick={previousStep}
+              disabled={step === 1}
+            >
+              ← Tillbaka
+            </button>
 
+            <div className="booking-footer-note">
+              <span>🔒</span>
+
+              <small>
+                Trygg och tydlig bokning.
+              </small>
+            </div>
+
+            {step < 3 ? (
               <button
                 type="button"
                 className="premium-button primary"
                 onClick={nextStep}
                 disabled={!canContinue}
               >
-                {step === 4
-                  ? "Bekräfta bokning"
-                  : "Fortsätt →"}
+                Fortsätt →
               </button>
+            ) : (
+              <a
+                href={siteConfig.bookingPath}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="premium-button primary"
+              >
+                Öppna kalendern →
+              </a>
+            )}
 
-            </div>
-          )}
+          </div>
 
         </div>
 

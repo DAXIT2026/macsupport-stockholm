@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import RecoTimeline from "./RecoTimeline";
 
@@ -111,7 +111,7 @@ export default function AboutSection() {
         <div className="about-v12-actions">
 
           <Link
-            href="/#booking"
+            href="/boka"
             className="premium-button primary"
           >
             Boka support

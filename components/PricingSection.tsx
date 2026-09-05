@@ -1,10 +1,10 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 const plans = [
   {
     id: "private",
     eyebrow: "PRIVATPERSON",
-    title: "Personlig IT-support",
+    title: "IT-support hemma",
     price: "800 kr",
     suffix: "/ tim",
     note: "Efter godkänt RUT-avdrag",
@@ -20,7 +20,7 @@ const plans = [
   {
     id: "senior",
     eyebrow: "PENSIONÄR",
-    title: "Trygg teknikhjälp",
+    title: "Personlig teknikhjälp",
     price: "498 kr",
     suffix: "/ tim",
     note: "Efter godkänt RUT-avdrag",
@@ -141,7 +141,7 @@ export default function PricingSection() {
               </ul>
 
               <Link
-                href="#booking"
+                href="/boka"
                 className={
                   plan.featured
                     ? "premium-button primary pricing-button"
@@ -216,7 +216,7 @@ export default function PricingSection() {
           </div>
 
           <Link
-            href="#kontakt"
+            href="/kontakt"
             className="premium-button secondary"
           >
             Kontakta oss →

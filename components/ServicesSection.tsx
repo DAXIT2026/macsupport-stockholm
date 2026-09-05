@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 
 const services = [
@@ -83,7 +83,7 @@ export default function ServicesSection() {
           </div>
 
           <Link
-            href="#booking"
+            href="/boka"
             className="services-all-link"
           >
             Boka support

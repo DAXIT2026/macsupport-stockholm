@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import SupportVisual from "./SupportVisual";
 
 const reasons = [
@@ -150,7 +150,7 @@ export default function WhyUsSection() {
           </div>
 
           <Link
-            href="/#booking"
+            href="/boka"
             className="premium-button primary"
           >
             Boka support

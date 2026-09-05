@@ -1,9 +1,9 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import ProcessStepVisual from "../../components/ProcessStepVisual";
 
 import styles from "./page.module.css";
 
@@ -16,34 +16,30 @@ export const metadata: Metadata = {
 const steps = [
   {
     number: "01",
-    visual: "contact" as const,
     title: "Berätta vad du behöver hjälp med",
     text:
-      "Kontakta oss eller boka support och beskriv kort vad som inte fungerar eller vad du vill få hjälp med.",
+      "Berätta kort vad du behöver hjälp med. Du behöver inte känna till de tekniska detaljerna. Vi lyssnar, ställer rätt frågor och hjälper dig vidare.",
     label: "Första kontakt",
   },
   {
     number: "02",
-    visual: "assessment" as const,
-    title: "Vi rekommenderar rätt typ av hjälp",
+    title: "Vi rekommenderar rätt hjälp",
     text:
-      "Vi går igenom situationen och hjälper dig välja det mest effektiva sättet att lösa problemet.",
+      "Vi går igenom situationen och bedömer vilken hjälp som passar bäst. Innan arbetet börjar får du tydliga besked om lösningen och nästa steg.",
     label: "Bedömning",
   },
   {
     number: "03",
-    visual: "support" as const,
     title: "Vi löser problemet",
     text:
-      "Du får hjälp på plats eller på distans med fokus på en stabil och begriplig lösning.",
+      "Vi hjälper dig på plats eller på distans och arbetar för en stabil och långsiktig lösning. Under tiden förklarar vi tydligt vad vi gör och varför.",
     label: "Support",
   },
   {
     number: "04",
-    visual: "complete" as const,
-    title: "Du vet vad som gjordes",
+    title: "Du vet vad som har gjorts",
     text:
-      "Efteråt förklarar vi lösningen och vad som är bra att känna till framåt.",
+      "När allt är klart går vi igenom vad som har gjorts. Du får en tydlig sammanfattning och vet vad som är bra att tänka på framöver.",
     label: "Klart",
   },
 ];
@@ -55,6 +51,13 @@ const benefits = [
   "Ingen onödig teknikjargong",
 ];
 
+
+const processStepImages = [
+  "/images/process/forsta-kontakt.png",
+  "/images/process/bedomning.png",
+  "/images/process/support-losning.png",
+  "/images/process/klart-dokumenterat.png",
+];
 export default function HowItWorksPage() {
   return (
     <>
@@ -81,7 +84,7 @@ export default function HowItWorksPage() {
 
                 <div className={styles.heroActions}>
                   <Link
-                    href="/#booking"
+                    href="/boka"
                     className="premium-button primary"
                   >
                     Boka support
@@ -111,39 +114,181 @@ export default function HowItWorksPage() {
               </div>
 
               <div
-                className={styles.processVisual}
-                aria-hidden="true"
+                className={styles.journeyVisual}
+                aria-label="Supportprocess: Kontakt, bedömning, support och klart"
               >
-                <div className={styles.visualGlow} />
+                <div
+                  className={styles.journeyAmbient}
+                  aria-hidden="true"
+                />
 
-                <div className={styles.orbitOuter} />
-                <div className={styles.orbitMiddle} />
-                <div className={styles.orbitInner} />
+                <div
+                  className={styles.journeyGrid}
+                  aria-hidden="true"
+                />
 
-                <div className={styles.visualCenter}>
-                  <span>01</span>
-                  <strong>Kontakt</strong>
-                  <small>Vi börjar med dig</small>
+                <div
+                  className={styles.journeyOrbit}
+                  aria-hidden="true"
+                >
+                  <span className={styles.journeyOrbitOne} />
+                  <span className={styles.journeyOrbitTwo} />
+                  <span className={styles.journeyOrbitThree} />
+                  <i className={styles.journeyParticleOne} />
+                  <i className={styles.journeyParticleTwo} />
+                  <i className={styles.journeyParticleThree} />
                 </div>
 
-                <div className={`${styles.visualNode} ${styles.nodeOne}`}>
-                  <span>02</span>
-                  <strong>Analys</strong>
+                <div
+                  className={styles.journeyBeam}
+                  aria-hidden="true"
+                >
+                  <span className={styles.journeyBeamGlow} />
+                  <span className={styles.journeySignal} />
                 </div>
 
-                <div className={`${styles.visualNode} ${styles.nodeTwo}`}>
-                  <span>03</span>
-                  <strong>Lösning</strong>
+                <div className={styles.journeySteps}>
+
+                  <article
+                    className={`${styles.journeyCard} ${styles.journeyContact}`}
+                  >
+                    <span className={styles.journeyNumber}>
+                      01
+                    </span>
+
+                    <span
+                      className={styles.journeyIcon}
+                      aria-hidden="true"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                      >
+                        <circle cx="12" cy="8" r="3.2" />
+                        <path d="M5.8 19c.5-3.6 2.6-5.4 6.2-5.4s5.7 1.8 6.2 5.4" />
+                      </svg>
+                    </span>
+
+                    <div className={styles.journeyCopy}>
+                      <strong>Kontakt</strong>
+                      <small>
+                        Berätta vad du behöver hjälp med
+                      </small>
+                    </div>
+
+                    <span className={styles.journeyStatus}>
+                      <i aria-hidden="true" />
+                      Redo att hjälpa
+                    </span>
+                  </article>
+
+
+                  <article
+                    className={`${styles.journeyCard} ${styles.journeyAssessment}`}
+                  >
+                    <span className={styles.journeyNumber}>
+                      02
+                    </span>
+
+                    <span
+                      className={styles.journeyIcon}
+                      aria-hidden="true"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                      >
+                        <rect x="6" y="5" width="12" height="15" rx="2" />
+                        <path d="M9 5.2V3.8h6v1.4" />
+                        <path d="m9.2 12 1.7 1.7 3.8-4" />
+                        <path d="M9 17h6" />
+                      </svg>
+                    </span>
+
+                    <div className={styles.journeyCopy}>
+                      <strong>Bedömning</strong>
+                      <small>
+                        Vi rekommenderar rätt hjälp
+                      </small>
+                    </div>
+                  </article>
+
+
+                  <article
+                    className={`${styles.journeyCard} ${styles.journeySupport}`}
+                  >
+                    <span className={styles.journeyNumber}>
+                      03
+                    </span>
+
+                    <span
+                      className={styles.journeyIcon}
+                      aria-hidden="true"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                      >
+                        <path d="M5 13v-2a7 7 0 0 1 14 0v2" />
+                        <path d="M5 12H3.8A1.8 1.8 0 0 0 2 13.8v2.4A1.8 1.8 0 0 0 3.8 18H5z" />
+                        <path d="M19 12h1.2a1.8 1.8 0 0 1 1.8 1.8v2.4a1.8 1.8 0 0 1-1.8 1.8H19z" />
+                        <path d="M19 18c-.8 2-2.6 3-5.3 3" />
+                      </svg>
+                    </span>
+
+                    <div className={styles.journeyCopy}>
+                      <strong>Support</strong>
+                      <small>
+                        Vi löser problemet
+                      </small>
+                    </div>
+                  </article>
+
+
+                  <article
+                    className={`${styles.journeyCard} ${styles.journeyComplete}`}
+                  >
+                    <span className={styles.journeyNumber}>
+                      04
+                    </span>
+
+                    <span
+                      className={styles.journeyIcon}
+                      aria-hidden="true"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                      >
+                        <circle cx="12" cy="12" r="8" />
+                        <path d="m8.5 12.2 2.2 2.2 4.9-5" />
+                      </svg>
+                    </span>
+
+                    <div className={styles.journeyCopy}>
+                      <strong>Klart</strong>
+                      <small>
+                        Du vet vad som har gjorts
+                      </small>
+                    </div>
+                  </article>
+
                 </div>
 
-                <div className={`${styles.visualNode} ${styles.nodeThree}`}>
-                  <span>04</span>
-                  <strong>Klart</strong>
+                <div
+                  className={styles.journeyEnd}
+                  aria-hidden="true"
+                >
+                  <span />
                 </div>
-
-                <span className={`${styles.visualDot} ${styles.dotOne}`} />
-                <span className={`${styles.visualDot} ${styles.dotTwo}`} />
-                <span className={`${styles.visualDot} ${styles.dotThree}`} />
               </div>
             </div>
           </div>
@@ -158,19 +303,25 @@ export default function HowItWorksPage() {
                 </p>
 
                 <h2>
-                  Du vet alltid vad som händer.
+                  En tydlig väg till rätt hjälp.
                 </h2>
               </div>
 
-              <p>
-                Processen är byggd för att göra det enkelt att
-                få hjälp – även om du inte vet exakt vad
-                problemet beror på.
-              </p>
+              <div className={styles.processIntroCard}>
+                <span className={styles.processIntroLabel}>
+                  ENKELT FRÅN BÖRJAN
+                </span>
+
+                <p>
+                  Du behöver inte veta vad problemet beror på.
+                  Vi hjälper dig att förstå behovet, välja rätt
+                  support och komma vidare.
+                </p>
+              </div>
             </div>
 
             <div className={styles.stepsGrid}>
-              {steps.map((step) => (
+              {steps.map((step, index) => (
                 <article
                   className={styles.stepCard}
                   key={step.number}
@@ -185,7 +336,17 @@ export default function HowItWorksPage() {
                     </span>
                   </div>
 
-                  <ProcessStepVisual type={step.visual} />
+                  <div className={styles.stepMedia}>
+                    <div className={styles.stepMediaGlow} aria-hidden="true" />
+
+                    <Image
+                      src={processStepImages[index]}
+                      alt=""
+                      fill
+                      sizes="(max-width: 700px) calc(100vw - 40px), (max-width: 1100px) 45vw, 25vw"
+                      className={styles.stepImage}
+                    />
+                  </div>
 
                   <div className={styles.stepCopy}>
                     <h3>{step.title}</h3>
@@ -212,7 +373,7 @@ export default function HowItWorksPage() {
               </div>
 
               <Link
-                href="/#booking"
+                href="/boka"
                 className="premium-button primary"
               >
                 Boka support

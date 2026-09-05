@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 const steps = [
   {
@@ -95,7 +95,7 @@ export default function ProcessSection() {
             </strong>
           </div>
 
-          <Link href="#booking" className="premium-button primary">
+          <Link href="/boka" className="premium-button primary">
             Boka support
           </Link>
         </div>

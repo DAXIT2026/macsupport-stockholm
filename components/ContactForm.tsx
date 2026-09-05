@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { FormEvent, useState } from "react";
+import { siteConfig } from "../lib/site-config";
 
 type FormState = {
   name: string;
@@ -50,16 +51,28 @@ export default function ContactForm() {
 
     setStatus("sending");
 
-    /*
-      Backend kopplas in i nästa steg.
-      Vi behåller UX-flödet färdigt redan nu.
-    */
+    const subject =
+      form.subject.trim().length > 0
+        ? `Supportförfrågan: ${form.subject}`
+        : "Supportförfrågan från webbplatsen";
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 700)
-    );
+    const body = [
+      `Namn: ${form.name}`,
+      `E-post: ${form.email}`,
+      `Telefon: ${form.phone || "Ej angivet"}`,
+      "",
+      "Meddelande:",
+      form.message,
+    ].join("\n");
 
-    setStatus("success");
+    const mailto =
+      `${siteConfig.emailHref}` +
+      `?subject=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+
+    window.open(mailto, "_self");
+
+    setStatus("idle");
   }
 
   if (status === "success") {
@@ -275,3 +288,4 @@ export default function ContactForm() {
     </form>
   );
 }
+

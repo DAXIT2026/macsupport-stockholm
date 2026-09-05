@@ -2449,3 +2449,4597 @@
   }
 
 }
+
+/* PROCESS CARDS UX V2 START
+   ==========================================================
+   4-column process system
+   Desktop 4 / Tablet 2 / Mobile 1
+   ========================================================== */
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+
+/* CARD */
+
+.stepCard {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  isolation: isolate;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 10px 10px 24px;
+
+  border-radius: 26px;
+
+  border: 1px solid rgba(100, 139, 103, .18);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, .99),
+      rgba(249, 252, 249, .97)
+    );
+
+  box-shadow:
+    0 18px 45px rgba(28, 56, 35, .07),
+    inset 0 1px 0 rgba(255, 255, 255, .95);
+
+  transition:
+    transform .35s cubic-bezier(.2,.75,.2,1),
+    box-shadow .35s ease;
+}
+
+
+/* LASER LAYER */
+
+.stepCard::before {
+  content: "";
+
+  position: absolute;
+  z-index: -2;
+
+  width: 160%;
+  aspect-ratio: 1;
+
+  left: -30%;
+  top: 50%;
+
+  transform: translateY(-50%) rotate(0deg);
+
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 55deg,
+      rgba(81, 219, 117, .08) 85deg,
+      rgba(87, 229, 205, .72) 110deg,
+      rgba(111, 224, 106, .88) 130deg,
+      rgba(94, 211, 232, .65) 150deg,
+      transparent 185deg,
+      transparent 360deg
+    );
+
+  animation:
+    processLaserSweep 8s linear infinite;
+
+  pointer-events: none;
+}
+
+
+/* WHITE INNER SURFACE */
+
+.stepCard::after {
+  content: "";
+
+  position: absolute;
+  z-index: -1;
+
+  inset: 2px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255,255,255,.995),
+      rgba(249,252,249,.985)
+    );
+
+  pointer-events: none;
+}
+
+
+/* TOP */
+
+.stepTop {
+  position: relative;
+  z-index: 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  min-height: 52px;
+
+  padding: 4px 8px 2px;
+}
+
+
+.stepNumber {
+  font-size: 13px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  letter-spacing: .08em;
+
+  color: #5b655e;
+}
+
+
+.stepLabel {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 28px;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(237, 246, 237, .9);
+
+  border:
+    1px solid rgba(91, 139, 94, .12);
+
+  color: #526157;
+
+  font-size: 11px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  letter-spacing: .08em;
+
+  text-transform: uppercase;
+}
+
+
+/* IMAGE AREA */
+
+.stepMedia {
+  position: relative;
+
+  width: 100%;
+  height: 220px;
+
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  background:
+    radial-gradient(
+      circle at 50% 44%,
+      rgba(237, 251, 243, .98),
+      rgba(249, 252, 250, .98) 58%,
+      rgba(241, 247, 242, .96) 100%
+    );
+
+  border:
+    1px solid rgba(92, 139, 98, .11);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98);
+}
+
+
+.stepMediaGlow {
+  position: absolute;
+
+  z-index: 0;
+
+  width: 72%;
+  height: 42%;
+
+  left: 14%;
+  bottom: -15%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(93, 223, 118, .20),
+      rgba(67, 210, 219, .09) 48%,
+      transparent 72%
+    );
+
+  filter: blur(18px);
+
+  animation:
+    processMediaGlow 5s ease-in-out infinite;
+
+  pointer-events: none;
+}
+
+
+.stepImage {
+  z-index: 1;
+
+  object-fit: contain !important;
+  object-position: center;
+
+  padding: 8px;
+
+  transform: scale(.97);
+
+  filter:
+    saturate(.98)
+    contrast(1.015);
+
+  transition:
+    transform .55s cubic-bezier(.2,.75,.2,1),
+    filter .4s ease;
+}
+
+
+/* COPY */
+
+.stepCopy {
+  position: relative;
+  z-index: 3;
+
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+
+  padding: 22px 10px 0;
+}
+
+
+.stepCopy h3 {
+  margin: 0 0 14px;
+
+  font-size:
+    clamp(1.35rem, 1.45vw, 1.65rem);
+
+  line-height: 1.08;
+
+  letter-spacing: -.035em;
+
+  color: #162019;
+
+  text-wrap: balance;
+}
+
+
+.stepCopy p {
+  margin: 0;
+
+  font-size: 15px;
+
+  line-height: 1.67;
+
+  color: #68716b;
+
+  text-wrap: pretty;
+}
+
+
+/* DESKTOP HOVER */
+
+@media (hover: hover) {
+
+  .stepCard:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+      0 25px 55px rgba(29, 65, 38, .11),
+      0 0 32px rgba(91, 212, 111, .055);
+  }
+
+  .stepCard:hover .stepImage {
+    transform: scale(1.025);
+
+    filter:
+      saturate(1.04)
+      contrast(1.025);
+  }
+
+}
+
+
+/* TABLET */
+
+@media (max-width: 1100px) {
+
+  .stepsGrid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+  }
+
+  .stepMedia {
+    height: 250px;
+  }
+
+  .stepCopy h3 {
+    font-size: 1.65rem;
+  }
+
+  .stepCopy p {
+    font-size: 15.5px;
+  }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .stepsGrid {
+    grid-template-columns:
+      minmax(0, 1fr);
+
+    gap: 20px;
+  }
+
+  .stepCard {
+    padding:
+      9px 9px 24px;
+
+    border-radius:
+      24px;
+  }
+
+  .stepCard::after {
+    border-radius:
+      22px;
+  }
+
+  .stepTop {
+    min-height:
+      50px;
+
+    padding:
+      3px 7px 1px;
+  }
+
+  .stepMedia {
+    height:
+      clamp(230px, 68vw, 310px);
+
+    border-radius:
+      19px;
+  }
+
+  .stepImage {
+    padding:
+      6px;
+  }
+
+  .stepCopy {
+    padding:
+      21px 11px 2px;
+  }
+
+  .stepCopy h3 {
+    margin-bottom:
+      12px;
+
+    font-size:
+      clamp(1.55rem, 7vw, 1.9rem);
+  }
+
+  .stepCopy p {
+    font-size:
+      16px;
+
+    line-height:
+      1.65;
+  }
+
+}
+
+
+/* LASER */
+
+@keyframes processLaserSweep {
+
+  to {
+    transform:
+      translateY(-50%)
+      rotate(360deg);
+  }
+
+}
+
+
+@keyframes processMediaGlow {
+
+  0%,
+  100% {
+    opacity: .48;
+    transform: scale(.94);
+  }
+
+  50% {
+    opacity: .9;
+    transform: scale(1.08);
+  }
+
+}
+
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .stepCard,
+  .stepCard::before,
+  .stepImage,
+  .stepMediaGlow {
+    animation: none !important;
+    transition: none !important;
+  }
+
+}
+
+
+/* PROCESS CARDS UX V2 END */
+
+/* PROCESS CARD ALIGNMENT V3 START */
+
+/*
+  UX:
+  - clearer section introduction
+  - equal visual hierarchy in all four cards
+  - titles occupy a consistent area
+  - body copy begins at the same level
+*/
+
+.sectionHeading {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, .72fr);
+  align-items: end;
+  gap: clamp(48px, 8vw, 130px);
+  margin-bottom: clamp(34px, 4vw, 54px);
+}
+
+.sectionHeading > div {
+  max-width: 660px;
+}
+
+.sectionHeading h2 {
+  max-width: 650px;
+  margin-top: 12px;
+
+  font-size: clamp(2.8rem, 4.6vw, 5.2rem);
+  line-height: .94;
+  letter-spacing: -.055em;
+
+  text-wrap: balance;
+}
+
+.sectionHeading > p {
+  max-width: 510px;
+  margin: 0 0 8px;
+
+  font-size: clamp(1rem, 1.05vw, 1.12rem);
+  line-height: 1.65;
+
+  color: rgba(34, 48, 39, .68);
+
+  text-wrap: pretty;
+}
+
+
+/* CARD CONTENT */
+
+.stepCopy {
+  display: grid;
+
+  /*
+    The title receives its own consistent vertical area.
+    Therefore body copy begins at almost exactly the same
+    height across all four cards.
+  */
+  grid-template-rows: minmax(68px, auto) 1fr;
+
+  align-content: start;
+
+  flex: 1;
+
+  padding:
+    22px 10px
+    4px;
+}
+
+.stepCopy h3 {
+  display: flex;
+  align-items: flex-start;
+
+  margin: 0;
+
+  padding: 0 0 14px;
+
+  font-size: clamp(1.28rem, 1.4vw, 1.6rem);
+  line-height: 1.12;
+  letter-spacing: -.035em;
+
+  color: #172019;
+
+  text-wrap: balance;
+}
+
+.stepCopy p {
+  align-self: start;
+
+  max-width: 100%;
+
+  margin: 0;
+
+  font-size: clamp(.94rem, .86vw, 1rem);
+  line-height: 1.68;
+
+  color: rgba(45, 58, 49, .72);
+
+  text-wrap: pretty;
+}
+
+
+/* Give all cards the same visual rhythm */
+
+.stepCard {
+  height: 100%;
+}
+
+.stepMedia {
+  flex: 0 0 auto;
+}
+
+
+/* TABLET */
+
+@media (max-width: 1100px) {
+
+  .sectionHeading {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, .72fr);
+    gap: 40px;
+  }
+
+  .sectionHeading h2 {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+  }
+
+  .stepCopy {
+    grid-template-rows: minmax(58px, auto) 1fr;
+  }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .sectionHeading {
+    display: block;
+
+    margin-bottom: 30px;
+  }
+
+  .sectionHeading h2 {
+    max-width: 100%;
+
+    margin-bottom: 20px;
+
+    font-size: clamp(2.55rem, 12vw, 3.8rem);
+    line-height: .98;
+  }
+
+  .sectionHeading > p {
+    max-width: 100%;
+
+    margin: 0;
+
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .stepCopy {
+    display: block;
+
+    padding:
+      21px 12px
+      6px;
+  }
+
+  .stepCopy h3 {
+    min-height: 0;
+
+    margin-bottom: 11px;
+    padding: 0;
+
+    font-size: clamp(1.5rem, 7vw, 1.85rem);
+  }
+
+  .stepCopy p {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+}
+
+/* PROCESS CARD ALIGNMENT V3 END */
+
+/* PROCESS TEXT UX V4 START */
+
+
+/* =========================================================
+   SECTION INTRO
+   ========================================================= */
+
+.sectionHeading {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.2fr)
+    minmax(320px, .62fr);
+
+  align-items: end;
+
+  gap: clamp(48px, 7vw, 110px);
+
+  margin-bottom: clamp(38px, 4.5vw, 58px);
+}
+
+
+.sectionHeading > div:first-child {
+  max-width: 760px;
+}
+
+
+.sectionHeading h2 {
+  max-width: 720px;
+
+  margin:
+    12px 0 0;
+
+  font-size:
+    clamp(3.1rem, 4.7vw, 5.25rem);
+
+  line-height: .96;
+
+  letter-spacing: -.055em;
+
+  color: #111814;
+
+  text-wrap: balance;
+}
+
+
+/* Small premium explanatory block */
+
+.processIntroCard {
+  position: relative;
+
+  max-width: 470px;
+
+  padding:
+    22px 24px 23px;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(91, 137, 96, .16);
+
+  border-radius:
+    20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.82),
+      rgba(240,250,243,.72)
+    );
+
+  box-shadow:
+    0 14px 38px rgba(36, 69, 43, .055),
+    inset 0 1px 0 rgba(255,255,255,.95);
+
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
+}
+
+
+.processIntroCard::before {
+  content: "";
+
+  position: absolute;
+
+  width: 120px;
+  height: 2px;
+
+  left: 24px;
+  top: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #62d875,
+      #59d9ce,
+      transparent
+    );
+
+  box-shadow:
+    0 0 15px rgba(80, 218, 157, .35);
+}
+
+
+.processIntroLabel {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 11px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  letter-spacing: .13em;
+
+  color: #4f7b52;
+}
+
+
+.processIntroCard p {
+  max-width: 390px;
+
+  margin: 0;
+
+  font-size:
+    clamp(.98rem, .95vw, 1.08rem);
+
+  line-height: 1.65;
+
+  letter-spacing: -.01em;
+
+  color: rgba(31, 47, 36, .72);
+
+  text-wrap: pretty;
+}
+
+
+/* =========================================================
+   CARD TYPOGRAPHY
+   Do NOT change grid, images or laser
+   ========================================================= */
+
+.stepCopy {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+
+  /*
+    More breathing room from card edges.
+    This is the important UX change.
+  */
+  padding:
+    22px 18px
+    24px;
+}
+
+
+.stepCopy h3 {
+  width: 100%;
+
+  max-width: 280px;
+
+  min-height: 58px;
+
+  margin:
+    0 auto 12px;
+
+  display: flex;
+  align-items: flex-start;
+
+  font-size:
+    clamp(1.27rem, 1.28vw, 1.52rem);
+
+  line-height: 1.13;
+
+  letter-spacing: -.035em;
+
+  color: #172019;
+
+  text-align: left;
+
+  text-wrap: balance;
+}
+
+
+.stepCopy p {
+  width: 100%;
+
+  max-width: 280px;
+
+  margin:
+    0 auto;
+
+  font-size:
+    clamp(.93rem, .82vw, .99rem);
+
+  line-height: 1.72;
+
+  letter-spacing: -.008em;
+
+  color:
+    rgba(49, 63, 53, .72);
+
+  text-align: left;
+
+  /*
+    Browser gets more natural Swedish line breaks
+    instead of stretching text from edge to edge.
+  */
+  text-wrap: pretty;
+
+  hyphens: auto;
+
+  overflow-wrap: normal;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .sectionHeading {
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(300px, .72fr);
+
+    gap: 42px;
+  }
+
+
+  .sectionHeading h2 {
+    font-size:
+      clamp(3rem, 6vw, 4.6rem);
+  }
+
+
+  .processIntroCard {
+    max-width: 100%;
+  }
+
+
+  .stepCopy {
+    padding:
+      23px 22px
+      27px;
+  }
+
+
+  .stepCopy h3,
+  .stepCopy p {
+    max-width: 390px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .sectionHeading {
+    display: block;
+
+    margin-bottom: 32px;
+  }
+
+
+  .sectionHeading > div:first-child {
+    max-width: 100%;
+  }
+
+
+  .sectionHeading h2 {
+    max-width: 560px;
+
+    margin:
+      11px 0 24px;
+
+    font-size:
+      clamp(2.65rem, 11vw, 3.8rem);
+
+    line-height: .98;
+  }
+
+
+  .processIntroCard {
+    max-width: 100%;
+
+    padding:
+      19px 20px 20px;
+
+    border-radius: 18px;
+  }
+
+
+  .processIntroCard::before {
+    left: 20px;
+  }
+
+
+  .processIntroCard p {
+    max-width: 100%;
+
+    font-size: 1rem;
+  }
+
+
+  .stepCopy {
+    padding:
+      22px 20px
+      27px;
+  }
+
+
+  .stepCopy h3,
+  .stepCopy p {
+    max-width: 100%;
+  }
+
+
+  .stepCopy h3 {
+    min-height: 0;
+
+    margin-bottom: 12px;
+
+    font-size:
+      clamp(1.5rem, 6.7vw, 1.85rem);
+  }
+
+
+  .stepCopy p {
+    font-size: 1rem;
+
+    line-height: 1.68;
+  }
+
+}
+
+
+/* PROCESS TEXT UX V4 END */
+
+/* HERO JOURNEY V7 START
+   =========================================================
+   Macsupport Stockholm
+   Premium connected support journey
+   Desktop / Tablet / Mobile
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   HERO BALANCE
+   --------------------------------------------------------- */
+
+.heroGrid {
+  grid-template-columns:
+    minmax(430px, .88fr)
+    minmax(720px, 1.32fr);
+
+  gap: clamp(26px, 3.5vw, 68px);
+
+  align-items: center;
+}
+
+
+/* ---------------------------------------------------------
+   JOURNEY CANVAS
+   --------------------------------------------------------- */
+
+.journeyVisual {
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+
+  min-height: 500px;
+
+  display: flex;
+  align-items: center;
+
+  isolation: isolate;
+}
+
+
+/* ambient background */
+
+.journeyAmbient {
+  position: absolute;
+  z-index: -4;
+
+  width: 440px;
+  height: 440px;
+
+  left: -40px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(107, 224, 128, .16) 0%,
+      rgba(94, 222, 193, .09) 32%,
+      rgba(94, 207, 232, .045) 52%,
+      transparent 72%
+    );
+
+  filter: blur(5px);
+
+  animation:
+    journeyAmbientPulse 6s ease-in-out infinite;
+}
+
+
+/* subtle technical dot field */
+
+.journeyGrid {
+  position: absolute;
+  z-index: -3;
+
+  inset: 12% 0 10% 17%;
+
+  opacity: .24;
+
+  background-image:
+    radial-gradient(
+      circle,
+      rgba(66, 161, 119, .34) 1px,
+      transparent 1.2px
+    );
+
+  background-size:
+    23px 23px;
+
+  -webkit-mask-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      #000 20%,
+      #000 76%,
+      transparent
+    );
+
+  mask-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      #000 20%,
+      #000 76%,
+      transparent
+    );
+}
+
+
+/* ---------------------------------------------------------
+   ORBIT AROUND CONTACT
+   --------------------------------------------------------- */
+
+.journeyOrbit {
+  position: absolute;
+  z-index: -2;
+
+  width: 410px;
+  height: 410px;
+
+  left: -25px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  pointer-events: none;
+}
+
+
+.journeyOrbitOne,
+.journeyOrbitTwo,
+.journeyOrbitThree {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  border:
+    1px solid rgba(72, 198, 177, .20);
+}
+
+
+.journeyOrbitOne {
+  width: 88%;
+  height: 88%;
+
+  border-color:
+    rgba(77, 209, 114, .20);
+
+  animation:
+    journeyOrbitRotate 22s linear infinite;
+}
+
+
+.journeyOrbitTwo {
+  width: 70%;
+  height: 70%;
+
+  border-color:
+    rgba(73, 202, 218, .22);
+
+  animation:
+    journeyOrbitRotateReverse 17s linear infinite;
+}
+
+
+.journeyOrbitThree {
+  width: 52%;
+  height: 52%;
+
+  border-color:
+    rgba(99, 219, 160, .22);
+}
+
+
+/* particles */
+
+.journeyParticleOne,
+.journeyParticleTwo,
+.journeyParticleThree {
+  position: absolute;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 14px currentColor;
+}
+
+
+.journeyParticleOne {
+  left: 14%;
+  top: 18%;
+
+  color: #64d96f;
+  background: currentColor;
+
+  animation:
+    journeyParticleFloat 5.2s ease-in-out infinite;
+}
+
+
+.journeyParticleTwo {
+  right: 4%;
+  top: 42%;
+
+  color: #55cfdf;
+  background: currentColor;
+
+  animation:
+    journeyParticleFloat 6.4s ease-in-out infinite reverse;
+}
+
+
+.journeyParticleThree {
+  left: 34%;
+  bottom: 4%;
+
+  color: #7bdbbb;
+  background: currentColor;
+
+  animation:
+    journeyParticleFloat 7s ease-in-out infinite;
+}
+
+
+/* ---------------------------------------------------------
+   CONNECTING LASER
+   --------------------------------------------------------- */
+
+.journeyBeam {
+  position: absolute;
+  z-index: 0;
+
+  left: 15%;
+  right: 1%;
+
+  top: 50%;
+
+  height: 5px;
+
+  transform: translateY(-50%);
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #6bd778 0%,
+      #63dcb5 28%,
+      #71d4e7 51%,
+      #d4a6cf 73%,
+      #66d8ca 100%
+    );
+
+  box-shadow:
+    0 0 9px rgba(99, 219, 181, .34),
+    0 0 25px rgba(84, 203, 221, .12);
+}
+
+
+.journeyBeamGlow {
+  position: absolute;
+
+  inset: -7px 0;
+
+  border-radius: inherit;
+
+  background:
+    inherit;
+
+  filter: blur(10px);
+
+  opacity: .24;
+}
+
+
+/* moving signal */
+
+.journeySignal {
+  position: absolute;
+
+  width: 14px;
+  height: 14px;
+
+  left: 0;
+  top: 50%;
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  background: #fff;
+
+  border:
+    3px solid #61d7ad;
+
+  box-shadow:
+    0 0 0 5px rgba(101, 219, 174, .12),
+    0 0 22px rgba(87, 218, 193, .65);
+
+  animation:
+    journeySignalMove 5.8s
+    cubic-bezier(.45,0,.2,1)
+    infinite;
+}
+
+
+/* ---------------------------------------------------------
+   FOUR STEPS
+   --------------------------------------------------------- */
+
+.journeySteps {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    1.24fr
+    .94fr
+    .94fr
+    .94fr;
+
+  gap: clamp(14px, 1.25vw, 23px);
+
+  align-items: center;
+}
+
+
+.journeyCard {
+  --journey-accent: #67d678;
+  --journey-soft: rgba(103, 214, 120, .12);
+  --journey-border: rgba(103, 214, 120, .36);
+
+  position: relative;
+
+  min-width: 0;
+  min-height: 278px;
+
+  padding:
+    25px 19px
+    22px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  overflow: hidden;
+  isolation: isolate;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      155deg,
+      rgba(255,255,255,.96),
+      rgba(252,254,253,.91)
+    );
+
+  border:
+    1px solid var(--journey-border);
+
+  box-shadow:
+    0 22px 50px rgba(31, 67, 42, .075),
+    inset 0 1px 0 rgba(255,255,255,.98);
+
+  -webkit-backdrop-filter:
+    blur(16px);
+
+  backdrop-filter:
+    blur(16px);
+
+  transition:
+    transform .35s cubic-bezier(.2,.75,.2,1),
+    box-shadow .35s ease,
+    border-color .35s ease;
+}
+
+
+/* laser contour */
+
+.journeyCard::before {
+  content: "";
+
+  position: absolute;
+  z-index: -2;
+
+  width: 170%;
+  aspect-ratio: 1;
+
+  left: -35%;
+  top: 50%;
+
+  transform:
+    translateY(-50%)
+    rotate(0deg);
+
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 68deg,
+      var(--journey-accent) 102deg,
+      transparent 136deg,
+      transparent 246deg,
+      color-mix(
+        in srgb,
+        var(--journey-accent) 65%,
+        white
+      ) 278deg,
+      transparent 315deg
+    );
+
+  opacity: .48;
+
+  animation:
+    journeyLaserRotate 9s linear infinite;
+}
+
+
+.journeyCard::after {
+  content: "";
+
+  position: absolute;
+  z-index: -1;
+
+  inset: 2px;
+
+  border-radius: 26px;
+
+  background:
+    radial-gradient(
+      circle at 50% 22%,
+      var(--journey-soft),
+      transparent 43%
+    ),
+    rgba(255,255,255,.97);
+}
+
+
+/* individual professional accent colors */
+
+.journeyContact {
+  --journey-accent: #5fd36e;
+  --journey-soft: rgba(95, 211, 110, .15);
+  --journey-border: rgba(87, 205, 104, .42);
+
+  min-height: 330px;
+
+  transform: scale(1.035);
+
+  box-shadow:
+    0 28px 65px rgba(67, 167, 84, .12),
+    0 0 48px rgba(99, 217, 119, .10),
+    inset 0 1px 0 #fff;
+}
+
+
+.journeyAssessment {
+  --journey-accent: #6bcbdc;
+  --journey-soft: rgba(107, 203, 220, .13);
+  --journey-border: rgba(99, 194, 213, .30);
+}
+
+
+.journeySupport {
+  --journey-accent: #c99bc4;
+  --journey-soft: rgba(201, 155, 196, .11);
+  --journey-border: rgba(193, 145, 188, .27);
+}
+
+
+.journeyComplete {
+  --journey-accent: #62cfb6;
+  --journey-soft: rgba(98, 207, 182, .13);
+  --journey-border: rgba(89, 195, 172, .31);
+}
+
+
+/* stagger laser movement */
+
+.journeyAssessment::before {
+  animation-delay: -2.1s;
+}
+
+.journeySupport::before {
+  animation-delay: -4.2s;
+}
+
+.journeyComplete::before {
+  animation-delay: -6.3s;
+}
+
+
+/* ---------------------------------------------------------
+   CONTENT
+   --------------------------------------------------------- */
+
+.journeyNumber {
+  display: grid;
+  place-items: center;
+
+  width: 48px;
+  height: 48px;
+
+  margin-bottom: 17px;
+
+  border-radius: 50%;
+
+  background:
+    var(--journey-soft);
+
+  color:
+    color-mix(
+      in srgb,
+      var(--journey-accent) 72%,
+      #17361f
+    );
+
+  font-size: 16px;
+  line-height: 1;
+
+  font-weight: 850;
+
+  letter-spacing: -.02em;
+}
+
+
+.journeyIcon {
+  width: 45px;
+  height: 45px;
+
+  margin-bottom: 15px;
+
+  display: grid;
+  place-items: center;
+
+  color:
+    color-mix(
+      in srgb,
+      var(--journey-accent) 78%,
+      #164524
+    );
+
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,.68);
+
+  box-shadow:
+    0 0 28px var(--journey-soft);
+}
+
+
+.journeyIcon svg {
+  width: 29px;
+  height: 29px;
+}
+
+
+.journeyCopy {
+  min-height: 91px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+
+
+.journeyCopy strong {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size:
+    clamp(1.08rem, 1.22vw, 1.38rem);
+
+  line-height: 1.1;
+
+  letter-spacing: -.035em;
+
+  color: #151d18;
+}
+
+
+.journeyCopy small {
+  display: block;
+
+  max-width: 150px;
+
+  font-size:
+    clamp(.78rem, .72vw, .88rem);
+
+  line-height: 1.45;
+
+  color:
+    rgba(42, 55, 47, .67);
+
+  text-wrap: balance;
+}
+
+
+.journeyStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 9px;
+
+  color: #319c48;
+
+  font-size: 12px;
+  line-height: 1;
+
+  font-weight: 750;
+}
+
+
+.journeyStatus i {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #50ca63;
+
+  box-shadow:
+    0 0 11px rgba(80, 202, 99, .55);
+
+  animation:
+    journeyStatusPulse 2.2s ease-in-out infinite;
+}
+
+
+/* ---------------------------------------------------------
+   END SIGNAL / ARROW
+   --------------------------------------------------------- */
+
+.journeyEnd {
+  position: absolute;
+
+  z-index: 4;
+
+  right: -17px;
+  top: 50%;
+
+  width: 36px;
+  height: 36px;
+
+  transform: translateY(-50%);
+}
+
+
+.journeyEnd::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 17px;
+
+  width: 27px;
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #62d6ca,
+      #62cfe3
+    );
+
+  box-shadow:
+    0 0 12px rgba(89, 207, 219, .45);
+}
+
+
+.journeyEnd::after {
+  content: "";
+
+  position: absolute;
+
+  right: 7px;
+  top: 12px;
+
+  width: 10px;
+  height: 10px;
+
+  border-top:
+    2px solid #61cedc;
+
+  border-right:
+    2px solid #61cedc;
+
+  transform:
+    rotate(45deg);
+}
+
+
+/* ---------------------------------------------------------
+   HOVER
+   --------------------------------------------------------- */
+
+@media (hover: hover) {
+
+  .journeyCard:hover {
+    transform:
+      translateY(-7px);
+
+    box-shadow:
+      0 28px 65px rgba(35, 76, 48, .11),
+      0 0 35px var(--journey-soft);
+  }
+
+
+  .journeyContact:hover {
+    transform:
+      scale(1.035)
+      translateY(-7px);
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+   701 - 1180
+   ========================================================= */
+
+@media (max-width: 1180px) {
+
+  .heroGrid {
+    grid-template-columns:
+      minmax(330px, .78fr)
+      minmax(500px, 1.22fr);
+
+    gap: 28px;
+  }
+
+
+  .journeyVisual {
+    min-height: 440px;
+  }
+
+
+  .journeyOrbit {
+    width: 330px;
+    height: 330px;
+
+    left: -34px;
+  }
+
+
+  .journeySteps {
+    gap: 10px;
+
+    grid-template-columns:
+      1.12fr
+      1fr
+      1fr
+      1fr;
+  }
+
+
+  .journeyCard {
+    min-height: 245px;
+
+    padding:
+      20px 11px;
+  }
+
+
+  .journeyContact {
+    min-height: 285px;
+  }
+
+
+  .journeyNumber {
+    width: 40px;
+    height: 40px;
+
+    margin-bottom: 12px;
+
+    font-size: 14px;
+  }
+
+
+  .journeyIcon {
+    width: 39px;
+    height: 39px;
+
+    margin-bottom: 12px;
+  }
+
+
+  .journeyIcon svg {
+    width: 25px;
+    height: 25px;
+  }
+
+
+  .journeyCopy {
+    min-height: 82px;
+  }
+
+
+  .journeyCopy strong {
+    font-size: 1rem;
+  }
+
+
+  .journeyCopy small {
+    max-width: 120px;
+
+    font-size: .72rem;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   <= 700
+   Journey becomes vertical
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .heroGrid {
+    grid-template-columns:
+      minmax(0, 1fr);
+
+    gap: 42px;
+  }
+
+
+  .journeyVisual {
+    min-height: auto;
+
+    width: 100%;
+
+    padding:
+      18px 0
+      10px;
+  }
+
+
+  .journeyAmbient {
+    width: 360px;
+    height: 360px;
+
+    left: 50%;
+    top: 70px;
+
+    transform:
+      translateX(-50%);
+
+    opacity: .82;
+  }
+
+
+  .journeyGrid {
+    inset:
+      0 4% 0 4%;
+  }
+
+
+  .journeyOrbit {
+    width: 300px;
+    height: 300px;
+
+    left: 50%;
+    top: -8px;
+
+    transform:
+      translateX(-50%);
+  }
+
+
+  .journeyBeam {
+    left: 50%;
+    right: auto;
+
+    top: 50px;
+    bottom: 45px;
+
+    width: 4px;
+    height: auto;
+
+    transform:
+      translateX(-50%);
+
+    background:
+      linear-gradient(
+        180deg,
+        #65d873 0%,
+        #68d5c0 31%,
+        #7acfe0 55%,
+        #cba2c5 75%,
+        #62cfb6 100%
+      );
+  }
+
+
+  .journeySignal {
+    left: 50%;
+    top: 0;
+
+    animation:
+      journeySignalMoveMobile
+      5.8s
+      cubic-bezier(.45,0,.2,1)
+      infinite;
+  }
+
+
+  .journeySteps {
+    width: 100%;
+
+    grid-template-columns:
+      minmax(0, 1fr);
+
+    gap: 18px;
+
+    justify-items: center;
+  }
+
+
+  .journeyCard,
+  .journeyContact {
+    width:
+      min(100%, 390px);
+
+    min-height: 0;
+
+    transform: none;
+
+    padding:
+      22px 24px;
+
+    border-radius: 24px;
+  }
+
+
+  .journeyCard::after {
+    border-radius: 22px;
+  }
+
+
+  .journeyNumber {
+    margin-bottom: 12px;
+  }
+
+
+  .journeyCopy {
+    min-height: 0;
+  }
+
+
+  .journeyCopy strong {
+    font-size: 1.35rem;
+  }
+
+
+  .journeyCopy small {
+    max-width: 230px;
+
+    font-size: .92rem;
+
+    line-height: 1.5;
+  }
+
+
+  .journeyEnd {
+    display: none;
+  }
+
+
+  @media (hover: hover) {
+
+    .journeyContact:hover {
+      transform:
+        translateY(-5px);
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes journeySignalMove {
+
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+
+  7% {
+    opacity: 1;
+  }
+
+  92% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+
+}
+
+
+@keyframes journeySignalMoveMobile {
+
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+
+  7% {
+    opacity: 1;
+  }
+
+  92% {
+    opacity: 1;
+  }
+
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+
+}
+
+
+@keyframes journeyLaserRotate {
+
+  to {
+    transform:
+      translateY(-50%)
+      rotate(360deg);
+  }
+
+}
+
+
+@keyframes journeyOrbitRotate {
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotate(360deg);
+  }
+
+}
+
+
+@keyframes journeyOrbitRotateReverse {
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotate(-360deg);
+  }
+
+}
+
+
+@keyframes journeyAmbientPulse {
+
+  0%,
+  100% {
+    opacity: .65;
+    transform:
+      translateY(-50%)
+      scale(.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform:
+      translateY(-50%)
+      scale(1.04);
+  }
+
+}
+
+
+@keyframes journeyParticleFloat {
+
+  0%,
+  100% {
+    transform:
+      translate3d(0, 0, 0);
+
+    opacity: .45;
+  }
+
+  50% {
+    transform:
+      translate3d(8px, -12px, 0);
+
+    opacity: 1;
+  }
+
+}
+
+
+@keyframes journeyStatusPulse {
+
+  0%,
+  100% {
+    opacity: .65;
+    transform: scale(.88);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   ACCESSIBILITY
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .journeyAmbient,
+  .journeyOrbitOne,
+  .journeyOrbitTwo,
+  .journeyParticleOne,
+  .journeyParticleTwo,
+  .journeyParticleThree,
+  .journeySignal,
+  .journeyCard::before,
+  .journeyStatus i {
+    animation: none !important;
+  }
+
+
+  .journeyCard {
+    transition: none !important;
+  }
+
+}
+
+
+/* HERO JOURNEY V7 END */
+
+/* HERO JOURNEY V8 START
+   =========================================================
+   Stronger visual hierarchy
+   Individual laser halos
+   Emerald / Cyan / Violet / Aqua
+   ========================================================= */
+
+
+/* =========================================================
+   GENERAL JOURNEY
+   ========================================================= */
+
+.journeyVisual {
+  overflow: visible;
+}
+
+.journeySteps {
+  position: relative;
+  z-index: 5;
+
+  gap: clamp(18px, 1.45vw, 28px);
+}
+
+
+/* stronger path behind cards */
+
+.journeyBeam {
+  height: 6px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #67dc78 0%,
+      #68dbb2 22%,
+      #62cee7 43%,
+      #b9a0e3 67%,
+      #72d7d1 100%
+    );
+
+  box-shadow:
+    0 0 8px rgba(99, 217, 164, .42),
+    0 0 22px rgba(89, 205, 224, .24),
+    0 0 45px rgba(137, 170, 219, .10);
+}
+
+.journeyBeamGlow {
+  inset: -12px 0;
+
+  opacity: .34;
+
+  filter: blur(14px);
+}
+
+
+/* =========================================================
+   BASE CARD
+   ========================================================= */
+
+.journeyCard {
+  --journey-accent: #65d879;
+  --journey-accent-rgb: 101, 216, 121;
+  --journey-secondary-rgb: 93, 216, 183;
+
+  overflow: visible;
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .34);
+
+  background:
+    linear-gradient(
+      155deg,
+      rgba(255,255,255,.985),
+      rgba(252,254,253,.94)
+    );
+
+  box-shadow:
+    0 24px 58px rgba(29, 54, 38, .075),
+    0 0 30px rgba(var(--journey-accent-rgb), .08),
+    inset 0 1px 0 rgba(255,255,255,1);
+}
+
+
+/*
+  Large atmospheric circle around each card.
+  This is deliberately behind the card.
+*/
+
+.journeyCard::before {
+  width: calc(100% + 76px);
+  height: calc(100% + 76px);
+  aspect-ratio: auto;
+
+  left: -38px;
+  top: -38px;
+
+  transform: none;
+
+  border-radius: 44% 56% 53% 47% / 48% 43% 57% 52%;
+
+  background:
+    conic-gradient(
+      from 20deg,
+
+      transparent 0deg,
+
+      rgba(var(--journey-accent-rgb), .05) 35deg,
+
+      rgba(var(--journey-accent-rgb), .72) 78deg,
+
+      rgba(var(--journey-secondary-rgb), .25) 108deg,
+
+      transparent 145deg,
+
+      transparent 220deg,
+
+      rgba(var(--journey-secondary-rgb), .12) 250deg,
+
+      rgba(var(--journey-accent-rgb), .58) 290deg,
+
+      transparent 330deg,
+
+      transparent 360deg
+    );
+
+  opacity: .72;
+
+  filter:
+    drop-shadow(
+      0 0 12px
+      rgba(var(--journey-accent-rgb), .24)
+    );
+
+  animation:
+    journeyHaloRotate
+    13s linear infinite;
+
+  pointer-events: none;
+}
+
+
+/*
+  Inner card surface.
+  Gives every step a slight tint.
+*/
+
+.journeyCard::after {
+  inset: 2px;
+
+  border-radius: 26px;
+
+  background:
+    radial-gradient(
+      circle at 50% 4%,
+      rgba(var(--journey-accent-rgb), .13),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 90% 85%,
+      rgba(var(--journey-secondary-rgb), .055),
+      transparent 36%
+    ),
+    linear-gradient(
+      160deg,
+      rgba(255,255,255,.985),
+      rgba(252,254,253,.96)
+    );
+}
+
+
+/* =========================================================
+   01 CONTACT — EMERALD / MINT
+   ========================================================= */
+
+.journeyContact {
+  --journey-accent: #5ed36d;
+  --journey-accent-rgb: 94, 211, 109;
+  --journey-secondary-rgb: 84, 219, 168;
+
+  transform:
+    translateY(-8px)
+    scale(1.045);
+
+  border-color:
+    rgba(85, 207, 105, .48);
+
+  box-shadow:
+    0 30px 70px rgba(50, 137, 69, .13),
+    0 0 45px rgba(92, 218, 113, .13),
+    inset 0 1px 0 #fff;
+}
+
+
+/* =========================================================
+   02 ASSESSMENT — SKY / CYAN
+   ========================================================= */
+
+.journeyAssessment {
+  --journey-accent: #62cbe1;
+  --journey-accent-rgb: 98, 203, 225;
+  --journey-secondary-rgb: 89, 222, 207;
+
+  transform:
+    translateY(8px);
+
+  border-color:
+    rgba(89, 194, 219, .42);
+
+  box-shadow:
+    0 25px 60px rgba(62, 139, 164, .09),
+    0 0 38px rgba(93, 204, 226, .10),
+    inset 0 1px 0 #fff;
+}
+
+
+/* =========================================================
+   03 SUPPORT — SOFT VIOLET / ROSE
+   ========================================================= */
+
+.journeySupport {
+  --journey-accent: #b99bd6;
+  --journey-accent-rgb: 185, 155, 214;
+  --journey-secondary-rgb: 218, 156, 194;
+
+  transform:
+    translateY(-5px);
+
+  border-color:
+    rgba(184, 148, 210, .38);
+
+  box-shadow:
+    0 25px 60px rgba(126, 91, 157, .085),
+    0 0 38px rgba(199, 155, 211, .10),
+    inset 0 1px 0 #fff;
+}
+
+
+/* =========================================================
+   04 COMPLETE — AQUA / TURQUOISE
+   ========================================================= */
+
+.journeyComplete {
+  --journey-accent: #5ccfbd;
+  --journey-accent-rgb: 92, 207, 189;
+  --journey-secondary-rgb: 91, 194, 226;
+
+  transform:
+    translateY(7px);
+
+  border-color:
+    rgba(81, 196, 179, .42);
+
+  box-shadow:
+    0 25px 60px rgba(55, 144, 130, .09),
+    0 0 38px rgba(87, 207, 190, .11),
+    inset 0 1px 0 #fff;
+}
+
+
+/* Different ring phase */
+
+.journeyContact::before {
+  animation-delay: 0s;
+}
+
+.journeyAssessment::before {
+  animation-delay: -3.2s;
+}
+
+.journeySupport::before {
+  animation-delay: -6.4s;
+}
+
+.journeyComplete::before {
+  animation-delay: -9.6s;
+}
+
+
+/* =========================================================
+   NUMBER — MORE VISIBLE
+   ========================================================= */
+
+.journeyNumber {
+  position: relative;
+
+  width: 52px;
+  height: 52px;
+
+  margin-bottom: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--journey-accent-rgb), .22),
+      rgba(var(--journey-secondary-rgb), .09)
+    );
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .22);
+
+  color:
+    rgb(var(--journey-accent-rgb));
+
+  box-shadow:
+    0 8px 22px rgba(var(--journey-accent-rgb), .11),
+    inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+
+/* little luminous ring around number */
+
+.journeyNumber::after {
+  content: "";
+
+  position: absolute;
+
+  inset: -6px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .15);
+
+  box-shadow:
+    0 0 16px rgba(var(--journey-accent-rgb), .12);
+
+  animation:
+    journeyNumberPulse
+    3.8s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.journeyIcon {
+  width: 49px;
+  height: 49px;
+
+  color:
+    rgb(var(--journey-accent-rgb));
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .15);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.92),
+      rgba(var(--journey-accent-rgb), .055)
+    );
+
+  box-shadow:
+    0 10px 25px rgba(var(--journey-accent-rgb), .10),
+    0 0 20px rgba(var(--journey-accent-rgb), .08);
+}
+
+
+/* =========================================================
+   TYPOGRAPHY
+   ========================================================= */
+
+.journeyCopy strong {
+  font-weight: 780;
+
+  color: #141b16;
+}
+
+.journeyCopy small {
+  color:
+    rgba(37, 52, 42, .65);
+}
+
+
+/* =========================================================
+   SMALL LIGHT NODES BETWEEN STEPS
+   ========================================================= */
+
+.journeyCard:not(:last-child) .journeyCopy::after {
+  content: "";
+
+  position: absolute;
+
+  width: 8px;
+  height: 8px;
+
+  right: -18px;
+  top: 50%;
+
+  border-radius: 50%;
+
+  background:
+    rgb(var(--journey-accent-rgb));
+
+  box-shadow:
+    0 0 0 5px rgba(var(--journey-accent-rgb), .08),
+    0 0 17px rgba(var(--journey-accent-rgb), .45);
+
+  transform:
+    translateY(-50%);
+
+  pointer-events: none;
+}
+
+.journeyCopy {
+  position: relative;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+@media (hover: hover) {
+
+  .journeyCard:hover {
+    border-color:
+      rgba(var(--journey-accent-rgb), .58);
+
+    box-shadow:
+      0 32px 72px rgba(31, 61, 40, .11),
+      0 0 48px rgba(var(--journey-accent-rgb), .16),
+      inset 0 1px 0 #fff;
+  }
+
+  .journeyContact:hover {
+    transform:
+      translateY(-15px)
+      scale(1.045);
+  }
+
+  .journeyAssessment:hover {
+    transform:
+      translateY(1px);
+  }
+
+  .journeySupport:hover {
+    transform:
+      translateY(-12px);
+  }
+
+  .journeyComplete:hover {
+    transform:
+      translateY(0);
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1180px) {
+
+  .journeySteps {
+    gap: 14px;
+  }
+
+  .journeyCard::before {
+    width: calc(100% + 44px);
+    height: calc(100% + 44px);
+
+    left: -22px;
+    top: -22px;
+  }
+
+  .journeyContact {
+    transform:
+      translateY(-5px)
+      scale(1.025);
+  }
+
+  .journeyAssessment {
+    transform:
+      translateY(5px);
+  }
+
+  .journeySupport {
+    transform:
+      translateY(-3px);
+  }
+
+  .journeyComplete {
+    transform:
+      translateY(4px);
+  }
+
+  .journeyNumber {
+    width: 44px;
+    height: 44px;
+  }
+
+  .journeyIcon {
+    width: 42px;
+    height: 42px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .journeySteps {
+    gap: 28px;
+  }
+
+  .journeyCard,
+  .journeyContact,
+  .journeyAssessment,
+  .journeySupport,
+  .journeyComplete {
+    transform: none;
+  }
+
+  .journeyCard {
+    width:
+      min(calc(100% - 28px), 390px);
+
+    padding:
+      24px 22px 25px;
+  }
+
+  .journeyCard::before {
+    width: calc(100% + 30px);
+    height: calc(100% + 30px);
+
+    left: -15px;
+    top: -15px;
+
+    opacity: .58;
+  }
+
+  .journeyCard:not(:last-child) .journeyCopy::after {
+    display: none;
+  }
+
+  .journeyNumber {
+    width: 48px;
+    height: 48px;
+  }
+
+  .journeyIcon {
+    width: 46px;
+    height: 46px;
+  }
+
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes journeyHaloRotate {
+
+  0% {
+    transform:
+      rotate(0deg)
+      scale(.985);
+  }
+
+  50% {
+    transform:
+      rotate(180deg)
+      scale(1.025);
+  }
+
+  100% {
+    transform:
+      rotate(360deg)
+      scale(.985);
+  }
+
+}
+
+
+@keyframes journeyNumberPulse {
+
+  0%,
+  100% {
+    opacity: .55;
+    transform: scale(.94);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .journeyCard::before,
+  .journeyNumber::after {
+    animation: none !important;
+  }
+
+}
+
+
+/* HERO JOURNEY V8 END */
+
+/* HERO JOURNEY V9 START
+   =========================================================
+   Fine fiber-optic rings
+   Thin threads + moving light particles
+   No overlapping heavy halos
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   CARD BASE
+   --------------------------------------------------------- */
+
+.journeyCard {
+  overflow: visible;
+
+  /*
+    Extra separation means each visual belongs
+    clearly to its own step.
+  */
+  margin-inline: 4px;
+}
+
+
+/* ---------------------------------------------------------
+   REMOVE HEAVY V8 HALOS
+   Replace them with a thin fiber contour.
+   --------------------------------------------------------- */
+
+.journeyCard::before {
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
+
+  left: -15px;
+  top: -15px;
+
+  aspect-ratio: auto;
+
+  border-radius: 38px;
+
+  background: transparent;
+
+  border:
+    1px solid
+    rgba(var(--journey-accent-rgb), .32);
+
+  opacity: 1;
+
+  filter: none;
+
+  box-shadow:
+    0 0 8px rgba(var(--journey-accent-rgb), .08),
+    inset 0 0 7px rgba(var(--journey-accent-rgb), .035);
+
+  animation:
+    journeyFiberBreath
+    5.5s ease-in-out infinite;
+
+  pointer-events: none;
+}
+
+
+/*
+  Inner surface remains extremely clean.
+*/
+
+.journeyCard::after {
+  inset: 2px;
+
+  border-radius: 26px;
+
+  background:
+    radial-gradient(
+      circle at 50% 5%,
+      rgba(var(--journey-accent-rgb), .07),
+      transparent 34%
+    ),
+    linear-gradient(
+      160deg,
+      rgba(255,255,255,.99),
+      rgba(252,254,253,.965)
+    );
+}
+
+
+/* ---------------------------------------------------------
+   SECOND THIN LINE
+   We use the icon pseudo element as a very subtle
+   optical ring around the central icon.
+   --------------------------------------------------------- */
+
+.journeyIcon {
+  position: relative;
+
+  isolation: isolate;
+}
+
+
+.journeyIcon::before {
+  content: "";
+
+  position: absolute;
+
+  width: 72px;
+  height: 72px;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  border:
+    1px solid
+    rgba(var(--journey-accent-rgb), .20);
+
+  box-shadow:
+    0 0 10px rgba(var(--journey-accent-rgb), .08);
+
+  pointer-events: none;
+
+  animation:
+    journeyIconRing
+    4.8s ease-in-out infinite;
+}
+
+
+/* ---------------------------------------------------------
+   SMALL LIGHT BALL ON EACH CARD
+   --------------------------------------------------------- */
+
+.journeyNumber::before {
+  content: "";
+
+  position: absolute;
+
+  width: 7px;
+  height: 7px;
+
+  left: -13px;
+  top: 50%;
+
+  border-radius: 50%;
+
+  background:
+    rgb(var(--journey-accent-rgb));
+
+  box-shadow:
+    0 0 5px rgba(var(--journey-accent-rgb), .75),
+    0 0 13px rgba(var(--journey-accent-rgb), .42);
+
+  transform:
+    translateY(-50%);
+
+  animation:
+    journeyFiberParticle
+    3.8s ease-in-out infinite;
+}
+
+
+/* Each particle moves at a slightly different rhythm */
+
+.journeyAssessment .journeyNumber::before {
+  animation-delay: -.9s;
+}
+
+.journeySupport .journeyNumber::before {
+  animation-delay: -1.8s;
+}
+
+.journeyComplete .journeyNumber::before {
+  animation-delay: -2.7s;
+}
+
+
+/* ---------------------------------------------------------
+   NUMBER RINGS — THINNER
+   --------------------------------------------------------- */
+
+.journeyNumber {
+  border:
+    1px solid
+    rgba(var(--journey-accent-rgb), .16);
+
+  box-shadow:
+    0 5px 17px
+    rgba(var(--journey-accent-rgb), .075);
+}
+
+
+.journeyNumber::after {
+  inset: -5px;
+
+  border:
+    1px solid
+    rgba(var(--journey-accent-rgb), .13);
+
+  box-shadow:
+    0 0 7px
+    rgba(var(--journey-accent-rgb), .07);
+
+  animation:
+    journeyFinePulse
+    4.5s ease-in-out infinite;
+}
+
+
+/* ---------------------------------------------------------
+   MAIN FIBER CONNECTION
+   Make the connection look like a thread,
+   not a thick neon bar.
+   --------------------------------------------------------- */
+
+.journeyBeam {
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(91, 214, 110, .92) 0%,
+      rgba(91, 214, 110, .68) 17%,
+
+      rgba(91, 204, 226, .76) 37%,
+      rgba(91, 204, 226, .62) 50%,
+
+      rgba(188, 151, 211, .68) 67%,
+
+      rgba(91, 205, 188, .74) 84%,
+      rgba(91, 205, 188, .92) 100%
+    );
+
+  box-shadow:
+    0 0 4px rgba(89, 208, 186, .25),
+    0 0 10px rgba(92, 205, 220, .08);
+}
+
+
+.journeyBeamGlow {
+  inset: -3px 0;
+
+  opacity: .16;
+
+  filter: blur(5px);
+}
+
+
+/* ---------------------------------------------------------
+   MOVING SIGNAL BALL
+   --------------------------------------------------------- */
+
+.journeySignal {
+  width: 9px;
+  height: 9px;
+
+  border:
+    2px solid rgba(255,255,255,.95);
+
+  background:
+    #62d8b5;
+
+  box-shadow:
+    0 0 5px rgba(94, 216, 181, .95),
+    0 0 13px rgba(94, 216, 181, .52);
+
+  animation-duration:
+    6.8s;
+}
+
+
+/* ---------------------------------------------------------
+   CONNECTOR DOTS
+   --------------------------------------------------------- */
+
+.journeyCard:not(:last-child) .journeyCopy::after {
+  width: 6px;
+  height: 6px;
+
+  right: -22px;
+
+  background:
+    rgb(var(--journey-accent-rgb));
+
+  box-shadow:
+    0 0 5px rgba(var(--journey-accent-rgb), .72),
+    0 0 12px rgba(var(--journey-accent-rgb), .30);
+
+  border:
+    1px solid rgba(255,255,255,.95);
+}
+
+
+/* ---------------------------------------------------------
+   CARD POSITIONS
+   Less exaggerated than V8.
+   --------------------------------------------------------- */
+
+.journeyContact {
+  transform:
+    translateY(-5px)
+    scale(1.035);
+}
+
+
+.journeyAssessment {
+  transform:
+    translateY(4px);
+}
+
+
+.journeySupport {
+  transform:
+    translateY(-3px);
+}
+
+
+.journeyComplete {
+  transform:
+    translateY(3px);
+}
+
+
+/* ---------------------------------------------------------
+   HOVER
+   --------------------------------------------------------- */
+
+@media (hover: hover) {
+
+  .journeyCard:hover::before {
+    border-color:
+      rgba(var(--journey-accent-rgb), .52);
+
+    box-shadow:
+      0 0 10px rgba(var(--journey-accent-rgb), .12);
+  }
+
+
+  .journeyContact:hover {
+    transform:
+      translateY(-10px)
+      scale(1.035);
+  }
+
+
+  .journeyAssessment:hover {
+    transform:
+      translateY(-1px);
+  }
+
+
+  .journeySupport:hover {
+    transform:
+      translateY(-8px);
+  }
+
+
+  .journeyComplete:hover {
+    transform:
+      translateY(-2px);
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   TABLET
+   --------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+
+  .journeyCard {
+    margin-inline: 2px;
+  }
+
+
+  .journeyCard::before {
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+
+    left: -10px;
+    top: -10px;
+
+    border-radius: 33px;
+  }
+
+
+  .journeyIcon::before {
+    width: 62px;
+    height: 62px;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 700px) {
+
+  .journeySteps {
+    gap: 30px;
+  }
+
+
+  .journeyCard,
+  .journeyContact,
+  .journeyAssessment,
+  .journeySupport,
+  .journeyComplete {
+    transform: none;
+  }
+
+
+  .journeyCard::before {
+    width: calc(100% + 16px);
+    height: calc(100% + 16px);
+
+    left: -8px;
+    top: -8px;
+
+    border-radius: 30px;
+  }
+
+
+  .journeyBeam {
+    width: 2px;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(94,211,109,.9),
+        rgba(97,204,226,.78),
+        rgba(186,153,211,.72),
+        rgba(91,205,188,.9)
+      );
+  }
+
+
+  .journeySignal {
+    width: 9px;
+    height: 9px;
+  }
+
+
+  .journeyIcon::before {
+    width: 66px;
+    height: 66px;
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   FINE ANIMATIONS
+   --------------------------------------------------------- */
+
+@keyframes journeyFiberBreath {
+
+  0%,
+  100% {
+    opacity: .56;
+
+    box-shadow:
+      0 0 5px
+      rgba(var(--journey-accent-rgb), .05);
+  }
+
+  50% {
+    opacity: 1;
+
+    box-shadow:
+      0 0 11px
+      rgba(var(--journey-accent-rgb), .12);
+  }
+
+}
+
+
+@keyframes journeyIconRing {
+
+  0%,
+  100% {
+    opacity: .42;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.94);
+  }
+
+  50% {
+    opacity: .85;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.06);
+  }
+
+}
+
+
+@keyframes journeyFiberParticle {
+
+  0%,
+  100% {
+    opacity: .35;
+
+    transform:
+      translateY(-50%)
+      translateX(0)
+      scale(.8);
+  }
+
+  50% {
+    opacity: 1;
+
+    transform:
+      translateY(-50%)
+      translateX(8px)
+      scale(1.08);
+  }
+
+}
+
+
+@keyframes journeyFinePulse {
+
+  0%,
+  100% {
+    opacity: .35;
+    transform: scale(.96);
+  }
+
+  50% {
+    opacity: .78;
+    transform: scale(1.045);
+  }
+
+}
+
+
+/* ---------------------------------------------------------
+   ACCESSIBILITY
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .journeyCard::before,
+  .journeyIcon::before,
+  .journeyNumber::before,
+  .journeyNumber::after {
+    animation: none !important;
+  }
+
+}
+
+
+/* HERO JOURNEY V9 END */
+
+/* HERO JOURNEY V10 START
+   ==========================================================
+   Refined motion system
+   01 Emerald
+   02 Champagne Gold
+   03 Soft Violet / Rose
+   04 Aqua
+   ========================================================== */
+
+
+/* ==========================================================
+   COLOR SYSTEM
+   ========================================================== */
+
+.journeyContact {
+  --journey-accent: #61d472;
+  --journey-accent-rgb: 97, 212, 114;
+  --journey-secondary-rgb: 83, 218, 163;
+}
+
+
+/*
+  02 — warm champagne instead of cyan.
+  Intentionally muted: premium, not warning-yellow.
+*/
+
+.journeyAssessment {
+  --journey-accent: #d5b55f;
+  --journey-accent-rgb: 213, 181, 95;
+  --journey-secondary-rgb: 230, 201, 121;
+
+  border-color:
+    rgba(196, 161, 70, .36);
+
+  box-shadow:
+    0 24px 58px rgba(139, 109, 37, .07),
+    0 0 28px rgba(213, 181, 95, .07),
+    inset 0 1px 0 #fff;
+}
+
+
+.journeySupport {
+  --journey-accent: #b99ad4;
+  --journey-accent-rgb: 185, 154, 212;
+  --journey-secondary-rgb: 215, 157, 194;
+}
+
+
+.journeyComplete {
+  --journey-accent: #5bcfbd;
+  --journey-accent-rgb: 91, 207, 189;
+  --journey-secondary-rgb: 86, 189, 218;
+}
+
+
+/* ==========================================================
+   CONNECTION THREAD
+   Update color transition to match all four steps
+   ========================================================== */
+
+.journeyBeam {
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+
+      rgba(97,212,114,.92) 0%,
+      rgba(97,212,114,.72) 18%,
+
+      rgba(213,181,95,.72) 31%,
+      rgba(224,194,113,.78) 43%,
+
+      rgba(185,154,212,.72) 60%,
+      rgba(205,158,199,.72) 72%,
+
+      rgba(91,207,189,.76) 86%,
+      rgba(91,207,189,.94) 100%
+    );
+
+  box-shadow:
+    0 0 5px rgba(97,212,114,.15),
+    0 0 11px rgba(213,181,95,.08),
+    0 0 15px rgba(185,154,212,.07),
+    0 0 18px rgba(91,207,189,.07);
+}
+
+
+/* ==========================================================
+   NUMBER ORBIT
+   ========================================================== */
+
+.journeyNumber {
+  position: relative;
+
+  overflow: visible;
+
+  isolation: isolate;
+}
+
+
+/*
+  Thin orbit around 01 / 02 / 03 / 04
+*/
+
+.journeyNumber::after {
+  content: "";
+
+  position: absolute;
+
+  z-index: -1;
+
+  inset: -9px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .19);
+
+  box-shadow:
+    0 0 8px rgba(var(--journey-accent-rgb), .07);
+
+  animation:
+    journeyOrbitBreath
+    4.8s ease-in-out infinite;
+}
+
+
+/*
+  The small ball now actually travels around the number.
+*/
+
+.journeyNumber::before {
+  content: "";
+
+  position: absolute;
+
+  z-index: 5;
+
+  width: 7px;
+  height: 7px;
+
+  left: 50%;
+  top: 50%;
+
+  margin:
+    -3.5px 0 0
+    -3.5px;
+
+  border-radius: 50%;
+
+  background:
+    rgb(var(--journey-accent-rgb));
+
+  border:
+    1px solid rgba(255,255,255,.95);
+
+  box-shadow:
+    0 0 5px rgba(var(--journey-accent-rgb), .95),
+    0 0 12px rgba(var(--journey-accent-rgb), .50);
+
+  transform:
+    rotate(0deg)
+    translateX(35px)
+    rotate(0deg);
+
+  transform-origin:
+    center;
+
+  animation:
+    journeyNumberSatellite
+    5.4s linear infinite;
+}
+
+
+/* Different phase for every step */
+
+.journeyAssessment .journeyNumber::before {
+  animation-delay: -1.35s;
+}
+
+.journeySupport .journeyNumber::before {
+  animation-delay: -2.7s;
+}
+
+.journeyComplete .journeyNumber::before {
+  animation-delay: -4.05s;
+}
+
+
+/* Different orbit speed = more organic */
+
+.journeyAssessment .journeyNumber::before {
+  animation-duration: 6.2s;
+}
+
+.journeySupport .journeyNumber::before {
+  animation-duration: 5.8s;
+}
+
+.journeyComplete .journeyNumber::before {
+  animation-duration: 6.6s;
+}
+
+
+/* ==========================================================
+   FINE FIBER AROUND CARD
+   ========================================================== */
+
+.journeyCard::before {
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
+
+  left: -15px;
+  top: -15px;
+
+  border-radius: 38px;
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .29);
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 38%,
+      rgba(var(--journey-accent-rgb), .13) 48%,
+      rgba(var(--journey-accent-rgb), .42) 50%,
+      rgba(var(--journey-secondary-rgb), .15) 52%,
+      transparent 62%,
+      transparent 100%
+    );
+
+  background-size:
+    240% 100%;
+
+  opacity: .78;
+
+  filter: none;
+
+  box-shadow:
+    0 0 7px rgba(var(--journey-accent-rgb), .06);
+
+  animation:
+    journeyFiberSweep
+    7.5s ease-in-out infinite;
+}
+
+
+/* Stagger sweep */
+
+.journeyAssessment::before {
+  animation-delay: -1.8s;
+}
+
+.journeySupport::before {
+  animation-delay: -3.6s;
+}
+
+.journeyComplete::before {
+  animation-delay: -5.4s;
+}
+
+
+/* ==========================================================
+   SUBTLE MOVEMENT INSIDE CARD
+   ========================================================== */
+
+.journeyCard::after {
+  background:
+    radial-gradient(
+      circle at 50% 3%,
+      rgba(var(--journey-accent-rgb), .085),
+      transparent 33%
+    ),
+    radial-gradient(
+      circle at 85% 82%,
+      rgba(var(--journey-secondary-rgb), .04),
+      transparent 30%
+    ),
+    linear-gradient(
+      160deg,
+      rgba(255,255,255,.99),
+      rgba(252,254,253,.97)
+    );
+}
+
+
+/* ==========================================================
+   ICON RING
+   ========================================================== */
+
+.journeyIcon::before {
+  width: 70px;
+  height: 70px;
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .17);
+
+  box-shadow:
+    0 0 9px rgba(var(--journey-accent-rgb), .06);
+
+  animation:
+    journeyIconFloat
+    5s ease-in-out infinite;
+}
+
+
+.journeyAssessment .journeyIcon::before {
+  animation-delay: -.8s;
+}
+
+.journeySupport .journeyIcon::before {
+  animation-delay: -1.6s;
+}
+
+.journeyComplete .journeyIcon::before {
+  animation-delay: -2.4s;
+}
+
+
+/* ==========================================================
+   TRAVELLING MAIN SIGNAL
+   ========================================================== */
+
+.journeySignal {
+  width: 9px;
+  height: 9px;
+
+  background: #fff;
+
+  border:
+    2px solid #67d5ad;
+
+  box-shadow:
+    0 0 5px rgba(93,215,177,.95),
+    0 0 14px rgba(93,215,177,.48);
+
+  animation:
+    journeySignalMoveV10
+    7.2s
+    cubic-bezier(.42,0,.2,1)
+    infinite;
+}
+
+
+/* ==========================================================
+   DESKTOP HOVER
+   ========================================================== */
+
+@media (hover: hover) {
+
+  .journeyCard:hover::before {
+    opacity: 1;
+
+    border-color:
+      rgba(var(--journey-accent-rgb), .46);
+
+    box-shadow:
+      0 0 13px rgba(var(--journey-accent-rgb), .12);
+  }
+
+
+  .journeyCard:hover .journeyNumber::after {
+    border-color:
+      rgba(var(--journey-accent-rgb), .34);
+
+    box-shadow:
+      0 0 14px rgba(var(--journey-accent-rgb), .14);
+  }
+
+
+  .journeyCard:hover .journeyIcon {
+    box-shadow:
+      0 10px 26px rgba(var(--journey-accent-rgb), .12),
+      0 0 24px rgba(var(--journey-accent-rgb), .11);
+  }
+
+}
+
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 1180px) {
+
+  .journeyNumber::before {
+    transform:
+      rotate(0deg)
+      translateX(30px)
+      rotate(0deg);
+  }
+
+
+  .journeyNumber::after {
+    inset: -7px;
+  }
+
+
+  .journeyIcon::before {
+    width: 61px;
+    height: 61px;
+  }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+  .journeyBeam {
+    width: 2px;
+
+    background:
+      linear-gradient(
+        180deg,
+
+        rgba(97,212,114,.92) 0%,
+
+        rgba(213,181,95,.82) 33%,
+
+        rgba(185,154,212,.76) 66%,
+
+        rgba(91,207,189,.92) 100%
+      );
+  }
+
+
+  .journeyNumber::before {
+    transform:
+      rotate(0deg)
+      translateX(32px)
+      rotate(0deg);
+  }
+
+
+  .journeyCard::before {
+    width: calc(100% + 16px);
+    height: calc(100% + 16px);
+
+    left: -8px;
+    top: -8px;
+
+    border-radius: 30px;
+  }
+
+}
+
+
+/* ==========================================================
+   ANIMATIONS
+   ========================================================== */
+
+
+/*
+  Satellite around 01-04
+*/
+
+@keyframes journeyNumberSatellite {
+
+  from {
+    transform:
+      rotate(0deg)
+      translateX(35px)
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg)
+      translateX(35px)
+      rotate(-360deg);
+  }
+
+}
+
+
+/*
+  Fine breathing ring
+*/
+
+@keyframes journeyOrbitBreath {
+
+  0%,
+  100% {
+    opacity: .45;
+    transform: scale(.96);
+  }
+
+  50% {
+    opacity: .92;
+    transform: scale(1.04);
+  }
+
+}
+
+
+/*
+  Light runs through outer fiber
+*/
+
+@keyframes journeyFiberSweep {
+
+  0% {
+    background-position:
+      120% 0;
+
+    opacity: .52;
+  }
+
+  45% {
+    opacity: .92;
+  }
+
+  100% {
+    background-position:
+      -120% 0;
+
+    opacity: .58;
+  }
+
+}
+
+
+/*
+  Very slight icon movement
+*/
+
+@keyframes journeyIconFloat {
+
+  0%,
+  100% {
+    opacity: .48;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.95);
+  }
+
+  50% {
+    opacity: .85;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.055);
+  }
+
+}
+
+
+/*
+  Main signal across all steps
+*/
+
+@keyframes journeySignalMoveV10 {
+
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  24% {
+    box-shadow:
+      0 0 6px rgba(97,212,114,.9),
+      0 0 15px rgba(97,212,114,.45);
+  }
+
+  39% {
+    box-shadow:
+      0 0 6px rgba(213,181,95,.9),
+      0 0 15px rgba(213,181,95,.45);
+  }
+
+  64% {
+    box-shadow:
+      0 0 6px rgba(185,154,212,.9),
+      0 0 15px rgba(185,154,212,.45);
+  }
+
+  86% {
+    box-shadow:
+      0 0 6px rgba(91,207,189,.9),
+      0 0 15px rgba(91,207,189,.45);
+  }
+
+  95% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .journeyNumber::before,
+  .journeyNumber::after,
+  .journeyCard::before,
+  .journeyIcon::before,
+  .journeySignal {
+    animation: none !important;
+  }
+
+}
+
+
+/* HERO JOURNEY V10 END */
+
+/* HERO JOURNEY V11 START
+   ==========================================================
+   CALM PREMIUM MOTION
+   01 Mint
+   02 Dusty Rose
+   03 Water Aqua
+   04 Muted Coral
+   ========================================================== */
+
+
+/* ==========================================================
+   01 — KONTAKT
+   Calm mint green
+   ========================================================== */
+
+.journeyContact {
+  --journey-accent: #68c978;
+  --journey-accent-rgb: 104, 201, 120;
+  --journey-secondary-rgb: 100, 207, 167;
+
+  border-color:
+    rgba(104, 201, 120, .34);
+
+  box-shadow:
+    0 25px 60px rgba(67, 142, 80, .08),
+    0 0 24px rgba(104, 201, 120, .055),
+    inset 0 1px 0 #fff;
+}
+
+
+/* ==========================================================
+   02 — BEDÖMNING
+   Dusty rose / soft pink
+   ========================================================== */
+
+.journeyAssessment {
+  --journey-accent: #d2a1b7;
+  --journey-accent-rgb: 210, 161, 183;
+  --journey-secondary-rgb: 221, 177, 196;
+
+  border-color:
+    rgba(197, 142, 168, .34);
+
+  box-shadow:
+    0 25px 60px rgba(148, 91, 119, .065),
+    0 0 25px rgba(210, 161, 183, .06),
+    inset 0 1px 0 #fff;
+}
+
+
+/* ==========================================================
+   03 — SUPPORT
+   Water / soft aqua blue
+   ========================================================== */
+
+.journeySupport {
+  --journey-accent: #79c6d4;
+  --journey-accent-rgb: 121, 198, 212;
+  --journey-secondary-rgb: 104, 209, 196;
+
+  border-color:
+    rgba(100, 186, 204, .34);
+
+  box-shadow:
+    0 25px 60px rgba(63, 130, 146, .065),
+    0 0 25px rgba(121, 198, 212, .06),
+    inset 0 1px 0 #fff;
+}
+
+
+/* ==========================================================
+   04 — KLART
+   Muted coral / warm red-orange
+   ========================================================== */
+
+.journeyComplete {
+  --journey-accent: #d88972;
+  --journey-accent-rgb: 216, 137, 114;
+  --journey-secondary-rgb: 226, 162, 139;
+
+  border-color:
+    rgba(204, 120, 97, .32);
+
+  box-shadow:
+    0 25px 60px rgba(150, 76, 57, .06),
+    0 0 25px rgba(216, 137, 114, .055),
+    inset 0 1px 0 #fff;
+}
+
+
+/* ==========================================================
+   CONNECTION THREAD
+   Thin, calm and elegant
+   ========================================================== */
+
+.journeyBeam {
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+
+      rgba(104,201,120,.72) 0%,
+      rgba(104,201,120,.56) 19%,
+
+      rgba(210,161,183,.62) 34%,
+      rgba(210,161,183,.56) 46%,
+
+      rgba(121,198,212,.62) 61%,
+      rgba(121,198,212,.56) 74%,
+
+      rgba(216,137,114,.60) 88%,
+      rgba(216,137,114,.68) 100%
+    );
+
+  box-shadow:
+    0 0 4px rgba(113, 188, 165, .12);
+}
+
+
+.journeyBeamGlow {
+  inset: -2px 0;
+
+  opacity: .08;
+
+  filter: blur(4px);
+}
+
+
+/* ==========================================================
+   CARD FIBER
+   No fast sweep anymore
+   ========================================================== */
+
+.journeyCard::before {
+  width: calc(100% + 24px);
+  height: calc(100% + 24px);
+
+  left: -12px;
+  top: -12px;
+
+  border-radius: 36px;
+
+  background: transparent;
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .20);
+
+  opacity: .76;
+
+  box-shadow:
+    0 0 7px rgba(var(--journey-accent-rgb), .045);
+
+  animation:
+    journeyV11CardBreath
+    10s ease-in-out infinite;
+}
+
+
+/* different rhythm so cards do not breathe together */
+
+.journeyAssessment::before {
+  animation-delay: -2.5s;
+}
+
+.journeySupport::before {
+  animation-delay: -5s;
+}
+
+.journeyComplete::before {
+  animation-delay: -7.5s;
+}
+
+
+/* ==========================================================
+   NUMBER ORBIT
+   Very fine ring
+   ========================================================== */
+
+.journeyNumber::after {
+  inset: -8px;
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .14);
+
+  box-shadow:
+    none;
+
+  opacity: .65;
+
+  animation:
+    journeyV11NumberBreath
+    8s ease-in-out infinite;
+}
+
+
+/* ==========================================================
+   SATELLITE DOT
+   Slow movement around 01 / 02 / 03 / 04
+   ========================================================== */
+
+.journeyNumber::before {
+  width: 6px;
+  height: 6px;
+
+  margin:
+    -3px 0 0
+    -3px;
+
+  background:
+    rgb(var(--journey-accent-rgb));
+
+  border:
+    1px solid rgba(255,255,255,.98);
+
+  box-shadow:
+    0 0 5px rgba(var(--journey-accent-rgb), .48);
+
+  animation:
+    journeyV11Satellite
+    18s linear infinite;
+}
+
+
+/*
+  Slightly different speeds make motion feel natural
+  rather than mechanical.
+*/
+
+.journeyContact .journeyNumber::before {
+  animation-duration: 20s;
+  animation-delay: -2s;
+}
+
+.journeyAssessment .journeyNumber::before {
+  animation-duration: 22s;
+  animation-delay: -8s;
+}
+
+.journeySupport .journeyNumber::before {
+  animation-duration: 18s;
+  animation-delay: -11s;
+}
+
+.journeyComplete .journeyNumber::before {
+  animation-duration: 21s;
+  animation-delay: -15s;
+}
+
+
+/* ==========================================================
+   ICON CIRCLE
+   Almost static
+   ========================================================== */
+
+.journeyIcon::before {
+  width: 68px;
+  height: 68px;
+
+  border:
+    1px solid rgba(var(--journey-accent-rgb), .12);
+
+  box-shadow:
+    0 0 8px rgba(var(--journey-accent-rgb), .035);
+
+  animation:
+    journeyV11IconBreath
+    11s ease-in-out infinite;
+}
+
+
+.journeyAssessment .journeyIcon::before {
+  animation-delay: -2s;
+}
+
+.journeySupport .journeyIcon::before {
+  animation-delay: -5s;
+}
+
+.journeyComplete .journeyIcon::before {
+  animation-delay: -8s;
+}
+
+
+/* ==========================================================
+   MAIN TRAVELLING SIGNAL
+   Much slower and much softer
+   ========================================================== */
+
+.journeySignal {
+  width: 7px;
+  height: 7px;
+
+  background: rgba(255,255,255,.98);
+
+  border:
+    1px solid rgba(99, 194, 161, .75);
+
+  box-shadow:
+    0 0 5px rgba(93, 194, 159, .34);
+
+  animation:
+    journeyV11Signal
+    18s
+    cubic-bezier(.3,.05,.2,1)
+    infinite;
+}
+
+
+/* ==========================================================
+   REMOVE UNNECESSARY FAST FEEL
+   ========================================================== */
+
+.journeyParticleOne,
+.journeyParticleTwo,
+.journeyParticleThree {
+  animation-duration:
+    14s !important;
+
+  opacity: .42;
+}
+
+
+/* ==========================================================
+   CARD POSITIONING
+   More calm / less zig-zag
+   ========================================================== */
+
+.journeyContact {
+  transform:
+    translateY(-3px)
+    scale(1.025);
+}
+
+.journeyAssessment {
+  transform:
+    translateY(2px);
+}
+
+.journeySupport {
+  transform:
+    translateY(-2px);
+}
+
+.journeyComplete {
+  transform:
+    translateY(2px);
+}
+
+
+/* ==========================================================
+   HOVER
+   Very restrained
+   ========================================================== */
+
+@media (hover: hover) {
+
+  .journeyCard:hover {
+    border-color:
+      rgba(var(--journey-accent-rgb), .44);
+
+    box-shadow:
+      0 28px 64px rgba(31, 61, 40, .09),
+      0 0 22px rgba(var(--journey-accent-rgb), .075),
+      inset 0 1px 0 #fff;
+  }
+
+
+  .journeyContact:hover {
+    transform:
+      translateY(-7px)
+      scale(1.025);
+  }
+
+
+  .journeyAssessment:hover,
+  .journeySupport:hover,
+  .journeyComplete:hover {
+    transform:
+      translateY(-3px);
+  }
+
+}
+
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 1180px) {
+
+  .journeyCard::before {
+    width: calc(100% + 18px);
+    height: calc(100% + 18px);
+
+    left: -9px;
+    top: -9px;
+  }
+
+
+  .journeyNumber::before {
+    animation-duration:
+      20s;
+  }
+
+
+  .journeyContact {
+    transform:
+      translateY(-2px)
+      scale(1.015);
+  }
+
+}
+
+
+/* ==========================================================
+   MOBILE
+   Slow vertical motion
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+  .journeyCard,
+  .journeyContact,
+  .journeyAssessment,
+  .journeySupport,
+  .journeyComplete {
+    transform: none;
+  }
+
+
+  .journeyBeam {
+    width: 1px;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(104,201,120,.70),
+        rgba(210,161,183,.62),
+        rgba(121,198,212,.62),
+        rgba(216,137,114,.66)
+      );
+  }
+
+
+  .journeyCard::before {
+    width: calc(100% + 14px);
+    height: calc(100% + 14px);
+
+    left: -7px;
+    top: -7px;
+  }
+
+
+  .journeySignal {
+    animation:
+      journeyV11SignalMobile
+      20s
+      cubic-bezier(.3,.05,.2,1)
+      infinite;
+  }
+
+}
+
+
+/* ==========================================================
+   NEW CALM ANIMATIONS
+   ========================================================== */
+
+@keyframes journeyV11Satellite {
+
+  from {
+    transform:
+      rotate(0deg)
+      translateX(34px)
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg)
+      translateX(34px)
+      rotate(-360deg);
+  }
+
+}
+
+
+@keyframes journeyV11NumberBreath {
+
+  0%,
+  100% {
+    opacity: .42;
+    transform: scale(.98);
+  }
+
+  50% {
+    opacity: .72;
+    transform: scale(1.025);
+  }
+
+}
+
+
+@keyframes journeyV11CardBreath {
+
+  0%,
+  100% {
+    opacity: .55;
+
+    box-shadow:
+      0 0 4px
+      rgba(var(--journey-accent-rgb), .025);
+  }
+
+  50% {
+    opacity: .82;
+
+    box-shadow:
+      0 0 9px
+      rgba(var(--journey-accent-rgb), .06);
+  }
+
+}
+
+
+@keyframes journeyV11IconBreath {
+
+  0%,
+  100% {
+    opacity: .40;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.98);
+  }
+
+  50% {
+    opacity: .65;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.025);
+  }
+
+}
+
+
+@keyframes journeyV11Signal {
+
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+
+  8% {
+    opacity: .65;
+  }
+
+  25% {
+    box-shadow:
+      0 0 6px rgba(104,201,120,.32);
+  }
+
+  43% {
+    box-shadow:
+      0 0 6px rgba(210,161,183,.32);
+  }
+
+  65% {
+    box-shadow:
+      0 0 6px rgba(121,198,212,.32);
+  }
+
+  84% {
+    box-shadow:
+      0 0 6px rgba(216,137,114,.32);
+  }
+
+  94% {
+    opacity: .65;
+  }
+
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+
+}
+
+
+@keyframes journeyV11SignalMobile {
+
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+
+  8% {
+    opacity: .6;
+  }
+
+  94% {
+    opacity: .6;
+  }
+
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+
+}
+
+
+/* ==========================================================
+   ACCESSIBILITY
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .journeyCard::before,
+  .journeyNumber::before,
+  .journeyNumber::after,
+  .journeyIcon::before,
+  .journeySignal,
+  .journeyParticleOne,
+  .journeyParticleTwo,
+  .journeyParticleThree {
+    animation: none !important;
+  }
+
+}
+
+
+/* HERO JOURNEY V11 END */
