@@ -141,7 +141,7 @@ export default function PricingSection() {
               </ul>
 
               <Link
-                href="/boka"
+                href="/support?intent=booking#support-form"
                 className={
                   plan.featured
                     ? "premium-button primary pricing-button"

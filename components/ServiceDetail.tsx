@@ -1047,7 +1047,7 @@ export default function ServiceDetail({
             <div className="service-v2-actions">
 
               <Link
-                href="/boka"
+                href="/support?intent=booking#support-form"
                 className="premium-button primary"
               >
                 Boka support
@@ -1401,7 +1401,7 @@ export default function ServiceDetail({
             <div className="service-v2-final-actions">
 
               <Link
-                href="/boka"
+                href="/support?intent=booking#support-form"
                 className="premium-button primary"
               >
                 Boka support

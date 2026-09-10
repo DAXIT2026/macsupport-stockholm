@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -42,10 +42,35 @@ const supportLabels: Record<SupportType, string> = {
   distans: "Support på distans",
   foretag: "Företagssupport",
 };
+const customerLabels: Record<string, string> = {
+  privat: "Privatperson",
+  senior: "Senior / pensionär",
+  foretag: "Företag",
+};
+
+const serviceLabels: Record<string, string> = {
+  general: "Allmän IT-support",
+  mac: "Mac / dator",
+  wifi: "WiFi / nätverk",
+  "network-cable": "Dra nätverkskabel",
+  "unifi-camera": "UniFi / kamera",
+  email: "E-post",
+  microsoft365: "Microsoft 365",
+  security: "Säkerhet",
+  device: "Ny enhet",
+  other: "Annat",
+};
+
+const modeLabels: Record<string, string> = {
+  hembesok: "Hembesök",
+  distans: "Support på distans",
+  telefon: "Telefonsupport",
+};
 
 function isSupportType(
   value: string | null
 ): value is SupportType {
+
   return (
     value === "hembesok" ||
     value === "distans" ||
@@ -108,6 +133,38 @@ export default function BookingEmbed() {
       ? supportParam
       : null;
 
+  const initialName =
+    searchParams.get("name") ?? "";
+
+  const initialEmail =
+    searchParams.get("email") ?? "";
+
+  const initialPhone =
+    searchParams.get("phone") ?? "";
+
+  const initialCompany =
+    searchParams.get("company") ?? "";
+
+  const initialPostcode =
+    searchParams.get("postcode") ?? "";
+
+  const initialMessage =
+    searchParams.get("message") ?? "";
+
+  const initialCustomer =
+    searchParams.get("customer") ?? "";
+
+  const initialService =
+    searchParams.get("service") ?? "";
+
+  const initialMode =
+    searchParams.get("mode") ?? "";
+  const hasPrefilledContact =
+    Boolean(
+      initialName.trim() &&
+      initialEmail.trim() &&
+      initialPhone.trim()
+    );
   const [visibleMonth, setVisibleMonth] =
     useState(() => {
       const now = new Date();
@@ -141,13 +198,13 @@ export default function BookingEmbed() {
     useState(false);
 
   const [name, setName] =
-    useState("");
+    useState(initialName);
 
   const [email, setEmail] =
-    useState("");
+    useState(initialEmail);
 
   const [phone, setPhone] =
-    useState("");
+    useState(initialPhone);
 
   const [bookingLoading, setBookingLoading] =
     useState(false);
@@ -290,10 +347,10 @@ export default function BookingEmbed() {
     setBookingError(null);
   }
 
-  async function confirmBooking(
-    event: React.FormEvent<HTMLFormElement>
+  async function submitBooking(
+    event?: React.FormEvent<HTMLFormElement>
   ) {
-    event.preventDefault();
+    event?.preventDefault();
 
     if (
       !supportType ||
@@ -438,7 +495,7 @@ export default function BookingEmbed() {
         </div>
 
         {!supportType && (
-          <a href="/kontakt">
+          <a href="/support?intent=booking#support-form">
             Välj support →
           </a>
         )}
@@ -709,10 +766,132 @@ export default function BookingEmbed() {
 
 
           {showDetails &&
-            selectedSlot && (
+            selectedSlot &&
+            (hasPrefilledContact ? (
+                <div className="booking-flow-v4-prefill">
+                  <div className="booking-flow-v4-prefill-head">
+                    <div>
+                      <span>DINA UPPGIFTER</span>
+
+                      <h3>
+                        Kontrollera innan du bokar
+                      </h3>
+                    </div>
+
+                    <a
+                      href="/support?intent=booking#support-form"
+                      className="booking-flow-v4-prefill-edit"
+                    >
+                      Ändra
+                    </a>
+                  </div>
+
+                  <div className="booking-flow-v4-prefill-grid">
+                    <div>
+                      <span>Namn</span>
+                      <strong>{name}</strong>
+                    </div>
+
+                    <div>
+                      <span>E-post</span>
+                      <strong>{email}</strong>
+                    </div>
+
+                    <div>
+                      <span>Telefon</span>
+                      <strong>{phone}</strong>
+                    </div>
+
+                    {initialCompany && (
+                      <div>
+                        <span>Företag</span>
+                        <strong>
+                          {initialCompany}
+                        </strong>
+                      </div>
+                    )}
+
+                    {initialPostcode && (
+                      <div>
+                        <span>Postnummer / ort</span>
+                        <strong>
+                          {initialPostcode}
+                        </strong>
+                      </div>
+                    )}
+
+                    {initialCustomer && (
+                      <div>
+                        <span>Kundtyp</span>
+                        <strong>
+                          {customerLabels[initialCustomer] ??
+                            initialCustomer}
+                        </strong>
+                      </div>
+                    )}
+
+                    {initialService && (
+                      <div>
+                        <span>Tjänst</span>
+                        <strong>
+                          {serviceLabels[initialService] ??
+                            initialService}
+                        </strong>
+                      </div>
+                    )}
+
+                    {initialMode && (
+                      <div>
+                        <span>Supportform</span>
+                        <strong>
+                          {modeLabels[initialMode] ??
+                            initialMode}
+                        </strong>
+                      </div>
+                    )}
+                  </div>
+
+                  {initialMessage && (
+                    <div className="booking-flow-v4-prefill-message">
+                      <span>Beskrivning</span>
+
+                      <p>
+                        {initialMessage}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="booking-flow-v4-confirm">
+                    <div>
+                      <span>VALD SUPPORT</span>
+
+                      <strong>
+                        {supportType
+                          ? supportLabels[supportType]
+                          : "—"}
+                      </strong>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={
+                        bookingLoading ||
+                        !selectedSlot
+                      }
+                      onClick={() => {
+                        void submitBooking();
+                      }}
+                    >
+                      {bookingLoading
+                        ? "Bokar..."
+                        : "Bekräfta bokning"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
               <form
                 className="booking-flow-v4-details"
-                onSubmit={confirmBooking}
+                onSubmit={submitBooking}
               >
                 <div className="booking-flow-v4-details-head">
                   <span>
@@ -847,7 +1026,7 @@ export default function BookingEmbed() {
                 </div>
 
               </form>
-            )}
+              ))}
         </>
       ) : (
         <div className="booking-flow-v4-success">

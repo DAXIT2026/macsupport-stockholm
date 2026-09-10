@@ -53,7 +53,7 @@ export default function AudienceDetail({ audience }: Props) {
 
             <div className="audience-detail-actions">
               <Link
-                href="/boka"
+                href="/support?intent=booking#support-form"
                 className="premium-button primary"
               >
                 Boka support
@@ -209,7 +209,7 @@ export default function AudienceDetail({ audience }: Props) {
           <div className="audience-final-actions">
 
             <Link
-              href="/boka"
+              href="/support?intent=booking#support-form"
               className="premium-button primary"
             >
               Boka support

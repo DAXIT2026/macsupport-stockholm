@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import {
   isBookingSupportType,
@@ -6,8 +6,12 @@ import {
 
 import {
   getOnceHubApiKey,
-  getOnceHubCalendarId,
+  getOnceHubCalendarIdForBooking,
 } from "../../../../lib/oncehub-server";
+
+import {
+  isBookingCategory,
+} from "../../../../lib/booking-category";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +42,9 @@ export async function GET(
   const support =
     searchParams.get("support");
 
+  const booking =
+    searchParams.get("booking");
+
   const start =
     searchParams.get("start");
 
@@ -48,6 +55,17 @@ export async function GET(
     return NextResponse.json(
       {
         error: "Ogiltig supporttyp.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (!isBookingCategory(booking)) {
+    return NextResponse.json(
+      {
+        error: "Ogiltig bokningskategori.",
       },
       {
         status: 400,
@@ -71,7 +89,10 @@ export async function GET(
     getOnceHubApiKey();
 
   const calendarId =
-    getOnceHubCalendarId(support);
+    getOnceHubCalendarIdForBooking(
+      booking,
+      support
+    );
 
   if (!apiKey || !calendarId) {
     return NextResponse.json(

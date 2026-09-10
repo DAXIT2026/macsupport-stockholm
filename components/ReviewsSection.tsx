@@ -166,7 +166,7 @@ export default function ReviewsSection() {
           </div>
 
           <Link
-            href="/boka"
+            href="/support?intent=booking#support-form"
             className="premium-button primary"
           >
             Boka support

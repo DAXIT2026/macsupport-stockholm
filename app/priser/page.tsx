@@ -174,7 +174,7 @@ export default function PriserPage() {
                 </p>
 
                 <div className={styles.heroActions}>
-                  <Link href="/boka" className="premium-button primary">
+                  <Link href="/support?intent=booking#support-form" className="premium-button primary">
                     Boka support
                     <span aria-hidden="true">→</span>
                   </Link>
@@ -283,7 +283,7 @@ export default function PriserPage() {
                     ))}
                   </ul>
 
-                  <Link href="/boka" className={styles.planButton}>
+                  <Link href="/support?intent=booking#support-form" className={styles.planButton}>
                     <span>Boka nu</span>
                     <span aria-hidden="true">→</span>
                   </Link>
@@ -462,7 +462,7 @@ export default function PriserPage() {
               </div>
 
               <div className={styles.finalActions}>
-                <Link href="/boka" className="premium-button primary">
+                <Link href="/support?intent=booking#support-form" className="premium-button primary">
                   Boka support
                   <span aria-hidden="true">→</span>
                 </Link>

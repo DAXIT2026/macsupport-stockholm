@@ -1,35 +1,85 @@
-﻿import type { BookingSupportType } from "./booking";
+﻿import type {
+  BookingSupportType,
+} from "./booking";
+
+import type {
+  BookingCategory,
+} from "./booking-category";
+
+function readEnv(
+  name: string
+) {
+  return process.env[name]?.trim() || null;
+}
 
 export function getOnceHubCalendarId(
   support: BookingSupportType
 ) {
   const calendars: Record<
     BookingSupportType,
-    string | undefined
+    string | null
   > = {
     hembesok:
-      process.env.ONCEHUB_CALENDAR_HEMBESOK,
+      readEnv(
+        "ONCEHUB_CALENDAR_HEMBESOK"
+      ),
 
     distans:
-      process.env.ONCEHUB_CALENDAR_DISTANS,
+      readEnv(
+        "ONCEHUB_CALENDAR_DISTANS"
+      ),
 
     foretag:
-      process.env.ONCEHUB_CALENDAR_FORETAG,
+      readEnv(
+        "ONCEHUB_CALENDAR_FORETAG"
+      ),
   };
 
-  const calendarId =
-    calendars[support]?.trim();
+  return calendars[support];
+}
 
-  if (!calendarId) {
-    return null;
-  }
+export function getOnceHubCalendarIdForBooking(
+  booking: BookingCategory,
+  support: BookingSupportType
+) {
+  const categoryCalendars: Record<
+    BookingCategory,
+    string | null
+  > = {
+    general:
+      readEnv(
+        "ONCEHUB_CALENDAR_GENERAL"
+      ),
 
-  return calendarId;
+    support:
+      readEnv(
+        "ONCEHUB_CALENDAR_SUPPORT"
+      ),
+
+    senior:
+      readEnv(
+        "ONCEHUB_CALENDAR_SENIOR"
+      ),
+
+    networkCable:
+      readEnv(
+        "ONCEHUB_CALENDAR_NETWORK_CABLE"
+      ),
+
+    network:
+      readEnv(
+        "ONCEHUB_CALENDAR_NETWORK"
+      ),
+  };
+
+  return (
+    categoryCalendars[booking] ??
+    getOnceHubCalendarId(support)
+  );
 }
 
 export function getOnceHubApiKey() {
-  const apiKey =
-    process.env.ONCEHUB_API_KEY?.trim();
-
-  return apiKey || null;
+  return readEnv(
+    "ONCEHUB_API_KEY"
+  );
 }

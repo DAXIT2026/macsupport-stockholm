@@ -117,7 +117,7 @@ export default function FaqContactSection() {
           aria-hidden="true"
         >
           <Image
-            src="/images/network-digital-bg.jpg"
+            src="/images/wifi-network.jpg"
             alt=""
             fill
             sizes="100vw"
@@ -175,7 +175,7 @@ export default function FaqContactSection() {
 
 
               <Link
-                href="/boka"
+                href="/support?intent=booking#support-form"
                 className="contact-secondary-action"
               >
                 <span
@@ -199,7 +199,7 @@ export default function FaqContactSection() {
 
 
               <a
-                href="mailto:kontakt@macsupportstockholm.se"
+                href="/support?intent=message#support-form"
                 className="contact-secondary-action"
               >
                 <span
@@ -327,3 +327,4 @@ export default function FaqContactSection() {
     </>
   );
 }
+

@@ -92,7 +92,7 @@ export default function OmOssPage() {
 
               <div className="about-page-actions">
                 <Link
-                  href="/boka"
+                  href="/support?intent=booking#support-form"
                   className="premium-button primary"
                 >
                   Boka support
@@ -395,7 +395,7 @@ export default function OmOssPage() {
                   <div className="about-final-actions">
 
                     <Link
-                      href="/boka"
+                      href="/support?intent=booking#support-form"
                       className="premium-button primary"
                     >
                       Boka support

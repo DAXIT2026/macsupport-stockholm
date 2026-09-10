@@ -32,7 +32,7 @@ export default function Hero() {
           </div>
 
           <div className="hero-actions">
-            <Link href="/kontakt" className="premium-button primary">
+            <Link href="/support?intent=booking#support-form" className="premium-button primary">
               Boka support
             </Link>
 

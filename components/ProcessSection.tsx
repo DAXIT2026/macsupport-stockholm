@@ -95,7 +95,7 @@ export default function ProcessSection() {
             </strong>
           </div>
 
-          <Link href="/boka" className="premium-button primary">
+          <Link href="/support?intent=booking#support-form" className="premium-button primary">
             Boka support
           </Link>
         </div>

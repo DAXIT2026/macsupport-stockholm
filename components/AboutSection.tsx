@@ -111,7 +111,7 @@ export default function AboutSection() {
         <div className="about-v12-actions">
 
           <Link
-            href="/boka"
+            href="/support?intent=booking#support-form"
             className="premium-button primary"
           >
             Boka support

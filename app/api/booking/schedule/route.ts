@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import {
   isBookingSupportType,
@@ -6,11 +6,16 @@ import {
 
 import {
   getOnceHubApiKey,
-  getOnceHubCalendarId,
+  getOnceHubCalendarIdForBooking,
 } from "../../../../lib/oncehub-server";
+
+import {
+  isBookingCategory,
+} from "../../../../lib/booking-category";
 
 type ScheduleRequest = {
   support?: unknown;
+  booking?: unknown;
   startTime?: unknown;
   timeZone?: unknown;
   name?: unknown;
@@ -58,6 +63,19 @@ export async function POST(
   }
 
   if (
+    !isBookingCategory(body.booking)
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Bokningskategori saknas.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+  if (
     typeof body.startTime !== "string" ||
     typeof body.timeZone !== "string" ||
     typeof body.name !== "string" ||
@@ -101,7 +119,8 @@ export async function POST(
     getOnceHubApiKey();
 
   const calendarId =
-    getOnceHubCalendarId(
+    getOnceHubCalendarIdForBooking(
+      body.booking,
       body.support
     );
 

@@ -83,7 +83,7 @@ export default function ServicesSection() {
           </div>
 
           <Link
-            href="/boka"
+            href="/support?intent=booking#support-form"
             className="services-all-link"
           >
             Boka support

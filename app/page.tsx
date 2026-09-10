@@ -5,7 +5,6 @@ import TrustSection from "../components/TrustSection";
 import AudienceSection from "../components/AudienceSection";
 import ServicesSection from "../components/ServicesSection";
 import ProcessSection from "../components/ProcessSection";
-import BookingSection from "../components/BookingSection";
 import ReviewsSection from "../components/ReviewsSection";
 import AboutSection from "../components/AboutSection";
 import WhyUsSection from "../components/WhyUsSection";
@@ -26,7 +25,6 @@ export default function Home() {
         <AudienceSection />
         <ServicesSection />
         <ProcessSection />
-        <BookingSection />
         <ReviewsSection />
         <AboutSection />
         <WhyUsSection />

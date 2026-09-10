@@ -67,7 +67,7 @@ export default function TjansterPage() {
               <div className="services-overview-actions">
 
                 <Link
-                  href="/boka"
+                  href="/support?intent=booking#support-form"
                   className="premium-button primary"
                 >
                   Boka support
@@ -255,7 +255,7 @@ export default function TjansterPage() {
               <div className="services-guide-actions">
 
                 <Link
-                  href="/boka"
+                  href="/support?intent=booking#support-form"
                   className="premium-button primary"
                 >
                   Beskriv problemet

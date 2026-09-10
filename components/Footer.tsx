@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CookieSettingsButton from "./CookieSettingsButton";
 import { siteConfig } from "../lib/site-config";
+import { supportFormLinks } from "../lib/support-form-links";
 
 export default function Footer() {
   return (
@@ -31,7 +32,7 @@ export default function Footer() {
             <div className="footer-v3-cta-actions">
 
               <a
-                href={siteConfig.bookingPath}
+                href={supportFormLinks.booking}
                 
                 className="footer-v3-book"
               >
@@ -79,7 +80,7 @@ export default function Footer() {
                   height={110}
                   sizes="240px"
                 
-                  style={{ height: "auto" }}
+                  style={{ width: "100%", height: "auto" }}
                 
                 />
               </Link>
@@ -277,7 +278,7 @@ export default function Footer() {
 
 
         <a
-          href={siteConfig.bookingPath}
+          href={supportFormLinks.booking}
           
           className="mobile-v5-action mobile-v5-booking"
           aria-label="Boka support"
@@ -305,9 +306,9 @@ export default function Footer() {
 
 
         <Link
-          href="/kontakt"
+          href="/"
           className="mobile-v5-action mobile-v5-support"
-          aria-label="Få support och hjälp"
+          aria-label="Till startsidan"
         >
           <span
             className="mobile-v5-laser"
@@ -325,8 +326,8 @@ export default function Footer() {
           </span>
 
           <span className="mobile-v5-copy">
-            <small>Support</small>
-            <strong>Hjälp</strong>
+            <small>Till</small>
+            <strong>Hem</strong>
           </span>
         </Link>
 
@@ -334,3 +335,4 @@ export default function Footer() {
     </>
   );
 }
+

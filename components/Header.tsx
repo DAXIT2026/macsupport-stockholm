@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { siteConfig } from "../lib/site-config";
+import { supportFormLinks } from "../lib/support-form-links";
+import BrandOrbit from "./BrandOrbit";
 
 const mainNavigation = [
   {
@@ -275,6 +277,9 @@ export default function Header() {
               aria-hidden="true"
             />
 
+
+            <BrandOrbit />
+
             <Image
               src="/logos/logo-light.png"
               alt="Macsupport Stockholm"
@@ -444,7 +449,7 @@ export default function Header() {
 
 
           <a
-            href={siteConfig.bookingPath}
+            href={supportFormLinks.booking}
             
             className="header-v4-book"
           >
@@ -501,11 +506,16 @@ export default function Header() {
 
             <div className="header-v4-mobile-top">
 
+              <div className="header-v4-mobile-orbit">
+                <BrandOrbit />
+              </div>
+
               <Link
                 href="/"
                 className="header-v4-mobile-logo"
                 onClick={handleBrandClick}
               >
+
                 <Image
                   src="/logos/logo-light.png"
                   alt="Macsupport Stockholm"
@@ -703,7 +713,7 @@ export default function Header() {
 
 
               <a
-                href={siteConfig.bookingPath}
+                href={supportFormLinks.booking}
                 
                 className="header-v4-mobile-book"
               >

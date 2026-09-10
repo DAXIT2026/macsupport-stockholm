@@ -84,7 +84,7 @@ export default function HowItWorksPage() {
 
                 <div className={styles.heroActions}>
                   <Link
-                    href="/boka"
+                    href="/support?intent=booking#support-form"
                     className="premium-button primary"
                   >
                     Boka support
@@ -373,7 +373,7 @@ export default function HowItWorksPage() {
               </div>
 
               <Link
-                href="/boka"
+                href="/support?intent=booking#support-form"
                 className="premium-button primary"
               >
                 Boka support

@@ -150,7 +150,7 @@ export default function WhyUsSection() {
           </div>
 
           <Link
-            href="/boka"
+            href="/support?intent=booking#support-form"
             className="premium-button primary"
           >
             Boka support

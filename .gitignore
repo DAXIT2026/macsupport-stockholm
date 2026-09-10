@@ -41,3 +41,20 @@ app/**/*.backup-*.css
 # Temporary files
 *.tmp
 *.temp
+
+.env.local
+
+# Local CSS cleanup backups
+*.bak
+*.backup-before-*
+app/globals.css.backup-before-compat-fix
+app/premium.css.backup*
+
+# Local editor settings
+.vscode/
+
+# Temporary CSS audit files
+css-versioned-sections.txt
+premium-css-sections.txt
+support-unified-audit.txt
+oncehub-booking-pages.txt

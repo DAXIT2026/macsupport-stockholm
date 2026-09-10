@@ -5,7 +5,7 @@ export const siteConfig = {
   email: "kontakt@macsupportstockholm.se",
   emailHref: "mailto:kontakt@macsupportstockholm.se",
 
-  bookingPath: "/boka",
+  bookingPath: "/support?intent=booking#support-form",
   bookingProviderUrl: "https://go.oncehub.com/datorsupport",
 
   onceHub: {

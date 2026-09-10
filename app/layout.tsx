@@ -32,8 +32,7 @@ export const metadata: Metadata = {
     locale: "sv_SE",
     siteName: "Macsupport Stockholm",
     title: "Macsupport Stockholm",
-    description:
-      "Personlig IT-support i Stockholm för hem och företag.",
+    description: "Personlig IT-support i Stockholm för hem och företag.",
     images: [
       {
         url: "/images/hero-macbook.jpg",
@@ -47,8 +46,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Macsupport Stockholm",
-    description:
-      "Personlig IT-support i Stockholm.",
+    description: "Personlig IT-support i Stockholm.",
     images: ["/images/hero-macbook.jpg"],
   },
 
@@ -71,7 +69,10 @@ export default function RootLayout({
   return (
     <html lang="sv">
       <body>
-        <ScrollToTop />{children}<CookieConsent /></body>
+        <ScrollToTop />
+        {children}
+        <CookieConsent />
+      </body>
     </html>
   );
 }
