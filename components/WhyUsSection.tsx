@@ -3,42 +3,36 @@ import SupportVisual from "./SupportVisual";
 
 const reasons = [
   {
-    number: "01",
     visual: "personal" as const,
     title: "Personlig hjälp",
     text:
       "Du får kontakt med en riktig tekniker som lyssnar, förklarar och hjälper dig vidare.",
   },
   {
-    number: "02",
     visual: "response" as const,
     title: "Snabb återkoppling",
     text:
       "Vi hjälper dig hitta rätt väg redan från första kontakten.",
   },
   {
-    number: "03",
     visual: "pricing" as const,
     title: "Tydliga priser",
     text:
       "Du får veta upplägg och kostnad innan arbetet börjar.",
   },
   {
-    number: "04",
     visual: "flexible" as const,
     title: "Flexibel support",
     text:
       "Hjälp hemma, på arbetsplatsen eller på distans – beroende på vad som passar bäst.",
   },
   {
-    number: "05",
     visual: "experience" as const,
     title: "Lång erfarenhet",
     text:
       "Många års erfarenhet av personlig IT-support för olika behov.",
   },
   {
-    number: "06",
     visual: "secure" as const,
     title: "Trygga lösningar",
     text:
@@ -104,13 +98,10 @@ export default function WhyUsSection() {
           {reasons.map((reason) => (
             <article
               className="why-us-premium-card"
-              key={reason.number}
+              key={reason.title}
             >
 
               <div className="why-us-premium-card-top">
-                <span>
-                  {reason.number}
-                </span>
 
                 <i aria-hidden="true" />
               </div>

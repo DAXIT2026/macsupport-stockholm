@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./premium.css";
 import CookieConsent from "../components/CookieConsent";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import ScrollToTop from "../components/ScrollToTop";
 
 export const metadata: Metadata = {
@@ -67,10 +69,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="sv">
+    <html lang="sv" data-scroll-behavior="smooth">
       <body>
         <ScrollToTop />
+        <Header />
         {children}
+        <Footer />
         <CookieConsent />
       </body>
     </html>

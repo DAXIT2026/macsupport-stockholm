@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 import styles from "./page.module.css";
 
@@ -61,28 +59,24 @@ const plans = [
 
 const included = [
   {
-    number: "01",
     title: "Tydlig felsökning",
     text:
       "Vi börjar med att förstå problemet innan vi gör förändringar. Du får en tydlig bild av vad som behöver göras och varför.",
     type: "search",
   },
   {
-    number: "02",
     title: "Personlig support",
     text:
       "Du får hjälp av en tekniker som lyssnar och förklarar. Lösningen anpassas efter dig, din teknik och din situation.",
     type: "person",
   },
   {
-    number: "03",
     title: "Förklaring efteråt",
     text:
       "När arbetet är klart går vi igenom vad som har gjorts och vad som är bra att känna till framöver.",
     type: "document",
   },
   {
-    number: "04",
     title: "Rätt supportform",
     text:
       "Hemma, på distans eller för företaget – vi väljer den supportform som passar situationen bäst.",
@@ -153,7 +147,6 @@ function TrustIcon({ type }: { type: string }) {
 export default function PriserPage() {
   return (
     <>
-      <Header />
 
       <main className={styles.page}>
         <section className={styles.hero}>
@@ -357,9 +350,8 @@ export default function PriserPage() {
 
             <div className={styles.includedGrid}>
               {included.map((item) => (
-                <article className={styles.includedCard} key={item.number}>
+                <article className={styles.includedCard} key={item.title}>
                   <div className={styles.cardTop}>
-                    <span>{item.number}</span>
                     <i aria-hidden="true" />
                   </div>
 
@@ -476,7 +468,6 @@ export default function PriserPage() {
         </section>
       </main>
 
-      <Footer />
     </>
   );
 }

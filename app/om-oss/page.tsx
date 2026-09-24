@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import SupportPrincipleVisual from "../../components/SupportPrincipleVisual";
 import AboutAudienceVisual from "../../components/AboutAudienceVisual";
 
@@ -15,25 +13,21 @@ export const metadata: Metadata = {
 
 const principles = [
   {
-    number: "01",
     visual: "listen" as const,
     title: "Vi lyssnar först",
     text: "Bra support börjar med att förstå vad kunden faktiskt behöver, inte med att prata teknik.",
   },
   {
-    number: "02",
     visual: "explain" as const,
     title: "Vi förklarar tydligt",
     text: "Du ska förstå vad vi gör, varför vi gör det och vad nästa steg blir.",
   },
   {
-    number: "03",
     visual: "everyday" as const,
     title: "Vi bygger för vardagen",
     text: "Lösningen ska vara stabil och enkel att använda även efter att supporten är avslutad.",
   },
   {
-    number: "04",
     visual: "followup" as const,
     title: "Vi följer upp",
     text: "När det behövs ser vi till att kunden vet vad som är gjort och hur tekniken ska användas framåt.",
@@ -64,7 +58,6 @@ const audiences = [
 export default function OmOssPage() {
   return (
     <>
-      <Header />
 
       <main className="about-page">
 
@@ -191,10 +184,9 @@ export default function OmOssPage() {
               {principles.map((principle) => (
                 <article
                   className="about-principle-card about-principle-card-v2"
-                  key={principle.number}
+                  key={principle.title}
                 >
                   <div className="about-principle-card-top">
-                    <span>{principle.number}</span>
 
                     <i aria-hidden="true" />
                   </div>
@@ -422,7 +414,6 @@ export default function OmOssPage() {
 
       </main>
 
-      <Footer />
     </>
   );
 }

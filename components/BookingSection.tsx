@@ -184,9 +184,7 @@ export default function BookingSection() {
             {step === 1 && (
               <div className="booking-step">
 
-                <p className="booking-step-number">
-                  STEG 1 AV 3
-                </p>
+
 
                 <h3>
                   Vad behöver du hjälp med?
@@ -236,9 +234,7 @@ export default function BookingSection() {
             {step === 2 && (
               <div className="booking-step">
 
-                <p className="booking-step-number">
-                  STEG 2 AV 3
-                </p>
+
 
                 <h3>
                   Hur vill du ha hjälp?
@@ -286,9 +282,7 @@ export default function BookingSection() {
             {step === 3 && (
               <div className="booking-step booking-live-calendar">
 
-                <p className="booking-step-number">
-                  STEG 3 AV 3
-                </p>
+
 
                 <h3>
                   Välj en ledig tid.

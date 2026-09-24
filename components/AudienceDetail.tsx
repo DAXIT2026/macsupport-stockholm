@@ -152,9 +152,7 @@ export default function AudienceDetail({ audience }: Props) {
                   }
                 >
 
-                  <span className="audience-service-number">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
+
 
                   {imageSrc && (
                     <div

@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
 import ServiceDetail from "../../../components/ServiceDetail";
 
 import {
@@ -52,9 +50,7 @@ export default async function ServicePage({
 
   return (
     <>
-      <Header />
       <ServiceDetail service={service} />
-      <Footer />
     </>
   );
 }

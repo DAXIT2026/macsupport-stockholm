@@ -4,25 +4,21 @@ import RecoTimeline from "./RecoTimeline";
 
 const values = [
   {
-    number: "01",
     title: "Personlig kontakt",
     text:
       "Du får kontakt med en riktig tekniker som lyssnar, förklarar och följer upp.",
   },
   {
-    number: "02",
     title: "Tydliga besked",
     text:
       "Vi förklarar vad som behöver göras och hur nästa steg ser ut innan vi börjar.",
   },
   {
-    number: "03",
     title: "Praktiska lösningar",
     text:
       "Vi fokuserar på teknik som fungerar stabilt i vardagen – hemma eller på jobbet.",
   },
   {
-    number: "04",
     title: "Flexibel support",
     text:
       "Hjälp på plats, på kontoret eller via säker fjärrsupport beroende på behov.",
@@ -87,11 +83,9 @@ export default function AboutSection() {
           {values.map((value) => (
             <article
               className="about-v12-value"
-              key={value.number}
+              key={value.title}
             >
-              <span className="about-v12-value-number">
-                {value.number}
-              </span>
+
 
               <div>
                 <strong>

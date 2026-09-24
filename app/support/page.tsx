@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import SupportBookingFlow from "../../components/SupportBookingFlow";
-
 export const metadata: Metadata = {
   title: "Support & bokning | Macsupport Stockholm",
   description:
@@ -13,7 +11,6 @@ export const metadata: Metadata = {
 export default function SupportPage() {
   return (
     <>
-      <Header />
 
       <main className="support-hub-v1-page">
         <section className="support-hub-v1-hero">
@@ -45,14 +42,21 @@ export default function SupportPage() {
             </div>
 
             <div className="support-hub-v1-form">
-              <SupportBookingFlow />
-            </div>
+  <Suspense
+    fallback={
+      <div className="p-8 text-center text-gray-500">
+        Laddar formuläret...
+      </div>
+    }
+  >
+    <SupportBookingFlow />
+  </Suspense>
+</div>
 
           </div>
         </section>
       </main>
 
-      <Footer />
     </>
   );
 }

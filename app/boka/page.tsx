@@ -1,20 +1,12 @@
-import type { Metadata } from "next";
+"use client";
 
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import React, { Suspense } from "react";
 import BookingEmbed from "../../components/BookingEmbed";
 import { siteConfig } from "../../lib/site-config";
-
-export const metadata: Metadata = {
-  title: "Boka support | Macsupport Stockholm",
-  description:
-    "Boka personlig IT-support i Stockholm. Välj en tid som passar dig för hembesök, fjärrsupport eller företagssupport.",
-};
 
 export default function BookingPage() {
   return (
     <>
-      <Header />
 
       <main className="booking-page-v2">
         <section className="booking-page-v2-hero">
@@ -79,7 +71,10 @@ export default function BookingPage() {
                 </div>
               </div>
 
-              <BookingEmbed />
+              {/* Обертаємо компонент з useSearchParams у Suspense, вимагає Next.js */}
+              <Suspense fallback={<div className="p-8 text-center text-gray-500">Laddar bokningskalender...</div>}>
+                <BookingEmbed />
+              </Suspense>
             </div>
           </div>
         </section>
@@ -106,7 +101,6 @@ export default function BookingPage() {
         </section>
       </main>
 
-      <Footer />
     </>
   );
 }

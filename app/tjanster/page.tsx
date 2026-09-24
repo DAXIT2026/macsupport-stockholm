@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { services } from "../../lib/services";
 
 const categories = [
@@ -35,7 +33,6 @@ const categories = [
 export default function TjansterPage() {
   return (
     <>
-      <Header />
 
       <main className="services-overview-page">
 
@@ -142,7 +139,7 @@ export default function TjansterPage() {
 
             <div className="service-category-list">
 
-              {categories.map((category, categoryIndex) => {
+              {categories.map((category) => {
 
                 const categoryServices = services.filter(
                   (service) =>
@@ -157,9 +154,7 @@ export default function TjansterPage() {
 
                     <div className="service-category-header">
 
-                      <span className="service-category-index">
-                        {String(categoryIndex + 1).padStart(2, "0")}
-                      </span>
+
 
                       <div>
                         <h3>{category.title}</h3>
@@ -275,17 +270,17 @@ export default function TjansterPage() {
             <div className="services-guide-steps">
 
               <div>
-                <span>01</span>
+
                 <strong>Berätta vad som krånglar</strong>
               </div>
 
               <div>
-                <span>02</span>
+
                 <strong>Vi rekommenderar rätt hjälp</strong>
               </div>
 
               <div>
-                <span>03</span>
+
                 <strong>Välj tid och supportform</strong>
               </div>
 
@@ -346,7 +341,6 @@ export default function TjansterPage() {
 
       </main>
 
-      <Footer />
     </>
   );
 }

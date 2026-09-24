@@ -2,8 +2,6 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 import styles from "./page.module.css";
 
@@ -15,28 +13,24 @@ export const metadata: Metadata = {
 
 const steps = [
   {
-    number: "01",
     title: "Berätta vad du behöver hjälp med",
     text:
       "Berätta kort vad du behöver hjälp med. Du behöver inte känna till de tekniska detaljerna. Vi lyssnar, ställer rätt frågor och hjälper dig vidare.",
     label: "Första kontakt",
   },
   {
-    number: "02",
     title: "Vi rekommenderar rätt hjälp",
     text:
       "Vi går igenom situationen och bedömer vilken hjälp som passar bäst. Innan arbetet börjar får du tydliga besked om lösningen och nästa steg.",
     label: "Bedömning",
   },
   {
-    number: "03",
     title: "Vi löser problemet",
     text:
       "Vi hjälper dig på plats eller på distans och arbetar för en stabil och långsiktig lösning. Under tiden förklarar vi tydligt vad vi gör och varför.",
     label: "Support",
   },
   {
-    number: "04",
     title: "Du vet vad som har gjorts",
     text:
       "När allt är klart går vi igenom vad som har gjorts. Du får en tydlig sammanfattning och vet vad som är bra att tänka på framöver.",
@@ -61,7 +55,6 @@ const processStepImages = [
 export default function HowItWorksPage() {
   return (
     <>
-      <Header />
 
       <main className={styles.page}>
         <section className={styles.hero}>
@@ -152,9 +145,6 @@ export default function HowItWorksPage() {
                   <article
                     className={`${styles.journeyCard} ${styles.journeyContact}`}
                   >
-                    <span className={styles.journeyNumber}>
-                      01
-                    </span>
 
                     <span
                       className={styles.journeyIcon}
@@ -188,9 +178,6 @@ export default function HowItWorksPage() {
                   <article
                     className={`${styles.journeyCard} ${styles.journeyAssessment}`}
                   >
-                    <span className={styles.journeyNumber}>
-                      02
-                    </span>
 
                     <span
                       className={styles.journeyIcon}
@@ -221,9 +208,6 @@ export default function HowItWorksPage() {
                   <article
                     className={`${styles.journeyCard} ${styles.journeySupport}`}
                   >
-                    <span className={styles.journeyNumber}>
-                      03
-                    </span>
 
                     <span
                       className={styles.journeyIcon}
@@ -254,9 +238,6 @@ export default function HowItWorksPage() {
                   <article
                     className={`${styles.journeyCard} ${styles.journeyComplete}`}
                   >
-                    <span className={styles.journeyNumber}>
-                      04
-                    </span>
 
                     <span
                       className={styles.journeyIcon}
@@ -324,12 +305,9 @@ export default function HowItWorksPage() {
               {steps.map((step, index) => (
                 <article
                   className={styles.stepCard}
-                  key={step.number}
+                  key={step.title}
                 >
                   <div className={styles.stepTop}>
-                    <span className={styles.stepNumber}>
-                      {step.number}
-                    </span>
 
                     <span className={styles.stepLabel}>
                       {step.label}
@@ -384,7 +362,6 @@ export default function HowItWorksPage() {
         </section>
       </main>
 
-      <Footer />
     </>
   );
 }

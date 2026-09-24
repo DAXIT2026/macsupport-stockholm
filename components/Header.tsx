@@ -266,30 +266,21 @@ export default function Header() {
 
         <div className="premium-shell header-v4-main-inner">
 
-          <Link
-            href="/"
-            className="header-v4-brand"
-            aria-label="Macsupport Stockholm – startsida"
-            onClick={handleBrandClick}
-          >
-            <span
-              className="header-v4-brand-glow"
-              aria-hidden="true"
-            />
-
-
-            <BrandOrbit />
-
-            <Image
-              src="/logos/logo-light.png"
-              alt="Macsupport Stockholm"
-              width={250}
-              height={90}
-              priority
-            />
-          </Link>
-
-
+            <Link
+  href="/"
+  className="header-v4-brand"
+  aria-label="Macsupport Stockholm – startsida"
+  onClick={handleBrandClick}
+>
+  <Image
+    src="/logos/logo-light.png"
+    alt="Macsupport Stockholm"
+    width={220}
+    height={70}
+    priority
+    className="header-v4-logo-img"
+  />
+</Link>
           <nav
             className="header-v4-nav"
             aria-label="Huvudnavigation"
@@ -521,6 +512,7 @@ export default function Header() {
                   alt="Macsupport Stockholm"
                   width={210}
                   height={76}
+                  className="header-v4-logo-img"
                 />
               </Link>
 

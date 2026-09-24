@@ -95,7 +95,7 @@ export default function ServicesSection() {
 
         <div className="services-grid">
 
-          {services.map((service, index) => (
+          {services.map((service) => (
 
             <article
               className="service-card"
@@ -117,9 +117,7 @@ export default function ServicesSection() {
 
                 <div className="service-card-overlay" />
 
-                <span className="service-number">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+
 
                 <span className="service-image-arrow">
                   ↗

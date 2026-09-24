@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { resolveBookingCategory } from "../lib/booking-category";
-import { buildOnceHubBookingUrl } from "../lib/oncehub-public-booking";
+import BookingCalendarPicker, { type BookingSelection } from "./BookingCalendarPicker";
 
 type CustomerType =
   | "privat"
@@ -151,6 +151,9 @@ export default function UnifiedSupportForm() {
   const [company, setCompany] =
     useState("");
 
+  const [organisationNumber, setOrganisationNumber] =
+    useState("");
+
   const [postcode, setPostcode] =
     useState("");
 
@@ -162,9 +165,14 @@ export default function UnifiedSupportForm() {
 
   const [error, setError] =
     useState<string | null>(null);
-const bookingLoading = false;
+const [bookingSelection, setBookingSelection] =
+    useState<BookingSelection | null>(null);
 
-  const bookingId: string | null = null;
+  const [bookingLoading, setBookingLoading] =
+    useState(false);
+
+  const [bookingId, setBookingId] =
+    useState<string | null>(null);
 
   const bookingCategory = useMemo(() => {
     if (!customerType || !service) {
@@ -181,55 +189,96 @@ const bookingLoading = false;
     customerType,
     service,
   ]);
-  function openOnceHubBooking() {
+  async function confirmBooking() {
     setError(null);
 
-    if (!customerType) {
-      setError("Välj vem supporten gäller.");
-      return;
-    }
-
-    if (!service) {
-      setError("Välj vad du behöver hjälp med.");
-      return;
-    }
-
-    if (!supportMode) {
-      setError("Välj hur du vill få hjälp.");
-      return;
-    }
-
-    if (!name.trim()) {
-      setError("Fyll i ditt namn.");
-      return;
-    }
-
-    if (!email.trim()) {
-      setError("Fyll i din e-postadress.");
-      return;
-    }
-
-    if (!phone.trim()) {
-      setError("Fyll i ditt telefonnummer.");
+    if (!validateContactFields()) {
       return;
     }
 
     if (!bookingCategory) {
-      setError("Vi kunde inte välja rätt bokningskalender.");
+      setError(
+        "Vi kunde inte välja rätt bokningskalender."
+      );
       return;
     }
 
-    const url = buildOnceHubBookingUrl({
-      booking: bookingCategory,
-      name,
-      email,
-      phone,
-      skipBookingForm: false,
-    });
+    if (!bookingSelection) {
+      setError(
+        "Välj ett datum och en ledig tid."
+      );
+      return;
+    }
 
-    window.location.href = url;
+    setBookingLoading(true);
+
+    try {
+      const response = await fetch(
+        "/api/booking/schedule",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            booking: bookingCategory,
+            support:
+              supportMode === "hembesok"
+                ? "hembesok"
+                : "distans",
+            startTime:
+              bookingSelection.startTime,
+            timeZone:
+              Intl.DateTimeFormat()
+                .resolvedOptions()
+                .timeZone,
+            name: name.trim(),
+            email: email.trim(),
+            phone: phone.trim(),
+            location:
+              bookingSelection.location,
+            company:
+              customerType === "foretag"
+                ? company.trim()
+                : null,
+            organisationNumber:
+              customerType === "foretag"
+                ? organisationNumber.trim()
+                : null,
+            postcode:
+              supportMode === "hembesok"
+                ? postcode.trim()
+                : null,
+            message: message.trim(),
+            smsConsent,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(
+          data?.error ??
+            "Bokningen kunde inte genomföras."
+        );
+        return;
+      }
+
+      setBookingId(
+        data.bookingId ??
+          data.id ??
+          "Bekräftad"
+      );
+    } catch {
+      setError(
+        "Bokningssystemet kunde inte nås. Försök igen."
+      );
+    } finally {
+      setBookingLoading(false);
+    }
   }
-  function validateContactFields() {
+function validateContactFields() {
     setError(null);
 
     if (!customerType) {
@@ -285,6 +334,17 @@ const bookingLoading = false;
     ) {
       setError(
         "Fyll i företagsnamn."
+      );
+
+      return false;
+    }
+
+    if (
+      customerType === "foretag" &&
+      !organisationNumber.trim()
+    ) {
+      setError(
+        "Fyll i organisationsnummer."
       );
 
       return false;
@@ -369,9 +429,7 @@ const bookingLoading = false;
 
           <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
-              <span>
-                01
-              </span>
+
 
               <div>
                 <strong>
@@ -427,9 +485,7 @@ const bookingLoading = false;
 
           <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
-              <span>
-                02
-              </span>
+
 
               <div>
                 <strong>
@@ -487,9 +543,7 @@ const bookingLoading = false;
 
           <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
-              <span>
-                03
-              </span>
+
 
               <div>
                 <strong>
@@ -547,9 +601,7 @@ const bookingLoading = false;
 
 <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
-              <span>
-                05
-              </span>
+
 
               <div>
                 <strong>
@@ -622,23 +674,51 @@ const bookingLoading = false;
 
 
               {customerType === "foretag" && (
-                <label>
-                  <span>
-                    Företagsnamn
-                  </span>
+                <>
+                  <label>
+                    <span>
+                      Företagsnamn *
+                    </span>
 
-                  <input
-                    type="text"
-                    autoComplete="organization"
-                    value={company}
-                    onChange={(event) =>
-                      setCompany(
-                        event.target.value
-                      )
-                    }
-                    placeholder="Företagsnamn"
-                  />
-                </label>
+                    <input
+                      type="text"
+                      autoComplete="organization"
+                      value={company}
+                      onChange={(event) =>
+                        setCompany(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Företagsnamn"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    <span>
+                      Organisationsnummer *
+                    </span>
+
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      value={organisationNumber}
+                      onChange={(event) =>
+                        setOrganisationNumber(
+                          event.target.value
+                        )
+                      }
+                      placeholder="XXXXXX-XXXX"
+                      aria-describedby="support-organisation-help"
+                      required
+                    />
+
+                    <small id="support-organisation-help">
+                      Ange företagets organisationsnummer.
+                    </small>
+                  </label>
+                </>
               )}
 
 
@@ -710,20 +790,70 @@ const bookingLoading = false;
           </section>
 
 
+          {intent === "booking" && (
+            <section className="support-unified-v1-section support-unified-v1-calendar">
+              <div className="support-unified-v1-section-head">
+                <div>
+                  <strong>
+                    Välj datum och tid
+                  </strong>
+
+                  <p>
+                    Välj först en ledig dag och därefter den tid som passar dig.
+                  </p>
+                </div>
+              </div>
+
+              <BookingCalendarPicker
+                support={
+                  supportMode === "hembesok"
+                    ? "hembesok"
+                    : supportMode === "distans" ||
+                        supportMode === "telefon"
+                      ? "distans"
+                      : customerType === "foretag"
+                        ? "foretag"
+                        : null
+                }
+                booking={bookingCategory}
+                onChange={setBookingSelection}
+              />
+
+              {bookingSelection && (
+                <div className="support-unified-v1-selected-time">
+                  <div>
+                    <span>
+                      Din valda tid
+                    </span>
+
+                    <strong>
+                      {bookingSelection.dateLabel}
+                    </strong>
+
+                    <small>
+                      {bookingSelection.timeLabel}
+                    </small>
+                  </div>
+
+                  <span aria-hidden="true">
+                    ✓
+                  </span>
+                </div>
+              )}
+            </section>
+          )}
           <section className="support-unified-v1-section support-unified-v1-final">
 
             <div className="support-unified-v1-section-head">
-              <span>
-                06
-              </span>
+
 
               <div>
                 <strong>
-                  Fortsätt till lediga tider
+                  Kontrollera och bekräfta
                 </strong>
 
                 <p>
-                  Kontrollera dina uppgifter. Därefter öppnar vi rätt kalender med aktuella lediga tider.
+                  Kontrollera dina uppgifter och den valda tiden innan du bekräftar bokningen.
                 </p>
               </div>
             </div>
@@ -785,14 +915,12 @@ const bookingLoading = false;
                   <button
                     type="button"
                     className="is-primary"
-                    disabled={bookingLoading}
-                    onClick={() => {
-                      openOnceHubBooking();
-                    }}
+                    disabled={bookingLoading || !bookingSelection}
+                    onClick={confirmBooking}
                   >
                     {bookingLoading
-                      ? "Öppnar..."
-                      : "Fortsätt till lediga tider"}
+                      ? "Bekräftar..."
+                      : "Bekräfta bokning"}
                   </button>
                 ) : (
                   <>

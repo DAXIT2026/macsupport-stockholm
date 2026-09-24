@@ -24,9 +24,7 @@ export default function ContactNextStep() {
         <div className="contact-next-v1-grid">
 
           <div className="contact-next-v1-card">
-            <span className="contact-next-v1-number">
-              01
-            </span>
+
 
             <strong>
               Beskriv vad du behöver hjälp med
@@ -39,9 +37,7 @@ export default function ContactNextStep() {
           </div>
 
           <div className="contact-next-v1-card">
-            <span className="contact-next-v1-number">
-              02
-            </span>
+
 
             <strong>
               Välj hur du vill få hjälp
@@ -54,9 +50,7 @@ export default function ContactNextStep() {
           </div>
 
           <div className="contact-next-v1-card">
-            <span className="contact-next-v1-number">
-              03
-            </span>
+
 
             <strong>
               Få en tydlig bekräftelse

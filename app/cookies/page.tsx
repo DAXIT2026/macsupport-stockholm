@@ -1,8 +1,6 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 export const metadata: Metadata = {
   title: "Cookies",
@@ -13,7 +11,6 @@ export const metadata: Metadata = {
 export default function CookiesPage() {
   return (
     <>
-      <Header />
 
       <main className="legal-page">
 
@@ -116,7 +113,6 @@ export default function CookiesPage() {
 
       </main>
 
-      <Footer />
     </>
   );
 }

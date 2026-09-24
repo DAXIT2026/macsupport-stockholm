@@ -1168,14 +1168,12 @@ export default function ServiceDetail({
               (feature, index) => (
                 <article
                   className="service-v2-feature-card"
-                  key={feature.number}
+                  key={feature.title}
                 >
 
                   <div className="service-v2-feature-top">
 
-                    <span className="service-v2-feature-number">
-                      {feature.number}
-                    </span>
+
 
                     <span
                       className="service-v2-feature-live"
@@ -1246,15 +1244,8 @@ export default function ServiceDetail({
             <div className="service-v2-needs-grid">
 
               {service.problems.map(
-                (problem, index) => (
+                (problem) => (
                   <article key={problem}>
-
-                    <span>
-                      {String(index + 1).padStart(
-                        2,
-                        "0"
-                      )}
-                    </span>
 
                     <strong>
                       {problem}
@@ -1269,7 +1260,7 @@ export default function ServiceDetail({
             <div className="service-v2-needs-grid">
 
               {service.problems.map(
-                (problem, index) => (
+                (problem) => (
                   <article
                     className="service-v3-problem-card"
                     key={problem}
@@ -1282,12 +1273,7 @@ export default function ServiceDetail({
 
                     <div className="service-v5-problem-meta">
 
-                      <span className="service-v3-problem-number">
-                        {String(index + 1).padStart(
-                          2,
-                          "0"
-                        )}
-                      </span>
+
 
                       <span className="service-v5-problem-status">
                         Vi hjälper dig

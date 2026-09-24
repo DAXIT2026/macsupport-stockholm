@@ -2,25 +2,21 @@ import Link from "next/link";
 
 const steps = [
   {
-    number: "01",
     title: "Berätta vad du behöver hjälp med",
     text: "Välj exempelvis Mac, WiFi, säkerhet, Microsoft 365 eller ett annat problem.",
     icon: "⌘",
   },
   {
-    number: "02",
     title: "Välj hur du vill få hjälp",
     text: "Hembesök, företagssupport eller säker hjälp på distans.",
     icon: "↗",
   },
   {
-    number: "03",
     title: "Välj en tid som passar",
     text: "Se tillgängliga tider och välj den som fungerar bäst för dig.",
     icon: "◷",
   },
   {
-    number: "04",
     title: "Vi bekräftar allt",
     text: "Du får en tydlig bekräftelse med tid, kontaktuppgifter och nästa steg.",
     icon: "✓",
@@ -61,11 +57,9 @@ export default function ProcessSection() {
 
         <div className="process-grid">
           {steps.map((step, index) => (
-            <article className="process-card" key={step.number}>
+            <article className="process-card" key={step.title}>
               <div className="process-card-top">
-                <span className="process-number">
-                  {step.number}
-                </span>
+
 
                 <span className="process-icon">
                   {step.icon}

@@ -271,8 +271,8 @@ export default function Footer() {
           </span>
 
           <span className="mobile-v5-copy">
-            <small>Ring</small>
-            <strong>Direkt</strong>
+            <small></small>
+            <strong>Ring Direkt</strong>
           </span>
         </a>
 
@@ -299,8 +299,8 @@ export default function Footer() {
           </span>
 
           <span className="mobile-v5-copy">
-            <small>Boka</small>
-            <strong>Support</strong>
+            <small></small>
+            <strong>Boka Support</strong>
           </span>
         </a>
 
@@ -326,8 +326,8 @@ export default function Footer() {
           </span>
 
           <span className="mobile-v5-copy">
-            <small>Till</small>
-            <strong>Hem</strong>
+            <small></small>
+            <strong>Till Hem</strong>
           </span>
         </Link>
 

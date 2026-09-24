@@ -1,226 +1,246 @@
-﻿import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-
-export const metadata: Metadata = {
-  title: "Kontakt",
-  description:
-    "Kontakta Macsupport Stockholm för personlig IT-support, hembesök, företagssupport och säker fjärrhjälp.",
-};
-
-const contactOptions = [
-  {
-    label: "RING OSS",
-    title: "08-400 117 26",
-    text: "Prata direkt med oss om du behöver snabb hjälp eller vill ställa en fråga.",
-    href: "tel:+46840011726",
-    action: "Ring nu",
-    icon: "☎",
-    external: true,
-  },
-  {
-    label: "SUPPORT & KONTAKT",
-    title: "Boka support eller skicka en förfrågan",
-    text: "Beskriv ditt problem i samma formulär. Där kan du välja supportform, ledig tid eller skicka förfrågan utan bokning.",
-    href: "/support?intent=booking#support-form",
-    action: "Öppna formuläret",
-    icon: "→",
-    external: false,
-  },
-];
+import { Suspense } from "react";
+import UnifiedSupportForm from "@/components/UnifiedSupportForm";
 
 export default function KontaktPage() {
   return (
-    <>
-      <Header />
+    <main className="contact-ref-v5">
+      <section className="contact-ref-v5-hero">
+        <div className="contact-ref-v5-hero-copy">
+          <p className="contact-ref-v5-eyebrow">
+            Kontakt
+          </p>
 
-      <main className="contact-page">
-        <section className="contact-page-hero">
-          <div className="contact-page-orb contact-page-orb-one" />
-          <div className="contact-page-orb contact-page-orb-two" />
+          <h1>
+            Hur kan vi
+            <span>hjälpa dig?</span>
+          </h1>
 
-          <div className="premium-shell contact-page-hero-inner">
-            <div className="contact-page-heading">
-              <p className="premium-eyebrow">
-                KONTAKT
-              </p>
+          <p className="contact-ref-v5-lead">
+            Ring oss direkt eller fyll i vårt formulär.
+            Vi finns här för privatpersoner, företag och
+            seniorer i hela Stockholm.
+          </p>
 
-              <h1>
-                Hur kan vi
-                <br />
-                hjälpa dig?
-              </h1>
-
+          <div
+            className="contact-ref-v5-trust"
+            aria-label="Fördelar"
+          >
+            <div>
+              <span className="contact-ref-v5-trust-icon">↯</span>
               <p>
-                Ring oss direkt eller öppna vårt gemensamma
-                supportformulär. Du behöver inte veta exakt
-                vad problemet heter.
+                <strong>Snabb respons</strong>
+                <small>Ofta samma dag</small>
               </p>
             </div>
 
-            <div className="contact-choice-grid contact-choice-grid-direct">
-              {contactOptions.map((option) =>
-                option.external ? (
-                  <a
-                    href={option.href}
-                    className="contact-choice-card"
-                    key={option.label}
-                  >
-                    <div className="contact-choice-icon">
-                      {option.icon}
-                    </div>
+            <div>
+              <span className="contact-ref-v5-trust-icon">✓</span>
+              <p>
+                <strong>Trygg &amp; säker</strong>
+                <small>Erfarna tekniker</small>
+              </p>
+            </div>
 
-                    <span>{option.label}</span>
-
-                    <h2>{option.title}</h2>
-
-                    <p>{option.text}</p>
-
-                    <strong>
-                      {option.action}
-                      <i>→</i>
-                    </strong>
-                  </a>
-                ) : (
-                  <Link
-                    href={option.href}
-                    className="contact-choice-card contact-choice-card-primary"
-                    key={option.label}
-                  >
-                    <div className="contact-choice-icon">
-                      {option.icon}
-                    </div>
-
-                    <span>{option.label}</span>
-
-                    <h2>{option.title}</h2>
-
-                    <p>{option.text}</p>
-
-                    <strong>
-                      {option.action}
-                      <i>→</i>
-                    </strong>
-                  </Link>
-                )
-              )}
+            <div>
+              <span className="contact-ref-v5-trust-icon">●</span>
+              <p>
+                <strong>I hela Stockholm</strong>
+                <small>På plats eller online</small>
+              </p>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section className="contact-page-main">
-          <div className="premium-shell contact-page-layout">
-            <div className="contact-form-shell">
-              <div className="contact-direct-v1">
-                <span className="premium-eyebrow">
-                  EN VÄG VIDARE
-                </span>
+        <div className="contact-ref-v5-visual">
+          <Image
+            src="/images/contact-support-hero.webp"
+            alt="Macsupport Stockholm – personlig IT-support"
+            fill
+            priority
+            sizes="(max-width: 900px) 100vw, 52vw"
+          />
 
-                <h2>
-                  Allt samlat i ett formulär.
-                </h2>
+          <div className="contact-ref-v5-orbit orbit-one" />
+          <div className="contact-ref-v5-orbit orbit-two" />
+        </div>
+      </section>
 
-                <p>
-                  I formuläret väljer du vem supporten gäller,
-                  vad du behöver hjälp med och hur du vill få
-                  hjälp. Därefter kan du välja en ledig tid
-                  eller skicka din förfrågan utan bokning.
-                </p>
+      <section className="contact-ref-v5-actions">
+        <article className="contact-ref-v5-action">
+          <div className="contact-ref-v5-action-icon">
+            ☎
+          </div>
 
-                <Link
-                  href="/support?intent=booking#support-form"
-                  className="premium-button primary"
-                >
-                  Boka support / Kontakta oss
-                  <span aria-hidden="true">→</span>
-                </Link>
+          <p className="contact-ref-v5-action-kicker">
+            Ring oss direkt
+          </p>
+
+          <h2>08-400 117 26</h2>
+
+          <p className="contact-ref-v5-action-copy">
+            Prata med en tekniker – vi hjälper dig snabbt
+            och personligt.
+          </p>
+
+          <a
+            href="tel:0840011726"
+            className="contact-ref-v5-button contact-ref-v5-button-primary"
+          >
+            <span>Ring nu</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </article>
+
+        <article className="contact-ref-v5-action">
+          <div className="contact-ref-v5-action-icon">
+            ◫
+          </div>
+
+          <p className="contact-ref-v5-action-kicker">
+            Boka support
+          </p>
+
+          <h2>Välj en ledig tid direkt</h2>
+
+          <p className="contact-ref-v5-action-copy">
+            Se våra lediga tider och boka den tid som
+            passar dig.
+          </p>
+
+          <Link
+            href="/kontakt?intent=booking#contact-form"
+            className="contact-ref-v5-button contact-ref-v5-button-soft"
+          >
+            <span>Boka support</span>
+            <span aria-hidden="true">→</span>
+          </Link>
+        </article>
+
+        <article className="contact-ref-v5-action">
+          <div className="contact-ref-v5-action-icon">
+            ◉
+          </div>
+
+          <p className="contact-ref-v5-action-kicker">
+            Snabb fråga
+          </p>
+
+          <h2>Skicka ett meddelande</h2>
+
+          <p className="contact-ref-v5-action-copy">
+            Fyll i formuläret så återkommer vi så snart
+            som möjligt.
+          </p>
+
+          <a
+            href="#contact-form"
+            className="contact-ref-v5-button contact-ref-v5-button-soft"
+          >
+            <span>Öppna formuläret</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      </section>
+
+      <section
+        className="contact-ref-v5-main"
+        id="contact-form"
+      >
+        <div className="contact-ref-v5-form">
+          <header className="contact-ref-v5-form-head">
+            <p className="contact-ref-v5-eyebrow">
+              En väg vidare
+            </p>
+
+            <h2>Allt samlat i ett formulär.</h2>
+
+            <p>
+              Beskriv ditt problem i samma formulär.
+              Där kan du välja supportform, ledig tid
+              eller skicka en förfrågan utan bokning.
+            </p>
+          </header>
+
+          <Suspense
+            fallback={
+              <div className="support-unified-v1-loading">
+                Laddar bokningsformuläret…
               </div>
-            </div>
+            }
+          >
+            <UnifiedSupportForm />
+          </Suspense>
+        </div>
 
-            <aside className="contact-sidebar">
-              <div className="contact-sidebar-card">
-                <p className="premium-eyebrow">
-                  SÅ FUNGERAR DET
-                </p>
+        <aside className="contact-ref-v5-sidebar">
+          <section className="contact-ref-v5-process">
+            <p className="contact-ref-v5-eyebrow">
+              Så fungerar det
+            </p>
 
-                <h2>
-                  Enkelt från början.
-                </h2>
+            <h2>Enkelt från början.</h2>
 
-                <div className="contact-sidebar-list">
-                  <div>
-                    <span>01</span>
-
-                    <p>
-                      <strong>
-                        Öppna formuläret
-                      </strong>
-
-                      <small>
-                        Du kommer direkt till samma formulär
-                        för support, kontakt och bokning.
-                      </small>
-                    </p>
-                  </div>
-
-                  <div>
-                    <span>02</span>
-
-                    <p>
-                      <strong>
-                        Beskriv ditt behov
-                      </strong>
-
-                      <small>
-                        Välj några enkla alternativ och
-                        beskriv problemet med egna ord.
-                      </small>
-                    </p>
-                  </div>
-
-                  <div>
-                    <span>03</span>
-
-                    <p>
-                      <strong>
-                        Boka eller skicka
-                      </strong>
-
-                      <small>
-                        Välj en ledig tid eller skicka
-                        förfrågan utan att boka.
-                      </small>
-                    </p>
-                  </div>
+            <div className="contact-ref-v5-process-list">
+              <article>
+                <span>1</span>
+                <div>
+                  <strong>Öppna formuläret</strong>
+                  <p>
+                    Du väljer tjänst, beskriver ditt
+                    problem och hur du vill få hjälp.
+                  </p>
                 </div>
-              </div>
+              </article>
 
-              <div className="contact-sidebar-help">
-                <span>
-                  BEHÖVER DU HJÄLP DIREKT?
-                </span>
+              <article>
+                <span>2</span>
+                <div>
+                  <strong>Välj tid eller skicka</strong>
+                  <p>
+                    Boka en ledig tid direkt eller
+                    skicka en förfrågan utan bokning.
+                  </p>
+                </div>
+              </article>
 
-                <strong>
-                  Ring oss.
-                </strong>
+              <article>
+                <span>3</span>
+                <div>
+                  <strong>Vi bekräftar</strong>
+                  <p>
+                    Du får en bekräftelse och vi hör
+                    av oss när det behövs.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </section>
 
-                <p>
-                  Om datorn eller nätverket stoppar arbetet
-                  är telefon ofta snabbaste vägen.
-                </p>
+          <section className="contact-ref-v5-phone">
+            <div className="contact-ref-v5-phone-icon">
+              ☎
+            </div>
 
-                <a href="tel:+46840011726">
-                  08-400 117 26 →
-                </a>
-              </div>
-            </aside>
-          </div>
-        </section>
-      </main>
+            <p className="contact-ref-v5-phone-kicker">
+              Behöver du hjälp direkt?
+            </p>
 
-      <Footer />
-    </>
+            <h2>Ring oss.</h2>
+
+            <p>
+              Om datorn eller nätverket stoppar arbetet
+              är det ofta snabbast att prata med oss.
+            </p>
+
+            <a href="tel:0840011726">
+              <span>08-400 117 26</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </section>
+        </aside>
+      </section>
+    </main>
   );
 }

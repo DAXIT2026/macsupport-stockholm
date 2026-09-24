@@ -1,5 +1,4 @@
 import SplashIntro from "../components/SplashIntro";
-import Header from "../components/Header";
 import Hero from "../components/Hero";
 import TrustSection from "../components/TrustSection";
 import AudienceSection from "../components/AudienceSection";
@@ -10,14 +9,12 @@ import AboutSection from "../components/AboutSection";
 import WhyUsSection from "../components/WhyUsSection";
 import PricingSection from "../components/PricingSection";
 import FaqContactSection from "../components/FaqContactSection";
-import Footer from "../components/Footer";
 
 export default function Home() {
   return (
     <>
       <SplashIntro />
 
-      <Header />
 
       <main>
         <Hero />
@@ -32,7 +29,6 @@ export default function Home() {
         <FaqContactSection />
       </main>
 
-      <Footer />
     </>
   );
 }
