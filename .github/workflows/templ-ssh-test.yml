@@ -1,0 +1,30 @@
+name: Test Templ SSH
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure SSH
+        shell: bash
+        env:
+          TEMPL_SSH_KEY: ${{ secrets.TEMPL_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$TEMPL_SSH_KEY" > ~/.ssh/templ_deploy
+          chmod 600 ~/.ssh/templ_deploy
+          ssh-keyscan -p 22062 35.228.74.13 >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Test connection to Templ
+        shell: bash
+        run: |
+          ssh -i ~/.ssh/templ_deploy \
+            -p 22062 \
+            -o BatchMode=yes \
+            user_4695@35.228.74.13 \
+            'echo "SSH CONNECTION OK"'
