@@ -72546,3 +72546,47 @@ body:has(a[href^="tel:"]) .contact-card:first-child > a:last-child {
 }
 
 /* BOOKING CALENDAR SHOWCASE V1 END */
+/* =========================================================
+   HEADER LOGO FINAL POLISH
+   Desktop / Tablet / Mobile
+   ========================================================= */
+
+.header-v4-brand > img,
+.header-v4-mobile-logo > img {
+  display: block;
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  filter:
+    saturate(1.02)
+    contrast(1.02);
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+  .header-v4-mobile-logo {
+    width: min(34vw, 175px) !important;
+    max-width: 175px !important;
+  }
+
+  .header-v4-mobile-logo > img {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .header-v4-mobile-logo {
+    width: min(40vw, 155px) !important;
+    max-width: 155px !important;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 430px) {
+  .header-v4-mobile-logo {
+    width: min(42vw, 145px) !important;
+    max-width: 145px !important;
+  }
+}

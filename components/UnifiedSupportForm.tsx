@@ -123,9 +123,9 @@ export default function UnifiedSupportForm() {
     );
 
   const intent =
-    searchParams.get("intent") === "booking"
-      ? "booking"
-      : "message";
+  searchParams.get("intent") === "message"
+    ? "message"
+    : "booking";
 
   const audience =
     searchParams.get("audience") ?? "general";
