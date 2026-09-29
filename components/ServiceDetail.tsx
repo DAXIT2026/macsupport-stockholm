@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { ServiceItem } from "../lib/services";
+import UniFiProductShowcase from "./UniFiProductShowcase";
 
 type Props = {
   service: ServiceItem;
@@ -1212,6 +1213,11 @@ export default function ServiceDetail({
 
       </section>
 
+
+      {(service.slug === "kameraovervakning" ||
+        service.slug === "wifi-natverk") && (
+        <UniFiProductShowcase serviceSlug={service.slug} />
+      )}
 
       <section className="service-v2-needs">
 

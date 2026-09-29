@@ -8,58 +8,74 @@ import Footer from "../components/Footer";
 import ScrollToTop from "../components/ScrollToTop";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://macsupport-stockholm.se"),
+  metadataBase: new URL("https://www.macsupportstockholm.se"),
 
   title: {
-    default: "Macsupport Stockholm | Personlig IT-support",
-    template: "%s | Macsupport Stockholm",
+    default: "MacSupport Stockholm | Mac- & IT-support i Stockholm",
+    template: "%s | MacSupport Stockholm",
   },
 
   description:
-    "Personlig IT-support i Stockholm för privatpersoner, seniorer och företag. Mac, WiFi, Microsoft 365, säkerhet, fjärrsupport och hembesök.",
+    "Professionell Mac- och IT-support i Stockholm för privatpersoner, seniorer och företag. Hjälp med Mac, WiFi, nätverk, Microsoft 365, säkerhet och hembesök.",
 
   keywords: [
-    "Macsupport Stockholm",
+    "MacSupport Stockholm",
+    "Mac-support Stockholm",
     "IT-support Stockholm",
     "datorhjälp Stockholm",
-    "Mac hjälp",
-    "WiFi support",
+    "Mac hjälp Stockholm",
+    "WiFi support Stockholm",
+    "nätverk support Stockholm",
     "Microsoft 365 support",
-    "fjärrsupport",
-    "IT-säkerhet",
+    "IT-säkerhet Stockholm",
+    "hembesök IT-support Stockholm",
   ],
+
+  alternates: {
+    canonical: "https://www.macsupportstockholm.se/",
+  },
 
   openGraph: {
     type: "website",
     locale: "sv_SE",
-    siteName: "Macsupport Stockholm",
-    title: "Macsupport Stockholm",
-    description: "Personlig IT-support i Stockholm för hem och företag.",
+    url: "https://www.macsupportstockholm.se/",
+    siteName: "MacSupport Stockholm",
+    title: "MacSupport Stockholm | Mac- & IT-support i Stockholm",
+    description:
+      "Professionell Mac- och IT-support i Stockholm för privatpersoner, seniorer och företag.",
     images: [
       {
         url: "/images/hero-macbook.jpg",
         width: 1200,
         height: 630,
-        alt: "Macsupport Stockholm",
+        alt: "MacSupport Stockholm – professionell Mac- och IT-support",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Macsupport Stockholm",
-    description: "Personlig IT-support i Stockholm.",
+    title: "MacSupport Stockholm | Mac- & IT-support i Stockholm",
+    description:
+      "Professionell Mac- och IT-support i Stockholm för privatpersoner, seniorer och företag.",
     images: ["/images/hero-macbook.jpg"],
   },
 
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
   },
 };
 

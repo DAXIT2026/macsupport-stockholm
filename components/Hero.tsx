@@ -62,11 +62,6 @@ export default function Hero() {
           <div className="laser laser-three" />
 
           <div className="hero-network" />
-
-          <div className="hero-floating-card">
-            <strong>12 år i rad på Reco</strong>
-            <span>2015–2026 · rekommenderat företag</span>
-          </div>
         </div>
       </div>
     </section>

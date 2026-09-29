@@ -58,9 +58,9 @@ const serviceGroups = [
     description: "Stabil uppkoppling och tryggare teknik.",
     items: [
       {
-        label: "WiFi & nätverk",
+        label: "WiFi & UniFi-nätverk",
         href: "/tjanster/wifi-natverk",
-        description: "Bättre täckning, router och nätverk.",
+        description: "WiFi, UniFi Network och stabilare täckning.",
       },
       {
         label: "IT-säkerhet",
@@ -68,9 +68,9 @@ const serviceGroups = [
         description: "Backup, säkerhet och tryggare enheter.",
       },
       {
-        label: "Kameraövervakning",
+        label: "UniFi Protect & kameror",
         href: "/tjanster/kameraovervakning",
-        description: "Moderna kameralösningar och fjärråtkomst.",
+        description: "UniFi Protect, kameror och trygg fjärråtkomst.",
       },
     ],
   },
@@ -728,15 +728,3 @@ export default function Header() {
     </header>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

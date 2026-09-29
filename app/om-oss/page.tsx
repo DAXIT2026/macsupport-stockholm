@@ -110,14 +110,6 @@ export default function OmOssPage() {
               />
 
               <div className="about-page-image-overlay" />
-
-              <div className="about-page-visual-card">
-                <span>VÅR FILOSOFI</span>
-                <strong>
-                  Teknik ska lösa problem,
-                  inte skapa nya.
-                </strong>
-              </div>
             </div>
 
           </div>

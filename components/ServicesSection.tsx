@@ -11,11 +11,11 @@ const services = [
     href: "/tjanster/mac-support",
   },
   {
-    title: "WiFi & nätverk",
-    category: "NÄTVERK",
+    title: "WiFi & UniFi-nätverk",
+    category: "UNIFI NETWORK",
     description:
-      "Stabilt WiFi, bättre täckning, mesh-system, routerhjälp och nätverksinstallation.",
-    image: "/images/wifi-network.jpg",
+      "Stabilt wifi, bättre täckning och moderna nätverkslösningar med bland annat UniFi Network.",
+    image: "/images/u7-pro.png",
     href: "/tjanster/wifi-natverk",
   },
   {
@@ -46,8 +46,8 @@ const services = [
     title: "Kameraövervakning",
     category: "UNIFI PROTECT",
     description:
-      "Moderna kameror, smarta notiser och trygg fjärråtkomst för hem och företag.",
-    image: "/images/camera-unifi-protect.jpg",
+      "Kameraövervakning med UniFi Protect för hem, fastigheter och företag.",
+    image: "/images/unifi-g6-bullet.png",
     href: "/tjanster/kameraovervakning",
   },
 ];

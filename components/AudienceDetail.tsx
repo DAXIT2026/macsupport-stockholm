@@ -79,13 +79,6 @@ export default function AudienceDetail({ audience }: Props) {
             />
 
             <div className="audience-detail-image-overlay" />
-
-            <div className="audience-image-card">
-              <span>PERSONLIG SUPPORT</span>
-              <strong>
-                Hjälp anpassad efter dig.
-              </strong>
-            </div>
           </div>
 
         </div>

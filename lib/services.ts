@@ -139,7 +139,7 @@ export const services: ServiceItem[] = [
       "Bättre täckning, stabilare uppkoppling och professionella nätverkslösningar.",
     description:
       "Vi felsöker långsamt internet, dålig WiFi-täckning och instabila nätverk och hjälper dig med router, mesh-system, kabeldragning och UniFi.",
-    image: "/images/wifi-network.jpg",
+    image: "/images/u7-pro.png",
     benefits: [
       "Stabil täckning där du faktiskt behöver den",
       "Router och mesh-WiFi",
@@ -249,7 +249,7 @@ export const services: ServiceItem[] = [
       "Genomtänkta kameralösningar för hem, kontor och verksamheter.",
     description:
       "Vi hjälper till med planering, installation och konfiguration av moderna kamerasystem med hög bildkvalitet och säker fjärråtkomst.",
-    image: "/images/camera-unifi-protect.jpg",
+    image: "/images/unifi-g6-bullet.png",
     benefits: [
       "Kameror för ute och inne",
       "Mobil åtkomst",
