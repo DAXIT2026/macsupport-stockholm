@@ -73,11 +73,51 @@ export const metadata: Metadata = {
     },
   },
 
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+ icons: {
+  icon: [
+    { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    { url: "/favicon.ico", type: "image/x-icon" },
+  ],
+  shortcut: "/icon.png",
+  apple: [
+    { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+  ],
+},
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.macsupportstockholm.se/#organization",
+  name: "MacSupport Stockholm",
+  url: "https://www.macsupportstockholm.se/",
+  logo: {
+    "@type": "ImageObject",
+    url: "https://www.macsupportstockholm.se/logos/logo-mark.png",
+  },
+  image: "https://www.macsupportstockholm.se/images/hero-macbook.jpg",
+  telephone: "+46840011726",
+  email: "kontakt@macsupportstockholm.se",
+  areaServed: {
+    "@type": "City",
+    name: "Stockholm",
   },
 };
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://www.macsupportstockholm.se/#website",
+  url: "https://www.macsupportstockholm.se/",
+  name: "MacSupport Stockholm",
+  alternateName: "Macsupport Stockholm",
+  publisher: {
+    "@id": "https://www.macsupportstockholm.se/#organization",
+  },
+  inLanguage: "sv-SE",
+};
+
+const structuredData = [organizationSchema, websiteSchema];
 
 export default function RootLayout({
   children,
@@ -87,6 +127,16 @@ export default function RootLayout({
   return (
     <html lang="sv" data-scroll-behavior="smooth">
       <body>
+        {structuredData.map((schema) => (
+          <script
+            key={schema["@id"] ?? schema.name ?? "schema"}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(schema).replace(/</g, "\\u003c"),
+            }}
+          />
+        ))}
+
         <ScrollToTop />
         <Header />
         {children}
