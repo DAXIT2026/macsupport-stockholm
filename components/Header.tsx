@@ -96,17 +96,35 @@ export default function Header() {
   const pathname = usePathname();
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileServicesOpen, setMobileServicesOpen] =
-    useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
-  const closeButtonRef =
-    useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  const menuButtonRef =
-    useRef<HTMLButtonElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  const mobileDrawerRef =
-    useRef<HTMLElement>(null);
+  const mobileDrawerRef = useRef<HTMLElement>(null);
+
+  const servicesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const activeElement = document.activeElement;
+
+      if (
+        servicesRef.current &&
+        activeElement instanceof HTMLElement &&
+        servicesRef.current.contains(activeElement)
+      ) {
+        activeElement.blur();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     if (!mobileOpen) {
@@ -144,8 +162,8 @@ export default function Header() {
 
       const focusableElements = Array.from(
         drawer.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        )
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
       ).filter((element) => {
         return element.offsetParent !== null;
       });
@@ -155,22 +173,15 @@ export default function Header() {
       }
 
       const firstElement = focusableElements[0];
-      const lastElement =
-        focusableElements[focusableElements.length - 1];
+      const lastElement = focusableElements[focusableElements.length - 1];
 
-      if (
-        event.shiftKey &&
-        document.activeElement === firstElement
-      ) {
+      if (event.shiftKey && document.activeElement === firstElement) {
         event.preventDefault();
         lastElement.focus();
         return;
       }
 
-      if (
-        !event.shiftKey &&
-        document.activeElement === lastElement
-      ) {
+      if (!event.shiftKey && document.activeElement === lastElement) {
         event.preventDefault();
         firstElement.focus();
       }
@@ -183,10 +194,7 @@ export default function Header() {
 
       window.clearTimeout(focusTimer);
 
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown
-      );
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [mobileOpen]);
 
@@ -211,10 +219,7 @@ export default function Header() {
   }
 
   function isActive(href: string) {
-    return (
-      pathname === href ||
-      pathname.startsWith(`${href}/`)
-    );
+    return pathname === href || pathname.startsWith(`${href}/`);
   }
 
   function closeMobileMenu(restoreFocus = false) {
@@ -229,63 +234,42 @@ export default function Header() {
   }
 
   const servicesActive =
-    pathname === "/tjanster" ||
-    pathname.startsWith("/tjanster/");
+    pathname === "/tjanster" || pathname.startsWith("/tjanster/");
 
   return (
     <header className="header-v4">
-
       <div className="header-v4-topline">
-
         <div className="premium-shell header-v4-topline-inner">
-
-          <span>
-            Personlig IT-support i Stockholm
-          </span>
+          <span>Personlig IT-support i Stockholm</span>
 
           <div>
-            <a href={siteConfig.phoneHref}>
-              {siteConfig.phoneDisplay}
-            </a>
+            <a href={siteConfig.phoneHref}>{siteConfig.phoneDisplay}</a>
 
-            <span aria-hidden="true">
-              ·
-            </span>
+            <span aria-hidden="true">·</span>
 
-            <a href={`mailto:${siteConfig.email}`}>
-              {siteConfig.email}
-            </a>
+            <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
           </div>
-
         </div>
-
       </div>
 
-
       <div className="header-v4-main">
-
         <div className="premium-shell header-v4-main-inner">
-
-            <Link
-  href="/"
-  className="header-v4-brand"
-  aria-label="Macsupport Stockholm – startsida"
-  onClick={handleBrandClick}
->
-  <Image
-    src="/logos/logo-light.png"
-    alt="Macsupport Stockholm"
-    width={220}
-    height={70}
-    priority
-    className="header-v4-logo-img"
-  />
-</Link>
-          <nav
-            className="header-v4-nav"
-            aria-label="Huvudnavigation"
+          <Link
+            href="/"
+            className="header-v4-brand"
+            aria-label="Macsupport Stockholm – startsida"
+            onClick={handleBrandClick}
           >
-
+            <Image
+              src="/logos/logo-light.png"
+              alt="Macsupport Stockholm"
+              width={220}
+              height={70}
+              priority
+              className="header-v4-logo-img"
+            />
+          </Link>
+          <nav className="header-v4-nav" aria-label="Huvudnavigation">
             {mainNavigation.slice(0, 2).map((item) => (
               <Link
                 key={item.href}
@@ -300,15 +284,14 @@ export default function Header() {
               </Link>
             ))}
 
-
             <div
+              ref={servicesRef}
               className={
                 servicesActive
                   ? "header-v4-services active"
                   : "header-v4-services"
               }
             >
-
               <Link
                 href="/tjanster"
                 className="header-v4-services-trigger"
@@ -317,71 +300,39 @@ export default function Header() {
               >
                 <span>Tjänster</span>
 
-                <span
-                  className="header-v4-chevron"
-                  aria-hidden="true"
-                >
+                <span className="header-v4-chevron" aria-hidden="true">
                   ↓
                 </span>
               </Link>
 
-
               <div className="header-v4-mega-shell">
-
-                <div
-                  className="header-v4-mega"
-                  id="header-v4-services-menu"
-                >
-
+                <div className="header-v4-mega" id="header-v4-services-menu">
                   <div className="header-v4-mega-intro">
+                    <span>TJÄNSTER</span>
 
-                    <span>
-                      TJÄNSTER
-                    </span>
-
-                    <h2>
-                      Rätt hjälp för rätt situation.
-                    </h2>
+                    <h2>Rätt hjälp för rätt situation.</h2>
 
                     <p>
-                      Från Mac och WiFi till Microsoft 365,
-                      säkerhet och fjärrsupport.
+                      Från Mac och WiFi till Microsoft 365, säkerhet och
+                      fjärrsupport.
                     </p>
 
-                    <Link
-                      href="/tjanster"
-                      className="header-v4-mega-all"
-                    >
+                    <Link href="/tjanster" className="header-v4-mega-all">
                       Se alla tjänster
-                      <span aria-hidden="true">
-                        →
-                      </span>
+                      <span aria-hidden="true">→</span>
                     </Link>
-
                   </div>
 
-
                   <div className="header-v4-mega-groups">
-
                     {serviceGroups.map((group) => (
-                      <div
-                        className="header-v4-mega-group"
-                        key={group.label}
-                      >
-
+                      <div className="header-v4-mega-group" key={group.label}>
                         <div className="header-v4-mega-group-heading">
-                          <span>
-                            {group.label}
-                          </span>
+                          <span>{group.label}</span>
 
-                          <p>
-                            {group.description}
-                          </p>
+                          <p>{group.description}</p>
                         </div>
 
-
                         <div className="header-v4-mega-links">
-
                           {group.items.map((item) => (
                             <Link
                               href={item.href}
@@ -393,34 +344,21 @@ export default function Header() {
                               }
                             >
                               <span>
-                                <strong>
-                                  {item.label}
-                                </strong>
+                                <strong>{item.label}</strong>
 
-                                <small>
-                                  {item.description}
-                                </small>
+                                <small>{item.description}</small>
                               </span>
 
-                              <i aria-hidden="true">
-                                →
-                              </i>
+                              <i aria-hidden="true">→</i>
                             </Link>
                           ))}
-
                         </div>
-
                       </div>
                     ))}
-
                   </div>
-
                 </div>
-
               </div>
-
             </div>
-
 
             {mainNavigation.slice(2).map((item) => (
               <Link
@@ -435,24 +373,13 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-
           </nav>
 
+          <a href={supportFormLinks.booking} className="header-v4-book">
+            <span>Boka support</span>
 
-          <a
-            href={supportFormLinks.booking}
-            
-            className="header-v4-book"
-          >
-            <span>
-              Boka support
-            </span>
-
-            <i aria-hidden="true">
-              →
-            </i>
+            <i aria-hidden="true">→</i>
           </a>
-
 
           <button
             ref={menuButtonRef}
@@ -467,25 +394,17 @@ export default function Header() {
             <span />
             <span />
           </button>
-
         </div>
-
       </div>
 
-
       {mobileOpen && (
-        <div
-          className="header-v4-mobile-layer"
-          id="header-v4-mobile"
-        >
-
+        <div className="header-v4-mobile-layer" id="header-v4-mobile">
           <button
             type="button"
             className="header-v4-mobile-backdrop"
             aria-label="Stäng meny"
             onClick={() => closeMobileMenu(true)}
           />
-
 
           <aside
             ref={mobileDrawerRef}
@@ -494,9 +413,7 @@ export default function Header() {
             aria-modal="true"
             aria-label="Navigation"
           >
-
             <div className="header-v4-mobile-top">
-
               <div className="header-v4-mobile-orbit">
                 <BrandOrbit />
               </div>
@@ -506,7 +423,6 @@ export default function Header() {
                 className="header-v4-mobile-logo"
                 onClick={handleBrandClick}
               >
-
                 <Image
                   src="/logos/logo-light.png"
                   alt="Macsupport Stockholm"
@@ -515,7 +431,6 @@ export default function Header() {
                   className="header-v4-logo-img"
                 />
               </Link>
-
 
               <button
                 ref={closeButtonRef}
@@ -526,28 +441,15 @@ export default function Header() {
               >
                 ×
               </button>
-
             </div>
-
 
             <div className="header-v4-mobile-intro">
+              <span>MENY</span>
 
-              <span>
-                MENY
-              </span>
-
-              <strong>
-                Vad behöver du hjälp med?
-              </strong>
-
+              <strong>Vad behöver du hjälp med?</strong>
             </div>
 
-
-            <nav
-              className="header-v4-mobile-nav"
-              aria-label="Mobilnavigation"
-            >
-
+            <nav className="header-v4-mobile-nav" aria-label="Mobilnavigation">
               {mainNavigation.slice(0, 2).map((item) => (
                 <Link
                   key={item.href}
@@ -559,16 +461,11 @@ export default function Header() {
                   }
                   onClick={() => closeMobileMenu()}
                 >
-                  <span>
-                    {item.label}
-                  </span>
+                  <span>{item.label}</span>
 
-                  <i aria-hidden="true">
-                    →
-                  </i>
+                  <i aria-hidden="true">→</i>
                 </Link>
               ))}
-
 
               <div
                 className={
@@ -577,7 +474,6 @@ export default function Header() {
                     : "header-v4-mobile-services"
                 }
               >
-
                 <button
                   type="button"
                   className={
@@ -587,78 +483,49 @@ export default function Header() {
                   }
                   aria-expanded={mobileServicesOpen}
                   aria-controls="header-v4-mobile-services-panel"
-                  onClick={() =>
-                    setMobileServicesOpen(
-                      (current) => !current
-                    )
-                  }
+                  onClick={() => setMobileServicesOpen((current) => !current)}
                 >
-                  <span>
-                    Tjänster
-                  </span>
+                  <span>Tjänster</span>
 
-                  <i aria-hidden="true">
-                    +
-                  </i>
+                  <i aria-hidden="true">+</i>
                 </button>
-
 
                 <div
                   id="header-v4-mobile-services-panel"
                   className="header-v4-mobile-services-panel"
                 >
-
                   <Link
                     href="/tjanster"
                     className="header-v4-mobile-all-services"
                     onClick={() => closeMobileMenu()}
                   >
                     Alla tjänster
-                    <span aria-hidden="true">
-                      →
-                    </span>
+                    <span aria-hidden="true">→</span>
                   </Link>
-
 
                   {serviceGroups.map((group) => (
                     <div
                       className="header-v4-mobile-service-group"
                       key={group.label}
                     >
-
-                      <span>
-                        {group.label}
-                      </span>
-
+                      <span>{group.label}</span>
 
                       {group.items.map((item) => (
                         <Link
                           href={item.href}
                           key={item.href}
-                          className={
-                            isActive(item.href)
-                              ? "active"
-                              : ""
-                          }
+                          className={isActive(item.href) ? "active" : ""}
                           onClick={() => closeMobileMenu()}
                         >
-                          <strong>
-                            {item.label}
-                          </strong>
+                          <strong>{item.label}</strong>
 
-                          <small>
-                            {item.description}
-                          </small>
+                          <small>{item.description}</small>
                         </Link>
                       ))}
-
                     </div>
                   ))}
-
                 </div>
-
               </div>
-
 
               {mainNavigation.slice(2).map((item) => (
                 <Link
@@ -671,60 +538,34 @@ export default function Header() {
                   }
                   onClick={() => closeMobileMenu()}
                 >
-                  <span>
-                    {item.label}
-                  </span>
+                  <span>{item.label}</span>
 
-                  <i aria-hidden="true">
-                    →
-                  </i>
+                  <i aria-hidden="true">→</i>
                 </Link>
               ))}
-
             </nav>
 
-
             <div className="header-v4-mobile-support">
+              <span>BEHÖVER DU HJÄLP?</span>
 
-              <span>
-                BEHÖVER DU HJÄLP?
-              </span>
+              <a href={siteConfig.phoneHref} className="header-v4-mobile-phone">
+                <small>Ring direkt</small>
 
-              <a
-                href={siteConfig.phoneHref}
-                className="header-v4-mobile-phone"
-              >
-                <small>
-                  Ring direkt
-                </small>
-
-                <strong>
-                  {siteConfig.phoneDisplay}
-                </strong>
+                <strong>{siteConfig.phoneDisplay}</strong>
               </a>
-
 
               <a
                 href={supportFormLinks.booking}
-                
                 className="header-v4-mobile-book"
               >
-                <span>
-                  Boka support
-                </span>
+                <span>Boka support</span>
 
-                <i aria-hidden="true">
-                  →
-                </i>
+                <i aria-hidden="true">→</i>
               </a>
-
             </div>
-
           </aside>
-
         </div>
       )}
-
     </header>
   );
 }
