@@ -72,17 +72,13 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-
- icons: {
-  icon: [
-    { url: "/icon.png", type: "image/png", sizes: "512x512" },
-    { url: "/favicon.ico", type: "image/x-icon" },
-  ],
-  shortcut: "/icon.png",
-  apple: [
-    { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
-  ],
-},
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 const organizationSchema = {
