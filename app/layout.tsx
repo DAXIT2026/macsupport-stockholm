@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import "./premium.css";
-import CookieConsent from "../components/CookieConsent";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ScrollToTop from "../components/ScrollToTop";
@@ -122,6 +121,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sv" data-scroll-behavior="smooth">
+      <head>
+        <script
+          id="CookieConsent"
+          src="https://policy.app.cookieinformation.com/uc.js"
+          data-culture="SV"
+          data-gcm-version="2.0"
+          type="text/javascript"
+        />
+      </head>
       <body>
         {structuredData.map((schema) => (
           <script
@@ -137,7 +145,6 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
-        <CookieConsent />
       </body>
     </html>
   );

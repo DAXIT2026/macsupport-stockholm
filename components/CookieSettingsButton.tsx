@@ -1,12 +1,16 @@
-﻿"use client";
+"use client";
+
+declare global {
+  interface Window {
+    CookieConsent?: {
+      renew: () => void;
+    };
+  }
+}
 
 export default function CookieSettingsButton() {
   function openSettings() {
-    window.dispatchEvent(
-      new Event(
-        "macsupport-open-cookie-settings"
-      )
-    );
+    window.CookieConsent?.renew();
   }
 
   return (
