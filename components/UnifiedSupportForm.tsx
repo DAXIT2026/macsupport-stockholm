@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { resolveBookingCategory } from "../lib/booking-category";
 import BookingCalendarPicker, { type BookingSelection } from "./BookingCalendarPicker";
+import BookingChoiceIcon, { type BookingChoiceIconName } from "./BookingChoiceIcon";
 
 type CustomerType =
   | "privat"
@@ -161,7 +162,10 @@ export default function UnifiedSupportForm() {
     useState("");
 
   const [smsConsent, setSmsConsent] =
-    useState(true);
+    useState(false);
+
+  const [emailConsent, setEmailConsent] =
+    useState(false);
 
   const [error, setError] =
     useState<string | null>(null);
@@ -251,6 +255,7 @@ const [bookingSelection, setBookingSelection] =
                 : null,
             message: message.trim(),
             smsConsent,
+            emailConsent,
           }),
         }
       );
@@ -350,6 +355,22 @@ function validateContactFields() {
       return false;
     }
 
+    if (!message.trim()) {
+      setError(
+        "Beskriv problemet kort."
+      );
+
+      return false;
+    }
+
+    if (!smsConsent && !emailConsent) {
+      setError(
+        "V?lj SMS, e-post eller b?da f?r bokningsbekr?ftelsen."
+      );
+
+      return false;
+    }
+
     return true;
   }
 
@@ -427,174 +448,238 @@ function validateContactFields() {
 
         <div className="support-unified-v1-content">
 
-          <section className="support-unified-v1-section">
-            <div className="support-unified-v1-section-head">
-
-
-              <div>
-                <strong>
-                  Vem gäller det?
-                </strong>
-
-                <p>
-                  Välj den typ som passar dig.
-                </p>
-              </div>
-            </div>
-
-            <div className="support-unified-v1-compact-field">
-  <label htmlFor="support-customer">
-    Välj kundtyp
-  </label>
-
-  <div className="support-unified-v1-select-wrap">
-    <select
-      id="support-customer"
-      value={customerType ?? ""}
-      onChange={(event) =>
-        setCustomerType(
-          event.target.value
-            ? (event.target.value as CustomerType)
-            : null
-        )
-      }
-      required
-    >
-      <option value="" disabled>
-        Välj vem supporten gäller
-      </option>
-
-      <option value="privat">
-        Privatperson
-      </option>
-
-      <option value="senior">
-        Senior / pensionär
-      </option>
-
-      <option value="foretag">
-        Företag
-      </option>
-    </select>
-
-    <span aria-hidden="true">↓</span>
-  </div>
-</div>
-</section>
-
 
           <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
-
-
               <div>
-                <strong>
-                  Vad behöver du hjälp med?
-                </strong>
-
-                <p>
-                  Du kan beskriva problemet mer längre ner.
-                </p>
+                <strong>Vem behöver hjälp? *</strong>
+                <p>Välj den kundtyp som passar bäst.</p>
               </div>
             </div>
 
-            <div className="support-unified-v1-compact-field">
-  <label htmlFor="support-service">
-    Välj tjänst
-  </label>
+            <div
+              className="support-unified-v1-choice-grid support-unified-v1-choice-grid--3"
+              role="radiogroup"
+              aria-label="Vem behöver hjälp?"
+            >
+              {[
+                {
+                  value: "privat",
+                  title: "Privat",
+                  description: "För dig eller familjen.",
+                  icon: "person",
+                },
+                {
+                  value: "senior",
+                  title: "Senior",
+                  description: "Enkel hjälp i lugn takt.",
+                  icon: "senior",
+                },
+                {
+                  value: "foretag",
+                  title: "Företag",
+                  description: "IT-support för företaget.",
+                  icon: "business",
+                },
+              ].map((option) => {
+                const active = customerType === option.value;
 
-  <div className="support-unified-v1-select-wrap">
-    <select
-      id="support-service"
-      value={service ?? ""}
-      onChange={(event) =>
-        setService(
-          event.target.value
-            ? (event.target.value as ServiceType)
-            : null
-        )
-      }
-      required
-    >
-      <option value="" disabled>
-        Vad behöver du hjälp med?
-      </option>
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    className={[
+                      "support-unified-v1-choice",
+                      active ? "is-selected" : "",
+                    ].filter(Boolean).join(" ")}
+                    onClick={() => {
+                      setCustomerType(option.value as CustomerType);
+                      setBookingSelection(null);
+                    }}
+                  >
+                    <span
+                      className="support-unified-v1-choice-icon"
+                      aria-hidden="true"
+                    >
+                      <BookingChoiceIcon name={option.icon as BookingChoiceIconName} />
+                    </span>
 
-      {(
-        Object.entries(serviceLabels) as [
-          ServiceType,
-          string
-        ][]
-      ).map(([value, label]) => (
-        <option
-          key={value}
-          value={value}
-        >
-          {label}
-        </option>
-      ))}
-    </select>
+                    <span className="support-unified-v1-choice-copy">
+                      <strong>{option.title}</strong>
+                      <small>{option.description}</small>
+                    </span>
 
-    <span aria-hidden="true">↓</span>
-  </div>
-</div>
-</section>
+                    <span
+                      className="support-unified-v1-choice-status"
+                      aria-hidden="true"
+                    >
+                      {active ? "\u2713" : ""}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
 
 
           <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
-
-
               <div>
-                <strong>
-                  Hur vill du få hjälp?
-                </strong>
-
-                <p>
-                  Vi anpassar nästa steg efter ditt val.
-                </p>
+                <strong>Vad behöver du hjälp med? *</strong>
+                <p>Välj det alternativ som bäst beskriver problemet.</p>
               </div>
             </div>
 
-            <div className="support-unified-v1-compact-field">
-  <label htmlFor="support-mode">
-    Välj supportform
-  </label>
+            <div
+              className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
+              role="radiogroup"
+              aria-label="Vad behöver du hjälp med?"
+            >
+              {[
+                {
+                  value: "mac",
+                  title: "Dator & program",
+                  description: "Dator, program, uppdateringar och inställningar.",
+                  icon: "computer",
+                },
+                {
+                  value: "wifi",
+                  title: "Internet & Wi-Fi",
+                  description: "Wi-Fi, router, internet och anslutning.",
+                  icon: "wifi",
+                },
+                {
+                  value: "email",
+                  title: "E-post & konton",
+                  description: "E-post, lösenord, inloggning och konton.",
+                  icon: "mail",
+                },
+                {
+                  value: "other",
+                  title: "Jag vet inte / Annat",
+                  description: "Välj detta om du är osäker på problemet.",
+                  icon: "help",
+                },
+              ].map((option) => {
+                const active = service === option.value;
 
-  <div className="support-unified-v1-select-wrap">
-    <select
-      id="support-mode"
-      value={supportMode ?? ""}
-      onChange={(event) =>
-        setSupportMode(
-          event.target.value
-            ? (event.target.value as SupportMode)
-            : null
-        )
-      }
-      required
-    >
-      <option value="" disabled>
-        Hur vill du få hjälp?
-      </option>
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    className={[
+                      "support-unified-v1-choice",
+                      active ? "is-selected" : "",
+                    ].filter(Boolean).join(" ")}
+                    onClick={() => {
+                      setService(option.value as ServiceType);
+                      setBookingSelection(null);
+                    }}
+                  >
+                    <span
+                      className="support-unified-v1-choice-icon"
+                      aria-hidden="true"
+                    >
+                      <BookingChoiceIcon name={option.icon as BookingChoiceIconName} />
+                    </span>
 
-      <option value="hembesok">
-        Hembesök
-      </option>
+                    <span className="support-unified-v1-choice-copy">
+                      <strong>{option.title}</strong>
+                      <small>{option.description}</small>
+                    </span>
 
-      <option value="distans">
-        Support på distans
-      </option>
+                    <span
+                      className="support-unified-v1-choice-status"
+                      aria-hidden="true"
+                    >
+                      {active ? "\u2713" : ""}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
-      <option value="telefon">
-        Telefonsupport
-      </option>
-    </select>
 
-    <span aria-hidden="true">↓</span>
-  </div>
-</div>
-</section>
+
+          <section className="support-unified-v1-section">
+            <div className="support-unified-v1-section-head">
+              <div>
+                <strong>Hur vill du få hjälp? *</strong>
+                <p>Välj det sätt som passar dig bäst.</p>
+              </div>
+            </div>
+
+            <div
+              className="support-unified-v1-choice-grid support-unified-v1-choice-grid--3"
+              role="radiogroup"
+              aria-label="Hur vill du få hjälp?"
+            >
+              {[
+                {
+                  value: "hembesok",
+                  title: "Hembesök",
+                  description: "Vi kommer hem till dig.",
+                  icon: "home",
+                },
+                {
+                  value: "distans",
+                  title: "Hjälp på distans",
+                  description: "Vi hjälper dig via din dator.",
+                  icon: "remote",
+                },
+                {
+                  value: "telefon",
+                  title: "Telefonsupport",
+                  description: "Vi hjälper dig via telefon.",
+                  icon: "phone",
+                },
+              ].map((option) => {
+                const active = supportMode === option.value;
+
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    className={[
+                      "support-unified-v1-choice",
+                      active ? "is-selected" : "",
+                    ].filter(Boolean).join(" ")}
+                    onClick={() => {
+                      setSupportMode(option.value as SupportMode);
+                      setBookingSelection(null);
+                    }}
+                  >
+                    <span
+                      className="support-unified-v1-choice-icon"
+                      aria-hidden="true"
+                    >
+                      <BookingChoiceIcon name={option.icon as BookingChoiceIconName} />
+                    </span>
+
+                    <span className="support-unified-v1-choice-copy">
+                      <strong>{option.title}</strong>
+                      <small>{option.description}</small>
+                    </span>
+
+                    <span
+                      className="support-unified-v1-choice-status"
+                      aria-hidden="true"
+                    >
+                      {active ? "\u2713" : ""}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
 
 
@@ -725,7 +810,7 @@ function validateContactFields() {
               {supportMode === "hembesok" && (
                 <label>
                   <span>
-                    Postnummer / ort
+                    Postnummer / ort *
                   </span>
 
                   <input
@@ -737,6 +822,7 @@ function validateContactFields() {
                       )
                     }
                     placeholder="Exempel: 114 35 Stockholm"
+                  required
                   />
                 </label>
               )}
@@ -746,7 +832,7 @@ function validateContactFields() {
 
             <label className="support-unified-v1-message">
               <span>
-                Beskriv problemet
+                Beskriv problemet *
               </span>
 
               <textarea
@@ -757,35 +843,100 @@ function validateContactFields() {
                   )
                 }
                 placeholder="Exempel: Min Mac har blivit långsam och jag behöver hjälp med backup..."
+              required
               />
             </label>
 
 
-            <label className="support-unified-v1-sms">
-              <input
-                type="checkbox"
-                checked={smsConsent}
-                onChange={(event) =>
-                  setSmsConsent(
-                    event.target.checked
-                  )
-                }
-              />
-
-              <span className="support-unified-v1-sms-check">
-                ✓
-              </span>
-
-              <div>
+                        <div className="support-unified-v1-confirmation">
+              <div className="support-unified-v1-confirmation-head">
                 <strong>
-                  SMS-bekräftelse
+                  Hur vill du f? bokningsbekr?ftelsen? *
                 </strong>
 
-                <small>
-                  Skicka bokningsinformation och bekräftelse till mitt telefonnummer.
-                </small>
+                <p>
+                  V?lj minst ett alternativ. Du kan v?lja b?da.
+                </p>
               </div>
-            </label>
+
+              <div
+                className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
+                role="group"
+                aria-label="Hur vill du f? bokningsbekr?ftelsen?"
+              >
+                <button
+                  type="button"
+                  className={
+                    "support-unified-v1-choice" +
+                    (smsConsent
+                      ? " is-selected"
+                      : "")
+                  }
+                  aria-pressed={smsConsent}
+                  onClick={() =>
+                    setSmsConsent(
+                      (current) => !current
+                    )
+                  }
+                >
+                  <span className="support-unified-v1-choice-icon">
+                    <BookingChoiceIcon name="phone" />
+                  </span>
+
+                  <span className="support-unified-v1-choice-copy">
+                    <strong>SMS</strong>
+                    <small>
+                      Skicka bekr?ftelsen till mitt telefonnummer
+                    </small>
+                  </span>
+
+                  <span
+                    className="support-unified-v1-choice-status"
+                    aria-hidden="true"
+                  >
+                    {smsConsent ? "\u2713" : ""}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  className={
+                    "support-unified-v1-choice" +
+                    (emailConsent
+                      ? " is-selected"
+                      : "")
+                  }
+                  aria-pressed={emailConsent}
+                  onClick={() =>
+                    setEmailConsent(
+                      (current) => !current
+                    )
+                  }
+                >
+                  <span className="support-unified-v1-choice-icon">
+                    <BookingChoiceIcon name="mail" />
+                  </span>
+
+                  <span className="support-unified-v1-choice-copy">
+                    <strong>E-post</strong>
+                    <small>
+                      Skicka bekr?ftelsen till min e-postadress
+                    </small>
+                  </span>
+
+                  <span
+                    className="support-unified-v1-choice-status"
+                    aria-hidden="true"
+                  >
+                    {emailConsent ? "\u2713" : ""}
+                  </span>
+                </button>
+              </div>
+
+              <small className="support-unified-v1-confirmation-note">
+                Minst ett alternativ m?ste v?ljas.
+              </small>
+            </div>
 
           </section>
 
