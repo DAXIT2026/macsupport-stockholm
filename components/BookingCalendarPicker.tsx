@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useEffect,
@@ -54,9 +54,6 @@ type CalendarDay = {
   date: Date;
   currentMonth: boolean;
 };
-
-const REAL_BOOKING_URL =
-  "https://go.oncehub.com/daxit-bokatid";
 
 function buildMonth(
   visibleMonth: Date
@@ -189,117 +186,6 @@ function stockholmIso(
   return copy.toISOString();
 }
 
-function buildPreviewSlots(
-  visibleMonth: Date
-): BookingSlot[] {
-  const slots: BookingSlot[] = [];
-
-  const today =
-    new Date();
-
-  const minimumDate =
-    new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
-
-  const year =
-    visibleMonth.getFullYear();
-
-  const month =
-    visibleMonth.getMonth();
-
-  const daysInMonth =
-    new Date(
-      year,
-      month + 1,
-      0
-    ).getDate();
-
-  for (
-    let day = 1;
-    day <= daysInMonth;
-    day += 1
-  ) {
-    const date =
-      new Date(
-        year,
-        month,
-        day
-      );
-
-    if (
-      date < minimumDate
-    ) {
-      continue;
-    }
-
-    const weekDay =
-      date.getDay();
-
-    if (
-      weekDay === 0 ||
-      weekDay === 6
-    ) {
-      continue;
-    }
-
-    let hours: number[] = [];
-
-    if (
-      weekDay === 1 ||
-      weekDay === 3
-    ) {
-      hours = [
-        9,
-        11,
-        13,
-        15,
-        17,
-      ];
-    }
-    else if (
-      weekDay === 2
-    ) {
-      hours = [
-        10,
-        13,
-        16,
-      ];
-    }
-    else if (
-      weekDay === 4
-    ) {
-      hours = [
-        9,
-        14,
-      ];
-    }
-    else if (
-      weekDay === 5
-    ) {
-      hours = [
-        10,
-      ];
-    }
-
-    for (
-      const hour of hours
-    ) {
-      slots.push({
-        start_time:
-          stockholmIso(
-            date,
-            hour
-          ),
-      });
-    }
-  }
-
-  return slots;
-}
-
 export default function BookingCalendarPicker({
   support,
   booking,
@@ -375,21 +261,10 @@ export default function BookingCalendarPicker({
       ]
     );
 
-  const previewSlots =
-    useMemo(
-      () =>
-        buildPreviewSlots(
-          visibleMonth
-        ),
-      [
-        visibleMonth,
-      ]
-    );
-
   const displaySlots =
     configured
       ? slots
-      : previewSlots;
+      : [];
 
   const slotsByDate =
     useMemo(() => {
@@ -457,7 +332,7 @@ export default function BookingCalendarPicker({
       setLoading(true);
       setError(null);
 
-      const start =
+      const monthStart =
         new Date(
           visibleMonth.getFullYear(),
           visibleMonth.getMonth(),
@@ -468,7 +343,21 @@ export default function BookingCalendarPicker({
           0
         );
 
-      const end =
+      const now =
+        new Date();
+
+      const safeNow =
+        new Date(
+          now.getTime() +
+            60 * 1000
+        );
+
+      const start =
+        monthStart < safeNow
+          ? safeNow
+          : monthStart;
+
+      const monthEnd =
         new Date(
           visibleMonth.getFullYear(),
           visibleMonth.getMonth() + 1,
@@ -478,6 +367,17 @@ export default function BookingCalendarPicker({
           59,
           999
         );
+
+      const availabilityEnd =
+        new Date(
+          start.getTime() +
+            20 * 24 * 60 * 60 * 1000
+        );
+
+      const end =
+        availabilityEnd < monthEnd
+          ? availabilityEnd
+          : monthEnd;
 
       try {
         const url =
@@ -533,10 +433,6 @@ export default function BookingCalendarPicker({
         ) {
           return;
         }
-
-        setConfigured(
-          false
-        );
 
         setSlots([]);
 
@@ -672,31 +568,33 @@ export default function BookingCalendarPicker({
       className={[
         "booking-picker-v1",
         !configured
-          ? "is-preview"
+          ? "is-unavailable"
           : "",
       ]
         .filter(Boolean)
         .join(" ")}
     >
       {!configured && (
-        <div className="booking-picker-v1-preview-notice">
+        <div
+          className="booking-picker-v1-unavailable-notice"
+          role="status"
+        >
           <div>
-            <span className="booking-picker-v1-preview-dot" />
+            <span
+              className="booking-picker-v1-unavailable-dot"
+              aria-hidden="true"
+            />
 
             <div>
               <strong>
-                Förhandsvisning av kalendern
+                Onlinebokning är inte tillgänglig ännu
               </strong>
 
               <p>
-                Du kan prova datum och tider här. Exakta lediga tider bekräftas i vårt ordinarie bokningssystem.
+                Den här supporttypen kan inte bokas online just nu. Välj Hembesök eller kontakta oss så hjälper vi dig.
               </p>
             </div>
           </div>
-
-          <span>
-            DEMO
-          </span>
         </div>
       )}
 
@@ -746,7 +644,7 @@ export default function BookingCalendarPicker({
 
             <span className="is-full">
               <i />
-              Fullbokad
+              Fullbokat
             </span>
           </div>
 
@@ -855,11 +753,9 @@ export default function BookingCalendarPicker({
                     {currentMonth &&
                       !isPast && (
                         <small>
-                          {count >= 4
-                            ? `Gott om tider · ${count}`
-                            : count > 0
-                              ? `Få tider · ${count}`
-                              : "Fullbokad"}
+                          {count > 0
+                            ? `${count} ${count === 1 ? "tid" : "tider"}`
+                            : "Fullt"}
                         </small>
                       )}
 
@@ -983,52 +879,7 @@ export default function BookingCalendarPicker({
                 </div>
               )}
 
-              {selectedSlot &&
-                !configured && (
-                  <div className="booking-picker-v1-preview-selection">
-                    <div className="booking-picker-v1-preview-summary">
-                      <span>
-                        Ditt val
-                      </span>
 
-                      <strong>
-                        {formatDate(
-                          selectedDate
-                        )}
-                      </strong>
-
-                      <small>
-                        kl.{" "}
-                        {formatTime(
-                          selectedSlot.start_time
-                        )}
-                      </small>
-                    </div>
-
-                    <a
-                      href={
-                        REAL_BOOKING_URL
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="booking-picker-v1-preview-continue"
-                    >
-                      <span>
-                        Fortsätt till bokning
-                      </span>
-
-                      <span
-                        aria-hidden="true"
-                      >
-                        →
-                      </span>
-                    </a>
-
-                    <p>
-                      Kontrollera och välj din slutliga tid i OnceHub. När API-kopplingen är klar sker hela bokningen direkt här.
-                    </p>
-                  </div>
-                )}
             </>
           )}
         </div>

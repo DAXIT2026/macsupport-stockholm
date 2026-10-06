@@ -21,6 +21,15 @@ type ScheduleRequest = {
   name?: unknown;
   email?: unknown;
   phone?: unknown;
+  customerType?: unknown;
+  company?: unknown;
+  organisationNumber?: unknown;
+  address?: unknown;
+  postcode?: unknown;
+  city?: unknown;
+  message?: unknown;
+  smsConsent?: unknown;
+  emailConsent?: unknown;
 
   location?: {
     type?: unknown;
@@ -114,6 +123,161 @@ export async function POST(
       }
     );
   }
+  const customerType =
+    typeof body.customerType === "string"
+      ? body.customerType.trim()
+      : "";
+
+  const company =
+    typeof body.company === "string"
+      ? body.company.trim()
+      : "";
+
+  const organisationNumber =
+    typeof body.organisationNumber === "string"
+      ? body.organisationNumber.trim()
+      : "";
+
+  const address =
+    typeof body.address === "string"
+      ? body.address.trim()
+      : "";
+
+  const postcode =
+    typeof body.postcode === "string"
+      ? body.postcode.trim()
+      : "";
+
+  const city =
+    typeof body.city === "string"
+      ? body.city.trim()
+      : "";
+
+  const message =
+    typeof body.message === "string"
+      ? body.message.trim()
+      : "";
+
+  if (
+    customerType !== "privat" &&
+    customerType !== "senior" &&
+    customerType !== "foretag"
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Välj vem supporten gäller.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (!phone) {
+    return NextResponse.json(
+      {
+        error:
+          "Telefonnummer är obligatoriskt.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (
+    body.support === "hembesok" &&
+    (
+      !address ||
+      !postcode ||
+      !city
+    )
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Gatuadress, postnummer och ort är obligatoriska för hembesök.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (
+    customerType === "foretag" &&
+    !company
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Företagsnamn är obligatoriskt.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (
+    customerType === "foretag" &&
+    !organisationNumber
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Organisationsnummer är obligatoriskt.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (!message) {
+    return NextResponse.json(
+      {
+        error:
+          "Beskriv problemet kort.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (
+    typeof body.smsConsent !== "boolean" ||
+    typeof body.emailConsent !== "boolean"
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Ogiltigt val för bokningsbekräftelse.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (
+    !body.smsConsent &&
+    !body.emailConsent
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Välj SMS, e-post eller båda för bokningsbekräftelsen.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+
 
   const apiKey =
     getOnceHubApiKey();

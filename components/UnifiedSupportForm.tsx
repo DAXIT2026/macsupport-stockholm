@@ -155,7 +155,13 @@ export default function UnifiedSupportForm() {
   const [organisationNumber, setOrganisationNumber] =
     useState("");
 
+  const [address, setAddress] =
+    useState("");
+
   const [postcode, setPostcode] =
+    useState("");
+
+  const [city, setCity] =
     useState("");
 
   const [message, setMessage] =
@@ -225,6 +231,7 @@ const [bookingSelection, setBookingSelection] =
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            customerType,
             booking: bookingCategory,
             support:
               supportMode === "hembesok"
@@ -249,9 +256,17 @@ const [bookingSelection, setBookingSelection] =
               customerType === "foretag"
                 ? organisationNumber.trim()
                 : null,
+            address:
+              supportMode === "hembesok"
+                ? address.trim()
+                : null,
             postcode:
               supportMode === "hembesok"
                 ? postcode.trim()
+                : null,
+            city:
+              supportMode === "hembesok"
+                ? city.trim()
                 : null,
             message: message.trim(),
             smsConsent,
@@ -324,10 +339,14 @@ function validateContactFields() {
 
     if (
       supportMode === "hembesok" &&
-      !postcode.trim()
+      (
+        !address.trim() ||
+        !postcode.trim() ||
+        !city.trim()
+      )
     ) {
       setError(
-        "Fyll i postnummer för hembesök."
+        "Fyll i gatuadress, postnummer och ort för hembesök."
       );
 
       return false;
@@ -365,7 +384,7 @@ function validateContactFields() {
 
     if (!smsConsent && !emailConsent) {
       setError(
-        "V?lj SMS, e-post eller b?da f?r bokningsbekr?ftelsen."
+        "Välj SMS, e-post eller båda för bokningsbekräftelsen."
       );
 
       return false;
@@ -808,23 +827,65 @@ function validateContactFields() {
 
 
               {supportMode === "hembesok" && (
-                <label>
-                  <span>
-                    Postnummer / ort *
-                  </span>
+                <>
+                  <label>
+                    <span>
+                      Gatuadress *
+                    </span>
 
-                  <input
-                    type="text"
-                    value={postcode}
-                    onChange={(event) =>
-                      setPostcode(
-                        event.target.value
-                      )
-                    }
-                    placeholder="Exempel: 114 35 Stockholm"
-                  required
-                  />
-                </label>
+                    <input
+                      type="text"
+                      autoComplete="street-address"
+                      value={address}
+                      onChange={(event) =>
+                        setAddress(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Exempel: Sveavägen 10"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    <span>
+                      Postnummer *
+                    </span>
+
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="postal-code"
+                      value={postcode}
+                      onChange={(event) =>
+                        setPostcode(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Exempel: 114 35"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    <span>
+                      Ort *
+                    </span>
+
+                    <input
+                      type="text"
+                      autoComplete="address-level2"
+                      value={city}
+                      onChange={(event) =>
+                        setCity(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Exempel: Stockholm"
+                      required
+                    />
+                  </label>
+                </>
               )}
 
             </div>
@@ -851,18 +912,18 @@ function validateContactFields() {
                         <div className="support-unified-v1-confirmation">
               <div className="support-unified-v1-confirmation-head">
                 <strong>
-                  Hur vill du f? bokningsbekr?ftelsen? *
+                  Hur vill du få bokningsbekräftelsen? *
                 </strong>
 
                 <p>
-                  V?lj minst ett alternativ. Du kan v?lja b?da.
+                  Välj minst ett alternativ. Du kan välja båda.
                 </p>
               </div>
 
               <div
                 className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
                 role="group"
-                aria-label="Hur vill du f? bokningsbekr?ftelsen?"
+                aria-label="Hur vill du få bokningsbekräftelsen?"
               >
                 <button
                   type="button"
@@ -886,7 +947,7 @@ function validateContactFields() {
                   <span className="support-unified-v1-choice-copy">
                     <strong>SMS</strong>
                     <small>
-                      Skicka bekr?ftelsen till mitt telefonnummer
+                      Skicka bekräftelsen till mitt telefonnummer
                     </small>
                   </span>
 
@@ -920,7 +981,7 @@ function validateContactFields() {
                   <span className="support-unified-v1-choice-copy">
                     <strong>E-post</strong>
                     <small>
-                      Skicka bekr?ftelsen till min e-postadress
+                      Skicka bekräftelsen till min e-postadress
                     </small>
                   </span>
 
@@ -934,7 +995,7 @@ function validateContactFields() {
               </div>
 
               <small className="support-unified-v1-confirmation-note">
-                Minst ett alternativ m?ste v?ljas.
+                Minst ett alternativ måste väljas.
               </small>
             </div>
 
@@ -974,7 +1035,7 @@ function validateContactFields() {
                 <div className="support-unified-v1-selected-time">
                   <div>
                     <span>
-                      Din valda tid
+                      Vald tid
                     </span>
 
                     <strong>
@@ -982,7 +1043,7 @@ function validateContactFields() {
                     </strong>
 
                     <small>
-                      {bookingSelection.timeLabel}
+                      kl.{" "}{bookingSelection.timeLabel}
                     </small>
                   </div>
 
@@ -1053,9 +1114,13 @@ function validateContactFields() {
                   Bokningsnummer: {bookingId}
                 </span>
 
-                {smsConsent && (
+                {(smsConsent || emailConsent) && (
                   <small>
-                    SMS-bekräftelse skickas när Twilio-integrationen aktiveras.
+                    {smsConsent && emailConsent
+                      ? "Bokningsbekräftelsen skickas via SMS och e-post till dina angivna kontaktuppgifter."
+                      : smsConsent
+                        ? "Bokningsbekräftelsen skickas via SMS till ditt angivna telefonnummer."
+                        : "Bokningsbekräftelsen skickas till din angivna e-postadress."}
                   </small>
                 )}
               </div>
