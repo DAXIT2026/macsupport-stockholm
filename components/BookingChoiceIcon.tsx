@@ -1,4 +1,4 @@
-﻿export type BookingChoiceIconName =
+export type BookingChoiceIconName =
   | "person"
   | "senior"
   | "business"
@@ -8,7 +8,8 @@
   | "help"
   | "home"
   | "remote"
-  | "phone";
+  | "phone"
+  | "network-cable";
 
 type BookingChoiceIconProps = {
   name: BookingChoiceIconName;
@@ -17,6 +18,32 @@ type BookingChoiceIconProps = {
 export default function BookingChoiceIcon({
   name,
 }: BookingChoiceIconProps) {
+  const imageMap: Partial<Record<BookingChoiceIconName, string>> = {
+    person: "privat.png",
+    senior: "senior.png",
+    business: "foretag.png",
+    computer: "dator-program.png",
+    wifi: "wifi-centered.png",
+    "network-cable": "natverkskablage-centered.png",
+    mail: "epost-centered.png",
+    help: "annat-centered.png",
+  };
+
+  const imageFile = imageMap[name];
+
+  if (imageFile) {
+    return (
+      <img
+        src={`/icons/booking/${imageFile}`}
+        alt=""
+        aria-hidden="true"
+        className="macsupport-booking-icon-image"
+        width={48}
+        height={48}
+        draggable={false}
+      />
+    );
+  }
   const common = {
     width: 24,
     height: 24,

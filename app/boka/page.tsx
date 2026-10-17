@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense } from "react";
-import BookingEmbed from "../../components/BookingEmbed";
+import UnifiedSupportForm from "../../components/UnifiedSupportForm";
 import { siteConfig } from "../../lib/site-config";
 
 export default function BookingPage() {
@@ -50,30 +50,9 @@ export default function BookingPage() {
                 </span>
               </div>
 
-              <div className="booking-page-v3-steps" aria-label="Bokningssteg">
-                <div className="booking-page-v3-step is-active">
-                  <span>1</span>
-                  <strong>Välj tid</strong>
-                </div>
-
-                <i aria-hidden="true" />
-
-                <div className="booking-page-v3-step">
-                  <span>2</span>
-                  <strong>Dina uppgifter</strong>
-                </div>
-
-                <i aria-hidden="true" />
-
-                <div className="booking-page-v3-step">
-                  <span>3</span>
-                  <strong>Klart</strong>
-                </div>
-              </div>
-
               {/* Обертаємо компонент з useSearchParams у Suspense, вимагає Next.js */}
               <Suspense fallback={<div className="p-8 text-center text-gray-500">Laddar bokningskalender...</div>}>
-                <BookingEmbed />
+                <UnifiedSupportForm />
               </Suspense>
             </div>
           </div>

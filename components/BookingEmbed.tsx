@@ -38,8 +38,8 @@ type ScheduleResponse = {
 };
 
 const supportLabels: Record<SupportType, string> = {
-  hembesok: "Hembesök",
-  distans: "Support på distans",
+  hembesok: "Besök",
+  distans: "Hjälp på distans",
   foretag: "Företagssupport",
 };
 const customerLabels: Record<string, string> = {
@@ -62,9 +62,9 @@ const serviceLabels: Record<string, string> = {
 };
 
 const modeLabels: Record<string, string> = {
-  hembesok: "Hembesök",
-  distans: "Support på distans",
-  telefon: "Telefonsupport",
+  hembesok: "Besök",
+  distans: "Hjälp på distans",
+  telefon: "Hjälp på distans",
 };
 
 function isSupportType(

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { resolveBookingCategory } from "../lib/booking-category";
+import type { BookingServiceKind } from "../lib/oncehub-calendar-routing";
 import BookingCalendarPicker, { type BookingSelection } from "./BookingCalendarPicker";
 import BookingChoiceIcon, { type BookingChoiceIconName } from "./BookingChoiceIcon";
 
@@ -25,8 +25,7 @@ type ServiceType =
 
 type SupportMode =
   | "hembesok"
-  | "distans"
-  | "telefon";
+  | "distans";
 
 const customerLabels: Record<CustomerType, string> = {
   privat: "Privatperson",
@@ -36,21 +35,20 @@ const customerLabels: Record<CustomerType, string> = {
 
 const serviceLabels: Record<ServiceType, string> = {
   general: "Allmän IT-support",
-  mac: "Mac / dator",
-  wifi: "WiFi / nätverk",
-  "network-cable": "Dra nätverkskabel",
-  "unifi-camera": "UniFi / kamera",
+  mac: "Mac och dator",
+  wifi: "Wi-Fi och nätverk",
+  "network-cable": "Installation av nätverkskablage",
+  "unifi-camera": "UniFi och kameror",
   email: "E-post",
   microsoft365: "Microsoft 365",
   security: "Säkerhet",
-  device: "Ny enhet",
+  device: "Installation av ny enhet",
   other: "Annat",
 };
 
 const supportModeLabels: Record<SupportMode, string> = {
-  hembesok: "Hembesök",
-  distans: "Support på distans",
-  telefon: "Telefonsupport",
+  hembesok: "Besök",
+  distans: "Hjälp på distans",
 };
 
 function readCustomerType(
@@ -93,10 +91,13 @@ function readServiceType(
 function readSupportMode(
   value: string | null
 ): SupportMode | null {
+  if (value === "telefon") {
+    return "distans";
+  }
+
   const allowed: SupportMode[] = [
     "hembesok",
     "distans",
-    "telefon",
   ];
 
   return allowed.includes(
@@ -128,14 +129,15 @@ export default function UnifiedSupportForm() {
     ? "message"
     : "booking";
 
-  const audience =
-    searchParams.get("audience") ?? "general";
 
   const [customerType, setCustomerType] =
     useState<CustomerType | null>(initialCustomer);
 
   const [service, setService] =
     useState<ServiceType | null>(initialService);
+
+  const [cableDuration, setCableDuration] =
+    useState<"2h" | "8h" | null>(null);
 
   const [supportMode, setSupportMode] =
     useState<SupportMode | null>(initialMode);
@@ -167,11 +169,12 @@ export default function UnifiedSupportForm() {
   const [message, setMessage] =
     useState("");
 
-  const [smsConsent, setSmsConsent] =
-    useState(false);
+  const [website, setWebsite] = useState("");
 
-  const [emailConsent, setEmailConsent] =
-    useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
+
+
+
 
   const [error, setError] =
     useState<string | null>(null);
@@ -184,21 +187,28 @@ const [bookingSelection, setBookingSelection] =
   const [bookingId, setBookingId] =
     useState<string | null>(null);
 
-  const bookingCategory = useMemo(() => {
-    if (!customerType || !service) {
+  const serviceKind = useMemo<BookingServiceKind | null>(() => {
+    if (!customerType || !service || !supportMode) {
       return null;
     }
 
-    return resolveBookingCategory({
-      audience,
-      customer: customerType,
-      service,
-    });
-  }, [
-    audience,
-    customerType,
-    service,
-  ]);
+    if (service === "network-cable") {
+      if (supportMode !== "hembesok" || !cableDuration) {
+        return null;
+      }
+      return cableDuration === "8h" ? "cable-8h" : "cable-2h";
+    }
+
+    if (supportMode === "distans") {
+      return "it-remote";
+    }
+
+    if (service === "wifi") {
+      return "wifi";
+    }
+
+    return "it-visit";
+  }, [customerType, service, supportMode, cableDuration]);
   async function confirmBooking() {
     setError(null);
 
@@ -206,7 +216,7 @@ const [bookingSelection, setBookingSelection] =
       return;
     }
 
-    if (!bookingCategory) {
+    if (!serviceKind) {
       setError(
         "Vi kunde inte välja rätt bokningskalender."
       );
@@ -232,7 +242,7 @@ const [bookingSelection, setBookingSelection] =
           },
           body: JSON.stringify({
             customerType,
-            booking: bookingCategory,
+            serviceKind,
             support:
               supportMode === "hembesok"
                 ? "hembesok"
@@ -269,8 +279,8 @@ const [bookingSelection, setBookingSelection] =
                 ? city.trim()
                 : null,
             message: message.trim(),
-            smsConsent,
-            emailConsent,
+
+
           }),
         }
       );
@@ -290,6 +300,7 @@ const [bookingSelection, setBookingSelection] =
           data.id ??
           "Bekräftad"
       );
+
     } catch {
       setError(
         "Bokningssystemet kunde inte nås. Försök igen."
@@ -375,33 +386,67 @@ function validateContactFields() {
     }
 
     if (!message.trim()) {
-      setError(
-        "Beskriv problemet kort."
-      );
-
-      return false;
-    }
-
-    if (!smsConsent && !emailConsent) {
-      setError(
-        "Välj SMS, e-post eller båda för bokningsbekräftelsen."
-      );
-
+      setError("Beskriv problemet kort.");
       return false;
     }
 
     return true;
   }
 
-  function prepareMessageRequest() {
-    if (!validateContactFields()) {
-      return;
-    }
+  async function prepareMessageRequest() {
+    if (contactLoading) return;
 
-    setError(
-      "Förfrågan är klar att skickas. Nästa steg är att koppla formuläret till vår server."
-    );
+    if (!validateContactFields()) return;
+
+    setContactLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerType,
+          service,
+          supportMode,
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          company: company.trim(),
+          organisationNumber: organisationNumber.trim(),
+          address: address.trim(),
+          postcode: postcode.trim(),
+          city: city.trim(),
+          message: message.trim(),
+          website,
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setError(
+          typeof data?.error === "string"
+            ? data.error
+            : "F\u00f6rfr\u00e5gan kunde inte skickas. F\u00f6rs\u00f6k igen senare."
+        );
+        return;
+      }
+
+      setError(
+        "Servern svarade utan bekr\u00e4ftelse p\u00e5 leverans. Kontakta oss direkt."
+      );
+    } catch {
+      setError(
+        "Kunde inte ansluta till servern. F\u00f6rs\u00f6k igen senare."
+      );
+    } finally {
+      setContactLoading(false);
+    }
   }
+
   return (
     <div className="support-unified-v1">
 
@@ -413,7 +458,7 @@ function validateContactFields() {
 
           <h2>
             {intent === "booking"
-              ? "Boka support på ditt sätt."
+              ? "Boka IT-support på det sätt som passar dig."
               : "Hur kan vi hjälpa dig?"}
           </h2>
 
@@ -436,28 +481,28 @@ function validateContactFields() {
 
       <div className="support-unified-v1-progress">
         <div className="is-active">
-          <span>1</span>
+
           Behov
         </div>
 
         <i />
 
         <div>
-          <span>2</span>
+
           Kontakt
         </div>
 
         <i />
 
         <div>
-          <span>3</span>
+
           Tid
         </div>
 
         <i />
 
         <div>
-          <span>4</span>
+
           Klart
         </div>
       </div>
@@ -472,7 +517,7 @@ function validateContactFields() {
             <div className="support-unified-v1-section-head">
               <div>
                 <strong>Vem behöver hjälp? *</strong>
-                <p>Välj den kundtyp som passar bäst.</p>
+                <p>Välj det alternativ som passar dig bäst.</p>
               </div>
             </div>
 
@@ -485,13 +530,13 @@ function validateContactFields() {
                 {
                   value: "privat",
                   title: "Privat",
-                  description: "För dig eller familjen.",
+                  description: "IT-hjälp för dig och din familj.",
                   icon: "person",
                 },
                 {
                   value: "senior",
                   title: "Senior",
-                  description: "Enkel hjälp i lugn takt.",
+                  description: "Trygg och tydlig IT-hjälp i din egen takt.",
                   icon: "senior",
                 },
                 {
@@ -560,25 +605,31 @@ function validateContactFields() {
               {[
                 {
                   value: "mac",
-                  title: "Dator & program",
+                  title: "Dator och program",
                   description: "Dator, program, uppdateringar och inställningar.",
                   icon: "computer",
                 },
                 {
                   value: "wifi",
-                  title: "Internet & Wi-Fi",
+                  title: "Internet och Wi-Fi",
                   description: "Wi-Fi, router, internet och anslutning.",
                   icon: "wifi",
                 },
                 {
+                  value: "network-cable",
+                  title: "Nätverkskablage",
+                  description: "Installation av nätverkskabel.",
+                  icon: "network-cable",
+                },
+                {
                   value: "email",
-                  title: "E-post & konton",
+                  title: "E-post och konton",
                   description: "E-post, lösenord, inloggning och konton.",
                   icon: "mail",
                 },
                 {
                   value: "other",
-                  title: "Jag vet inte / Annat",
+                  title: "Annat eller osäker",
                   description: "Välj detta om du är osäker på problemet.",
                   icon: "help",
                 },
@@ -596,7 +647,12 @@ function validateContactFields() {
                       active ? "is-selected" : "",
                     ].filter(Boolean).join(" ")}
                     onClick={() => {
-                      setService(option.value as ServiceType);
+                      const nextService = option.value as ServiceType;
+                      setService(nextService);
+                      setCableDuration(null);
+                      if (nextService === "network-cable") {
+                        setSupportMode("hembesok");
+                      }
                       setBookingSelection(null);
                     }}
                   >
@@ -626,6 +682,84 @@ function validateContactFields() {
 
 
 
+
+          {service === "network-cable" && (
+            <section className="support-unified-v1-section">
+              <div className="support-unified-v1-section-head">
+                <div>
+                  <strong>Hur lång tid behöver du? *</strong>
+                  <p>Välj omfattning för nätverksinstallationen.</p>
+                </div>
+              </div>
+
+              <div
+                className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
+                role="radiogroup"
+                aria-label="Installationstid för nätverkskablage"
+              >
+                {(["2h", "8h"] as const).map((duration) => {
+                  const active = cableDuration === duration;
+
+                  return (
+                    <button
+                      key={duration}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      className={[
+                        "support-unified-v1-choice",
+                        active ? "is-selected" : "",
+                      ].filter(Boolean).join(" ")}
+                      onClick={() => {
+                        setCableDuration(duration);
+                        setBookingSelection(null);
+                      }}
+                    >
+                      <span
+                        className="support-unified-v1-choice-icon support-unified-v1-choice-icon--duration"
+                        aria-hidden="true"
+                      >
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="9" />
+                          <path d="M12 6.5V12l3.5 2" />
+                        </svg>
+                      </span>
+                      <span className="support-unified-v1-choice-copy">
+                        <strong>{duration === "2h" ? "2 timmar" : "8 timmar"}</strong>
+                        <small>
+                          {duration === "2h"
+                            ? "Mindre installation"
+                            : "Större installation"}
+                        </small>
+                      </span>
+                      <span
+                        className="support-unified-v1-choice-status"
+                        aria-hidden="true"
+                      >
+                        {active ? "✓" : ""}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {supportMode === "distans" && (
+                <p role="alert">
+                  Nätverkskablage kräver besök på plats. Välj Besök.
+                </p>
+              )}
+            </section>
+          )}
+
           <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
               <div>
@@ -635,30 +769,30 @@ function validateContactFields() {
             </div>
 
             <div
-              className="support-unified-v1-choice-grid support-unified-v1-choice-grid--3"
+              className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
               role="radiogroup"
               aria-label="Hur vill du få hjälp?"
             >
               {[
                 {
                   value: "hembesok",
-                  title: "Hembesök",
-                  description: "Vi kommer hem till dig.",
+                  title: "Besök",
+                  description: "Vi hjälper dig på plats.",
                   icon: "home",
                 },
                 {
                   value: "distans",
                   title: "Hjälp på distans",
-                  description: "Vi hjälper dig via din dator.",
+                  description: "Vi hjälper dig på distans via dator eller telefon.",
                   icon: "remote",
                 },
-                {
-                  value: "telefon",
-                  title: "Telefonsupport",
-                  description: "Vi hjälper dig via telefon.",
-                  icon: "phone",
-                },
-              ].map((option) => {
+              ]
+                .filter(
+                  (option) =>
+                    service !== "network-cable" ||
+                    option.value !== "distans"
+                )
+                .map((option) => {
                 const active = supportMode === option.value;
 
                 return (
@@ -713,7 +847,7 @@ function validateContactFields() {
                 </strong>
 
                 <p>
-                  Vi använder uppgifterna för din förfrågan och bokning.
+                  Vi använder dina uppgifter för att hantera din förfrågan eller bokning.
                 </p>
               </div>
             </div>
@@ -896,6 +1030,22 @@ function validateContactFields() {
                 Beskriv problemet *
               </span>
 
+              <div
+                aria-hidden="true"
+                hidden
+              >
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(event) =>
+                    setWebsite(event.target.value)
+                  }
+                />
+              </div>
+
               <textarea
                 value={message}
                 onChange={(event) =>
@@ -911,95 +1061,15 @@ function validateContactFields() {
 
                         <div className="support-unified-v1-confirmation">
               <div className="support-unified-v1-confirmation-head">
-                <strong>
-                  Hur vill du få bokningsbekräftelsen? *
-                </strong>
-
+                <strong>Bokningsbekräftelse via e-post</strong>
                 <p>
-                  Välj minst ett alternativ. Du kan välja båda.
+                  När din bokning är genomförd skickas en
+                  bokningsbekräftelse till din e-postadress.
                 </p>
               </div>
-
-              <div
-                className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
-                role="group"
-                aria-label="Hur vill du få bokningsbekräftelsen?"
-              >
-                <button
-                  type="button"
-                  className={
-                    "support-unified-v1-choice" +
-                    (smsConsent
-                      ? " is-selected"
-                      : "")
-                  }
-                  aria-pressed={smsConsent}
-                  onClick={() =>
-                    setSmsConsent(
-                      (current) => !current
-                    )
-                  }
-                >
-                  <span className="support-unified-v1-choice-icon">
-                    <BookingChoiceIcon name="phone" />
-                  </span>
-
-                  <span className="support-unified-v1-choice-copy">
-                    <strong>SMS</strong>
-                    <small>
-                      Skicka bekräftelsen till mitt telefonnummer
-                    </small>
-                  </span>
-
-                  <span
-                    className="support-unified-v1-choice-status"
-                    aria-hidden="true"
-                  >
-                    {smsConsent ? "\u2713" : ""}
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  className={
-                    "support-unified-v1-choice" +
-                    (emailConsent
-                      ? " is-selected"
-                      : "")
-                  }
-                  aria-pressed={emailConsent}
-                  onClick={() =>
-                    setEmailConsent(
-                      (current) => !current
-                    )
-                  }
-                >
-                  <span className="support-unified-v1-choice-icon">
-                    <BookingChoiceIcon name="mail" />
-                  </span>
-
-                  <span className="support-unified-v1-choice-copy">
-                    <strong>E-post</strong>
-                    <small>
-                      Skicka bekräftelsen till min e-postadress
-                    </small>
-                  </span>
-
-                  <span
-                    className="support-unified-v1-choice-status"
-                    aria-hidden="true"
-                  >
-                    {emailConsent ? "\u2713" : ""}
-                  </span>
-                </button>
-              </div>
-
-              <small className="support-unified-v1-confirmation-note">
-                Minst ett alternativ måste väljas.
-              </small>
             </div>
 
-          </section>
+</section>
 
 
           {intent === "booking" && (
@@ -1017,17 +1087,16 @@ function validateContactFields() {
               </div>
 
               <BookingCalendarPicker
+                key={`${customerType ?? "none"}-${serviceKind ?? "none"}-${supportMode ?? "none"}`}
                 support={
                   supportMode === "hembesok"
                     ? "hembesok"
-                    : supportMode === "distans" ||
-                        supportMode === "telefon"
+                    : supportMode === "distans"
                       ? "distans"
-                      : customerType === "foretag"
-                        ? "foretag"
-                        : null
+                      : null
                 }
-                booking={bookingCategory}
+                customerType={customerType}
+                serviceKind={serviceKind}
                 onChange={setBookingSelection}
               />
 
@@ -1072,36 +1141,35 @@ function validateContactFields() {
 
 
             <div className="support-unified-v1-final-summary">
+  <div className="support-unified-v1-summary-card">
+    <span className="support-unified-v1-summary-label">Kundtyp</span>
+    <strong>
+      {customerType
+        ? customerLabels[customerType]
+        : "Kundtyp saknas"}
+    </strong>
+  </div>
 
-              <span>
-                {customerType
-                  ? customerLabels[
-                      customerType
-                    ]
-                  : "Kundtyp saknas"}
-              </span>
+  <div className="support-unified-v1-summary-card">
+    <span className="support-unified-v1-summary-label">Tjänst</span>
+    <strong>
+      {service
+        ? service === "network-cable" && cableDuration
+          ? `${serviceLabels[service]} – ${cableDuration === "2h" ? "2 timmar" : "8 timmar"}`
+          : serviceLabels[service]
+        : "Tjänst saknas"}
+    </strong>
+  </div>
 
-              <i>·</i>
-
-              <span>
-                {service
-                  ? serviceLabels[
-                      service
-                    ]
-                  : "Tjänst saknas"}
-              </span>
-
-              <i>·</i>
-
-              <span>
-                {supportMode
-                  ? supportModeLabels[
-                      supportMode
-                    ]
-                  : "Supportform saknas"}
-              </span>
-
-            </div>
+  <div className="support-unified-v1-summary-card">
+    <span className="support-unified-v1-summary-label">Supportform</span>
+    <strong>
+      {supportMode
+        ? supportModeLabels[supportMode]
+        : "Supportform saknas"}
+    </strong>
+  </div>
+</div>
 
 
             {bookingId ? (
@@ -1114,15 +1182,9 @@ function validateContactFields() {
                   Bokningsnummer: {bookingId}
                 </span>
 
-                {(smsConsent || emailConsent) && (
-                  <small>
-                    {smsConsent && emailConsent
-                      ? "Bokningsbekräftelsen skickas via SMS och e-post till dina angivna kontaktuppgifter."
-                      : smsConsent
-                        ? "Bokningsbekräftelsen skickas via SMS till ditt angivna telefonnummer."
-                        : "Bokningsbekräftelsen skickas till din angivna e-postadress."}
+                <small>
+                    Bokningsbekräftelsen skickas till din angivna e-postadress.
                   </small>
-                )}
               </div>
             ) : (
               <div className="support-unified-v1-final-actions">
@@ -1143,11 +1205,12 @@ function validateContactFields() {
                     <button
                       type="button"
                       className="is-primary"
-                      onClick={
-                        prepareMessageRequest
-                      }
+                      onClick={prepareMessageRequest}
+                      disabled={contactLoading}
                     >
-                      Skicka förfrågan
+                      {contactLoading
+                        ? "Skickar..."
+                        : "Skicka f\u00f6rfr\u00e5gan"}
                     </button>
 
                   </>
@@ -1159,7 +1222,7 @@ function validateContactFields() {
           </section>
 
           {error && (
-            <div className="support-unified-v1-error">
+            <div className="support-unified-v1-error" role="alert">
               {error}
             </div>
           )}

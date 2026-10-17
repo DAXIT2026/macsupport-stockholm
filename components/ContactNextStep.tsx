@@ -44,8 +44,8 @@ export default function ContactNextStep() {
             </strong>
 
             <p>
-              Hembesök, support på distans,
-              telefonsupport eller företagssupport.
+              Välj mellan besök och hjälp på distans.
+              Vi hjälper både privatpersoner och företag.
             </p>
           </div>
 
@@ -58,7 +58,7 @@ export default function ContactNextStep() {
 
             <p>
               Dina val följer med genom hela flödet.
-              Bokningsbekräftelse kan senare skickas via SMS.
+              När din bokning är genomförd får du en bekräftelse via e-post.
             </p>
           </div>
 

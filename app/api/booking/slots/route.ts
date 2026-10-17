@@ -6,12 +6,14 @@ import {
 
 import {
   getOnceHubApiKey,
-  getOnceHubCalendarIdForBooking,
 } from "../../../../lib/oncehub-server";
 
 import {
-  isBookingCategory,
-} from "../../../../lib/booking-category";
+  getCalendarIdForService,
+  isBookingCustomerType,
+  isBookingServiceKind,
+  isServiceCompatibleWithSupport,
+} from "../../../../lib/oncehub-calendar-routing";
 
 export const dynamic = "force-dynamic";
 
@@ -42,8 +44,11 @@ export async function GET(
   const support =
     searchParams.get("support");
 
-  const booking =
-    searchParams.get("booking");
+  const customerType =
+    searchParams.get("customerType");
+
+  const serviceKind =
+    searchParams.get("serviceKind");
 
   const start =
     searchParams.get("start");
@@ -62,7 +67,10 @@ export async function GET(
     );
   }
 
-  if (!isBookingCategory(booking)) {
+  if (
+    !isBookingCustomerType(customerType) ||
+    !isBookingServiceKind(serviceKind)
+  ) {
     return NextResponse.json(
       {
         error: "Ogiltig bokningskategori.",
@@ -85,13 +93,25 @@ export async function GET(
     );
   }
 
+  if (
+    support === "foretag" ||
+    !isServiceCompatibleWithSupport(serviceKind, support)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Tjänsten är inte tillgänglig för vald supportform.",
+      },
+      { status: 400 }
+    );
+  }
+
   const apiKey =
     getOnceHubApiKey();
 
   const calendarId =
-    getOnceHubCalendarIdForBooking(
-      booking,
-      support
+    getCalendarIdForService(
+      customerType,
+      serviceKind
     );
 
   if (!apiKey || !calendarId) {
@@ -137,10 +157,7 @@ export async function GET(
       await response.json();
 
     if (!response.ok) {
-      console.error(
-        "OnceHub slots error:",
-        data
-      );
+      console.error("OnceHub slots HTTP status:", response.status);
 
       return NextResponse.json(
         {

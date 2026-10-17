@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 import "./globals.css";
 import "./premium.css";
@@ -124,12 +125,12 @@ export default function RootLayout({
   return (
     <html lang="sv" data-scroll-behavior="smooth">
       <head>
-        <script
+        <Script
           id="CookieConsent"
           src="https://policy.app.cookieinformation.com/uc.js"
           data-culture="SV"
           data-gcm-version="2.0"
-          type="text/javascript"
+          strategy="beforeInteractive"
         />
       </head>
       <body>

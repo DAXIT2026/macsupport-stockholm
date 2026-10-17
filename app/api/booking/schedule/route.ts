@@ -6,16 +6,22 @@ import {
 
 import {
   getOnceHubApiKey,
-  getOnceHubCalendarIdForBooking,
+
 } from "../../../../lib/oncehub-server";
 
+
+
 import {
-  isBookingCategory,
-} from "../../../../lib/booking-category";
+  getCalendarIdForService,
+  isBookingCustomerType,
+  isBookingServiceKind,
+  isServiceCompatibleWithSupport,
+} from "../../../../lib/oncehub-calendar-routing";
 
 type ScheduleRequest = {
   support?: unknown;
-  booking?: unknown;
+
+  serviceKind?: unknown;
   startTime?: unknown;
   timeZone?: unknown;
   name?: unknown;
@@ -28,8 +34,7 @@ type ScheduleRequest = {
   postcode?: unknown;
   city?: unknown;
   message?: unknown;
-  smsConsent?: unknown;
-  emailConsent?: unknown;
+
 
   location?: {
     type?: unknown;
@@ -71,19 +76,7 @@ export async function POST(
     );
   }
 
-  if (
-    !isBookingCategory(body.booking)
-  ) {
-    return NextResponse.json(
-      {
-        error:
-          "Bokningskategori saknas.",
-      },
-      {
-        status: 400,
-      }
-    );
-  }
+
   if (
     typeof body.startTime !== "string" ||
     typeof body.timeZone !== "string" ||
@@ -247,45 +240,31 @@ export async function POST(
     );
   }
 
+
+
+
+
   if (
-    typeof body.smsConsent !== "boolean" ||
-    typeof body.emailConsent !== "boolean"
+    !isBookingCustomerType(customerType) ||
+    !isBookingServiceKind(body.serviceKind) ||
+    body.support === "foretag" ||
+    !isServiceCompatibleWithSupport(body.serviceKind, body.support)
   ) {
     return NextResponse.json(
       {
-        error:
-          "Ogiltigt val för bokningsbekräftelse.",
+        error: "Ogiltig kombination av kundtyp, tjänst och supportform.",
       },
-      {
-        status: 400,
-      }
+      { status: 400 }
     );
   }
-
-  if (
-    !body.smsConsent &&
-    !body.emailConsent
-  ) {
-    return NextResponse.json(
-      {
-        error:
-          "Välj SMS, e-post eller båda för bokningsbekräftelsen.",
-      },
-      {
-        status: 400,
-      }
-    );
-  }
-
-
 
   const apiKey =
     getOnceHubApiKey();
 
   const calendarId =
-    getOnceHubCalendarIdForBooking(
-      body.booking,
-      body.support
+    getCalendarIdForService(
+      customerType,
+      body.serviceKind
     );
 
   if (!apiKey || !calendarId) {
@@ -307,7 +286,13 @@ export async function POST(
     booking_form: {
       name: string;
       email: string;
-      phone?: string;
+      mobile_phone?: string;
+      street_address?: string;
+      post_code?: string;
+      city?: string;
+      company?: string;
+      beskriv_problemet?: string;
+      organisationsnummer?: string;
     };
 
     location?: {
@@ -328,23 +313,47 @@ export async function POST(
   };
 
   if (phone) {
-    payload.booking_form.phone =
+    payload.booking_form.mobile_phone =
       phone;
+  }
+
+  if (body.support === "hembesok") {
+    payload.booking_form.street_address =
+      address;
+
+    payload.booking_form.post_code =
+      postcode;
+
+    payload.booking_form.city =
+      city;
+  }
+
+  if (
+    customerType === "foretag"
+  ) {
+    payload.booking_form.company =
+      company;
+  }
+
+  payload.booking_form.beskriv_problemet =
+    message;
+
+  if (
+    customerType === "foretag"
+  ) {
+    payload.booking_form.organisationsnummer =
+      organisationNumber;
   }
 
   if (
     body.location &&
-    typeof body.location.type === "string"
+    typeof body.location.type === "string" &&
+    typeof body.location.value === "string" &&
+    body.location.value.trim()
   ) {
     payload.location = {
-      type:
-        body.location.type,
-
-      value:
-        typeof body.location.value ===
-        "string"
-          ? body.location.value
-          : null,
+      type: body.location.type,
+      value: body.location.value.trim(),
     };
   }
 
@@ -380,16 +389,24 @@ export async function POST(
       await response.json();
 
     if (!response.ok) {
-      console.error(
-        "OnceHub schedule error:",
-        data
-      );
+      console.error("OnceHub schedule HTTP status:", response.status);
+      console.error("OnceHub error diagnostics:", {
+        code: typeof data?.code === "string" ? data.code : undefined,
+        errorCode: typeof data?.error_code === "string" ? data.error_code : undefined,
+        responseFields:
+          data && typeof data === "object"
+            ? Object.keys(data)
+            : [],
+        validationFields:
+          data?.errors && typeof data.errors === "object"
+            ? Object.keys(data.errors)
+            : [],
+      });
 
       return NextResponse.json(
         {
           error:
-            data?.message ??
-            "Bokningen kunde inte genomföras.",
+            "Bokningen kunde inte genomföras. Försök igen eller välj en annan tid.",
         },
         {
           status:
@@ -397,7 +414,6 @@ export async function POST(
         }
       );
     }
-
     return NextResponse.json({
       success: true,
       bookingId: data.id,

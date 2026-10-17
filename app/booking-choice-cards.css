@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    MacSupport Stockholm
    Booking / support choice cards
    ========================================================= */
@@ -182,7 +182,7 @@
   }
 
   .support-unified-v1-choice-copy small {
-    font-size: 13px;
+    font-size: 14px;
   }
 }
 
@@ -228,4 +228,184 @@
 .support-unified-v1-choice.is-selected
 .support-unified-v1-choice-copy strong {
   color: #1f5132;
+}
+
+/* MacSupport responsive choice cards v2 */
+
+.support-unified-v1-choice-grid {
+  gap: 14px;
+}
+
+.support-unified-v1-choice {
+  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-content: center;
+  column-gap: 14px;
+  row-gap: 10px;
+  min-width: 0;
+  min-height: 112px;
+}
+
+.support-unified-v1-choice-icon {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.support-unified-v1-choice-copy {
+  grid-column: 2;
+  grid-row: 1;
+  overflow-wrap: break-word;
+}
+
+.support-unified-v1-choice-status {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.support-unified-v1-choice.is-selected {
+  border-color: #2f7d4a;
+  box-shadow:
+    0 0 0 1px #2f7d4a,
+    0 0 0 4px rgba(47, 125, 74, 0.10),
+    0 8px 24px rgba(47, 125, 74, 0.12);
+}
+
+@media (max-width: 900px) {
+  .support-unified-v1-choice-grid--3 {
+    grid-template-columns: 1fr;
+  }
+
+  .support-unified-v1-choice-grid--2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .support-unified-v1-choice {
+    grid-template-columns: 42px minmax(0, 1fr);
+    min-height: 88px;
+    padding: 14px;
+  }
+
+  .support-unified-v1-choice-status {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .support-unified-v1-choice {
+    transition: none;
+  }
+}
+
+/* MacSupport booking summary cards v1 */
+
+.support-unified-v1-final-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0;
+  background: transparent;
+}
+
+.support-unified-v1-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  min-height: 92px;
+  padding: 16px;
+  border: 1px solid rgba(47, 125, 74, 0.30);
+  border-radius: 12px;
+  background: #f2f8f4;
+  box-shadow: 0 0 0 1px rgba(47, 125, 74, 0.05);
+}
+
+.support-unified-v1-summary-label {
+  color: #5e6978;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.support-unified-v1-summary-card strong {
+  color: #1f5132;
+  font-size: 15px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .support-unified-v1-final-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .support-unified-v1-summary-card {
+    transition: none;
+  }
+}
+/* MacSupport booking PNG icons */
+.support-unified-v1-choice-icon:has(.macsupport-booking-icon-image) {
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.macsupport-booking-icon-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+@media (max-width: 560px) {
+  .support-unified-v1-choice-icon:has(.macsupport-booking-icon-image) {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* MacSupport booking icon alignment v4 */
+.support-unified-v1-choice-icon {
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.support-unified-v1-choice-icon .macsupport-booking-icon-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  margin: 0;
+}
+
+.support-unified-v1-choice-icon svg {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+}
+/* MacSupport duration icons v1 */
+.support-unified-v1-choice-icon--duration {
+  color: #2f7d4a;
+  background: #edf6ef;
+  border: 1px solid #d4e7d8;
+  border-radius: 50%;
+}
+
+.support-unified-v1-choice.is-selected
+.support-unified-v1-choice-icon--duration {
+  color: #25683d;
+  background: #dff0e3;
+  border-color: #a9d2b3;
 }

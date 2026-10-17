@@ -1075,6 +1075,7 @@ export default function ServiceDetail({
               alt=""
               fill
               priority
+              loading="eager"
               sizes="(max-width: 900px) 100vw, 52vw"
               className="service-v2-hero-image"
             />

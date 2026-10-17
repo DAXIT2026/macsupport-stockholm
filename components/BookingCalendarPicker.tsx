@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   useEffect,
@@ -35,16 +35,15 @@ export type BookingSelection = {
   location: BookingLocation | null;
 };
 
-export type BookingPickerCategory =
-  | "general"
-  | "support"
-  | "senior"
-  | "networkCable"
-  | "network";
+import type {
+  BookingCustomerType,
+  BookingServiceKind,
+} from "../lib/oncehub-calendar-routing";
 
 type Props = {
   support: BookingPickerSupport | null;
-  booking: BookingPickerCategory | null;
+  customerType: BookingCustomerType | null;
+  serviceKind: BookingServiceKind | null;
   onChange: (
     selection: BookingSelection | null
   ) => void;
@@ -169,26 +168,10 @@ function formatMonth(
   ).format(date);
 }
 
-function stockholmIso(
-  date: Date,
-  hour: number
-) {
-  const copy =
-    new Date(date);
-
-  copy.setHours(
-    hour,
-    0,
-    0,
-    0
-  );
-
-  return copy.toISOString();
-}
-
 export default function BookingCalendarPicker({
   support,
-  booking,
+  customerType,
+  serviceKind,
   onChange,
 }: Props) {
   const [
@@ -261,13 +244,12 @@ export default function BookingCalendarPicker({
       ]
     );
 
-  const displaySlots =
-    configured
-      ? slots
-      : [];
-
   const slotsByDate =
     useMemo(() => {
+      const displaySlots =
+        configured
+          ? slots
+          : [];
       const map =
         new Map<
           string,
@@ -297,7 +279,8 @@ export default function BookingCalendarPicker({
 
       return map;
     }, [
-      displaySlots,
+      configured,
+      slots,
     ]);
 
   const selectedSlots =
@@ -314,7 +297,8 @@ export default function BookingCalendarPicker({
 
     if (
       !support ||
-      !booking
+      !customerType ||
+      !serviceKind
     ) {
       return;
     }
@@ -322,8 +306,11 @@ export default function BookingCalendarPicker({
     const currentSupport =
       support;
 
-    const currentBooking =
-      booking;
+    const currentCustomerType =
+      customerType;
+
+    const currentServiceKind =
+      serviceKind;
 
     const controller =
       new AbortController();
@@ -383,8 +370,10 @@ export default function BookingCalendarPicker({
         const url =
           `/api/booking/slots?support=${encodeURIComponent(
             currentSupport
-          )}&booking=${encodeURIComponent(
-            currentBooking
+          )}&customerType=${encodeURIComponent(
+            currentCustomerType
+          )}&serviceKind=${encodeURIComponent(
+            currentServiceKind
           )}&start=${encodeURIComponent(
             start.toISOString()
           )}&end=${encodeURIComponent(
@@ -460,7 +449,8 @@ export default function BookingCalendarPicker({
     };
   }, [
     support,
-    booking,
+    customerType,
+    serviceKind,
     visibleMonth,
     onChange,
   ]);
@@ -545,7 +535,8 @@ export default function BookingCalendarPicker({
 
   if (
     !support ||
-    !booking
+    !customerType ||
+    !serviceKind
   ) {
     return (
       <div className="booking-picker-v1-empty">
@@ -591,13 +582,14 @@ export default function BookingCalendarPicker({
               </strong>
 
               <p>
-                Den här supporttypen kan inte bokas online just nu. Välj Hembesök eller kontakta oss så hjälper vi dig.
+                Den här supportformen kan inte bokas online just nu. Kontakta oss så hjälper vi dig att boka.
               </p>
             </div>
           </div>
         </div>
       )}
 
+      {configured && (
       <div className="booking-picker-v1-layout">
         <div className="booking-picker-v1-calendar">
           <div className="booking-picker-v1-head">
@@ -884,6 +876,7 @@ export default function BookingCalendarPicker({
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
