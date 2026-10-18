@@ -414,6 +414,24 @@ export async function POST(
         }
       );
     }
+    if (
+      !data ||
+      typeof data.id !== "string" ||
+      !data.id.trim()
+    ) {
+      console.error(
+        "OnceHub schedule response missing booking ID."
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker igen.",
+        },
+        { status: 502 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
       bookingId: data.id,
@@ -428,7 +446,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Bokningssystemet kunde inte nås.",
+          "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker boka igen.",
       },
       {
         status: 502,

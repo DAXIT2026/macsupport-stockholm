@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { BookingServiceKind } from "../lib/oncehub-calendar-routing";
 import BookingCalendarPicker, { type BookingSelection } from "./BookingCalendarPicker";
@@ -184,6 +184,8 @@ const [bookingSelection, setBookingSelection] =
   const [bookingLoading, setBookingLoading] =
     useState(false);
 
+  const bookingRequestInProgress = useRef(false);
+
   const [bookingId, setBookingId] =
     useState<string | null>(null);
 
@@ -210,6 +212,10 @@ const [bookingSelection, setBookingSelection] =
     return "it-visit";
   }, [customerType, service, supportMode, cableDuration]);
   async function confirmBooking() {
+    if (bookingRequestInProgress.current) {
+      return;
+    }
+
     setError(null);
 
     if (!validateContactFields()) {
@@ -230,6 +236,7 @@ const [bookingSelection, setBookingSelection] =
       return;
     }
 
+    bookingRequestInProgress.current = true;
     setBookingLoading(true);
 
     try {
@@ -303,9 +310,10 @@ const [bookingSelection, setBookingSelection] =
 
     } catch {
       setError(
-        "Bokningssystemet kunde inte nås. Försök igen."
+        "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker boka igen."
       );
     } finally {
+      bookingRequestInProgress.current = false;
       setBookingLoading(false);
     }
   }
