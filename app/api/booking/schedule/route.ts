@@ -390,6 +390,10 @@ export async function POST(
 
     if (!response.ok) {
       console.error("OnceHub schedule HTTP status:", response.status);
+      console.error("OnceHub validation details:", {
+        type: typeof data?.type === "string" ? data.type : undefined,
+        param: typeof data?.param === "string" ? data.param : undefined,
+      });
       console.error("OnceHub error diagnostics:", {
         code: typeof data?.code === "string" ? data.code : undefined,
         errorCode: typeof data?.error_code === "string" ? data.error_code : undefined,
