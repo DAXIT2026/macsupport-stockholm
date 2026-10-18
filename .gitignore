@@ -77,3 +77,5 @@ oncehub-booking-pages.txt
 /public/icons/booking-centered-test/
 /public/icons/macsupport_icons_variant_2.zip
 /wifi-centered-test.png
+.vercel
+.env*.local
