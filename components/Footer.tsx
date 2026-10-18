@@ -19,7 +19,7 @@ export default function Footer() {
               </span>
 
               <h2>
-                Teknik ska kännas enkel.
+                Vi gör tekniken enklare.
               </h2>
 
               <p>
@@ -272,7 +272,7 @@ export default function Footer() {
 
           <span className="mobile-v5-copy">
             <small></small>
-            <strong>Ring Direkt</strong>
+            <strong>Ring direkt</strong>
           </span>
         </a>
 
@@ -300,7 +300,7 @@ export default function Footer() {
 
           <span className="mobile-v5-copy">
             <small></small>
-            <strong>Boka Support</strong>
+            <strong>Boka support</strong>
           </span>
         </a>
 
@@ -327,7 +327,7 @@ export default function Footer() {
 
           <span className="mobile-v5-copy">
             <small></small>
-            <strong>Till Hem</strong>
+            <strong>Till startsidan</strong>
           </span>
         </Link>
 

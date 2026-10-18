@@ -6,21 +6,35 @@ import {
 
 import {
   getOnceHubApiKey,
-  getOnceHubCalendarIdForBooking,
+
 } from "../../../../lib/oncehub-server";
 
+
+
 import {
-  isBookingCategory,
-} from "../../../../lib/booking-category";
+  getCalendarIdForService,
+  isBookingCustomerType,
+  isBookingServiceKind,
+  isServiceCompatibleWithSupport,
+} from "../../../../lib/oncehub-calendar-routing";
 
 type ScheduleRequest = {
   support?: unknown;
-  booking?: unknown;
+
+  serviceKind?: unknown;
   startTime?: unknown;
   timeZone?: unknown;
   name?: unknown;
   email?: unknown;
   phone?: unknown;
+  customerType?: unknown;
+  company?: unknown;
+  organisationNumber?: unknown;
+  address?: unknown;
+  postcode?: unknown;
+  city?: unknown;
+  message?: unknown;
+
 
   location?: {
     type?: unknown;
@@ -62,19 +76,7 @@ export async function POST(
     );
   }
 
-  if (
-    !isBookingCategory(body.booking)
-  ) {
-    return NextResponse.json(
-      {
-        error:
-          "Bokningskategori saknas.",
-      },
-      {
-        status: 400,
-      }
-    );
-  }
+
   if (
     typeof body.startTime !== "string" ||
     typeof body.timeZone !== "string" ||
@@ -114,14 +116,155 @@ export async function POST(
       }
     );
   }
+  const customerType =
+    typeof body.customerType === "string"
+      ? body.customerType.trim()
+      : "";
+
+  const company =
+    typeof body.company === "string"
+      ? body.company.trim()
+      : "";
+
+  const organisationNumber =
+    typeof body.organisationNumber === "string"
+      ? body.organisationNumber.trim()
+      : "";
+
+  const address =
+    typeof body.address === "string"
+      ? body.address.trim()
+      : "";
+
+  const postcode =
+    typeof body.postcode === "string"
+      ? body.postcode.trim()
+      : "";
+
+  const city =
+    typeof body.city === "string"
+      ? body.city.trim()
+      : "";
+
+  const message =
+    typeof body.message === "string"
+      ? body.message.trim()
+      : "";
+
+  if (
+    customerType !== "privat" &&
+    customerType !== "senior" &&
+    customerType !== "foretag"
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Välj vem supporten gäller.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (!phone) {
+    return NextResponse.json(
+      {
+        error:
+          "Telefonnummer är obligatoriskt.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (
+    body.support === "hembesok" &&
+    (
+      !address ||
+      !postcode ||
+      !city
+    )
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Gatuadress, postnummer och ort är obligatoriska för hembesök.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (
+    customerType === "foretag" &&
+    !company
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Företagsnamn är obligatoriskt.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (
+    customerType === "foretag" &&
+    !organisationNumber
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Organisationsnummer är obligatoriskt.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (!message) {
+    return NextResponse.json(
+      {
+        error:
+          "Beskriv problemet kort.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+
+
+
+
+  if (
+    !isBookingCustomerType(customerType) ||
+    !isBookingServiceKind(body.serviceKind) ||
+    body.support === "foretag" ||
+    !isServiceCompatibleWithSupport(body.serviceKind, body.support)
+  ) {
+    return NextResponse.json(
+      {
+        error: "Ogiltig kombination av kundtyp, tjänst och supportform.",
+      },
+      { status: 400 }
+    );
+  }
 
   const apiKey =
     getOnceHubApiKey();
 
   const calendarId =
-    getOnceHubCalendarIdForBooking(
-      body.booking,
-      body.support
+    getCalendarIdForService(
+      customerType,
+      body.serviceKind
     );
 
   if (!apiKey || !calendarId) {
@@ -143,7 +286,13 @@ export async function POST(
     booking_form: {
       name: string;
       email: string;
-      phone?: string;
+      mobile_phone?: string;
+      street_address?: string;
+      post_code?: string;
+      city?: string;
+      company?: string;
+      beskriv_problemet?: string;
+      organisationsnummer?: string;
     };
 
     location?: {
@@ -164,23 +313,47 @@ export async function POST(
   };
 
   if (phone) {
-    payload.booking_form.phone =
+    payload.booking_form.mobile_phone =
       phone;
+  }
+
+  if (body.support === "hembesok") {
+    payload.booking_form.street_address =
+      address;
+
+    payload.booking_form.post_code =
+      postcode;
+
+    payload.booking_form.city =
+      city;
+  }
+
+  if (
+    customerType === "foretag"
+  ) {
+    payload.booking_form.company =
+      company;
+  }
+
+  payload.booking_form.beskriv_problemet =
+    message;
+
+  if (
+    customerType === "foretag"
+  ) {
+    payload.booking_form.organisationsnummer =
+      organisationNumber;
   }
 
   if (
     body.location &&
-    typeof body.location.type === "string"
+    typeof body.location.type === "string" &&
+    typeof body.location.value === "string" &&
+    body.location.value.trim()
   ) {
     payload.location = {
-      type:
-        body.location.type,
-
-      value:
-        typeof body.location.value ===
-        "string"
-          ? body.location.value
-          : null,
+      type: body.location.type,
+      value: body.location.value.trim(),
     };
   }
 
@@ -216,21 +389,46 @@ export async function POST(
       await response.json();
 
     if (!response.ok) {
-      console.error(
-        "OnceHub schedule error:",
-        data
-      );
+      console.error("OnceHub schedule HTTP status:", response.status);
+      console.error("OnceHub error diagnostics:", {
+        code: typeof data?.code === "string" ? data.code : undefined,
+        errorCode: typeof data?.error_code === "string" ? data.error_code : undefined,
+        responseFields:
+          data && typeof data === "object"
+            ? Object.keys(data)
+            : [],
+        validationFields:
+          data?.errors && typeof data.errors === "object"
+            ? Object.keys(data.errors)
+            : [],
+      });
 
       return NextResponse.json(
         {
           error:
-            data?.message ??
-            "Bokningen kunde inte genomföras.",
+            "Bokningen kunde inte genomföras. Försök igen eller välj en annan tid.",
         },
         {
           status:
             response.status,
         }
+      );
+    }
+    if (
+      !data ||
+      typeof data.id !== "string" ||
+      !data.id.trim()
+    ) {
+      console.error(
+        "OnceHub schedule response missing booking ID."
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker igen.",
+        },
+        { status: 502 }
       );
     }
 
@@ -248,7 +446,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Bokningssystemet kunde inte nås.",
+          "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker boka igen.",
       },
       {
         status: 502,

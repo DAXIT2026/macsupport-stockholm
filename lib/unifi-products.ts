@@ -1,4 +1,4 @@
-﻿export type UniFiProduct = {
+export type UniFiProduct = {
   name: string;
   image: string;
   description: string;
@@ -43,14 +43,14 @@ export const unifiProducts: Record<
   "wifi-natverk": [
     {
       name: "UniFi U7 Pro",
-      image: "/images/u7-pro.png",
+      image: "/images/u7-pro-xg-new.png",
       description:
         "WiFi 7-accesspunkt för snabb och stabil trådlös täckning i moderna nätverk.",
       specs: ["WiFi 7", "6 GHz", "Professionell WiFi"],
     },
     {
       name: "UniFi U7 Pro XG",
-      image: "/images/u7-pro-xg.png",
+      image: "/images/u7-pro-xg-new.png",
       description:
         "Högpresterande WiFi 7-accesspunkt för nätverk med höga kapacitetskrav.",
       specs: ["WiFi 7", "Hög kapacitet", "Företag"],

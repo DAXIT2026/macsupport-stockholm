@@ -30,7 +30,7 @@ export default function KontaktPage() {
             <div>
               <span className="contact-ref-v5-trust-icon">↯</span>
               <p>
-                <strong>Snabb respons</strong>
+                <strong>Snabb återkoppling</strong>
                 <small>Ofta samma dag</small>
               </p>
             </div>
@@ -46,7 +46,7 @@ export default function KontaktPage() {
             <div>
               <span className="contact-ref-v5-trust-icon">●</span>
               <p>
-                <strong>I hela Stockholm</strong>
+                <strong>I Stockholm med omnejd</strong>
                 <small>På plats eller online</small>
               </p>
             </div>
@@ -151,10 +151,10 @@ export default function KontaktPage() {
         <div className="contact-ref-v5-form">
           <header className="contact-ref-v5-form-head">
             <p className="contact-ref-v5-eyebrow">
-              En väg vidare
+              Ett enkelt sätt att få hjälp
             </p>
 
-            <h2>Allt samlat i ett formulär.</h2>
+            <h2>Allt du behöver – i ett och samma formulär.</h2>
 
             <p>
               Beskriv ditt problem i samma formulär.
@@ -180,7 +180,7 @@ export default function KontaktPage() {
               Så fungerar det
             </p>
 
-            <h2>Enkelt från början.</h2>
+            <h2>Enkelt från första steget.</h2>
 
             <div className="contact-ref-v5-process-list">
               <article>
@@ -197,7 +197,7 @@ export default function KontaktPage() {
               <article>
                 <span>2</span>
                 <div>
-                  <strong>Välj tid eller skicka</strong>
+                  <strong>Boka en tid eller skicka en förfrågan</strong>
                   <p>
                     Boka en ledig tid direkt eller
                     skicka en förfrågan utan bokning.

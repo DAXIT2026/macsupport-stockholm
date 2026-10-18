@@ -139,7 +139,7 @@ export const services: ServiceItem[] = [
       "Bättre täckning, stabilare uppkoppling och professionella nätverkslösningar.",
     description:
       "Vi felsöker långsamt internet, dålig WiFi-täckning och instabila nätverk och hjälper dig med router, mesh-system, kabeldragning och UniFi.",
-    image: "/images/u7-pro.png",
+    image: "/images/u7-pro-xg-new.png",
     benefits: [
       "Stabil täckning där du faktiskt behöver den",
       "Router och mesh-WiFi",

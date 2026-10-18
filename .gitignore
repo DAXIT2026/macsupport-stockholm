@@ -58,3 +58,24 @@ css-versioned-sections.txt
 premium-css-sections.txt
 support-unified-audit.txt
 oncehub-booking-pages.txt
+
+# Local Next.js build backups
+.next-backup-*/
+
+# Timestamped source backups
+*.backup-*
+*.bak-*
+
+# Temporary development scripts
+/fix-cable-booking-ui.py
+/hide-cable-remote.py
+/update-cable-booking.py
+
+# Local icon experiments and backups
+/public/icons/booking-backup-*/
+/public/icons/booking-backup-new-*/
+/public/icons/booking-centered-test/
+/public/icons/macsupport_icons_variant_2.zip
+/wifi-centered-test.png
+.vercel
+.env*.local

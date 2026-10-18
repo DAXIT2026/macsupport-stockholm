@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { resolveBookingCategory } from "../lib/booking-category";
+import type { BookingServiceKind } from "../lib/oncehub-calendar-routing";
 import BookingCalendarPicker, { type BookingSelection } from "./BookingCalendarPicker";
+import BookingChoiceIcon, { type BookingChoiceIconName } from "./BookingChoiceIcon";
 
 type CustomerType =
   | "privat"
@@ -24,8 +25,7 @@ type ServiceType =
 
 type SupportMode =
   | "hembesok"
-  | "distans"
-  | "telefon";
+  | "distans";
 
 const customerLabels: Record<CustomerType, string> = {
   privat: "Privatperson",
@@ -35,21 +35,20 @@ const customerLabels: Record<CustomerType, string> = {
 
 const serviceLabels: Record<ServiceType, string> = {
   general: "Allmän IT-support",
-  mac: "Mac / dator",
-  wifi: "WiFi / nätverk",
-  "network-cable": "Dra nätverkskabel",
-  "unifi-camera": "UniFi / kamera",
+  mac: "Mac och dator",
+  wifi: "Wi-Fi och nätverk",
+  "network-cable": "Installation av nätverkskablage",
+  "unifi-camera": "UniFi och kameror",
   email: "E-post",
   microsoft365: "Microsoft 365",
   security: "Säkerhet",
-  device: "Ny enhet",
+  device: "Installation av ny enhet",
   other: "Annat",
 };
 
 const supportModeLabels: Record<SupportMode, string> = {
-  hembesok: "Hembesök",
-  distans: "Support på distans",
-  telefon: "Telefonsupport",
+  hembesok: "Besök",
+  distans: "Hjälp på distans",
 };
 
 function readCustomerType(
@@ -92,10 +91,13 @@ function readServiceType(
 function readSupportMode(
   value: string | null
 ): SupportMode | null {
+  if (value === "telefon") {
+    return "distans";
+  }
+
   const allowed: SupportMode[] = [
     "hembesok",
     "distans",
-    "telefon",
   ];
 
   return allowed.includes(
@@ -127,14 +129,15 @@ export default function UnifiedSupportForm() {
     ? "message"
     : "booking";
 
-  const audience =
-    searchParams.get("audience") ?? "general";
 
   const [customerType, setCustomerType] =
     useState<CustomerType | null>(initialCustomer);
 
   const [service, setService] =
     useState<ServiceType | null>(initialService);
+
+  const [cableDuration, setCableDuration] =
+    useState<"2h" | "8h" | null>(null);
 
   const [supportMode, setSupportMode] =
     useState<SupportMode | null>(initialMode);
@@ -154,14 +157,24 @@ export default function UnifiedSupportForm() {
   const [organisationNumber, setOrganisationNumber] =
     useState("");
 
+  const [address, setAddress] =
+    useState("");
+
   const [postcode, setPostcode] =
+    useState("");
+
+  const [city, setCity] =
     useState("");
 
   const [message, setMessage] =
     useState("");
 
-  const [smsConsent, setSmsConsent] =
-    useState(true);
+  const [website, setWebsite] = useState("");
+
+  const [contactLoading, setContactLoading] = useState(false);
+
+
+
 
   const [error, setError] =
     useState<string | null>(null);
@@ -171,32 +184,45 @@ const [bookingSelection, setBookingSelection] =
   const [bookingLoading, setBookingLoading] =
     useState(false);
 
+  const bookingRequestInProgress = useRef(false);
+
   const [bookingId, setBookingId] =
     useState<string | null>(null);
 
-  const bookingCategory = useMemo(() => {
-    if (!customerType || !service) {
+  const serviceKind = useMemo<BookingServiceKind | null>(() => {
+    if (!customerType || !service || !supportMode) {
       return null;
     }
 
-    return resolveBookingCategory({
-      audience,
-      customer: customerType,
-      service,
-    });
-  }, [
-    audience,
-    customerType,
-    service,
-  ]);
+    if (service === "network-cable") {
+      if (supportMode !== "hembesok" || !cableDuration) {
+        return null;
+      }
+      return cableDuration === "8h" ? "cable-8h" : "cable-2h";
+    }
+
+    if (supportMode === "distans") {
+      return "it-remote";
+    }
+
+    if (service === "wifi") {
+      return "wifi";
+    }
+
+    return "it-visit";
+  }, [customerType, service, supportMode, cableDuration]);
   async function confirmBooking() {
+    if (bookingRequestInProgress.current) {
+      return;
+    }
+
     setError(null);
 
     if (!validateContactFields()) {
       return;
     }
 
-    if (!bookingCategory) {
+    if (!serviceKind) {
       setError(
         "Vi kunde inte välja rätt bokningskalender."
       );
@@ -210,6 +236,7 @@ const [bookingSelection, setBookingSelection] =
       return;
     }
 
+    bookingRequestInProgress.current = true;
     setBookingLoading(true);
 
     try {
@@ -221,7 +248,8 @@ const [bookingSelection, setBookingSelection] =
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            booking: bookingCategory,
+            customerType,
+            serviceKind,
             support:
               supportMode === "hembesok"
                 ? "hembesok"
@@ -245,12 +273,21 @@ const [bookingSelection, setBookingSelection] =
               customerType === "foretag"
                 ? organisationNumber.trim()
                 : null,
+            address:
+              supportMode === "hembesok"
+                ? address.trim()
+                : null,
             postcode:
               supportMode === "hembesok"
                 ? postcode.trim()
                 : null,
+            city:
+              supportMode === "hembesok"
+                ? city.trim()
+                : null,
             message: message.trim(),
-            smsConsent,
+
+
           }),
         }
       );
@@ -270,11 +307,13 @@ const [bookingSelection, setBookingSelection] =
           data.id ??
           "Bekräftad"
       );
+
     } catch {
       setError(
-        "Bokningssystemet kunde inte nås. Försök igen."
+        "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker boka igen."
       );
     } finally {
+      bookingRequestInProgress.current = false;
       setBookingLoading(false);
     }
   }
@@ -319,10 +358,14 @@ function validateContactFields() {
 
     if (
       supportMode === "hembesok" &&
-      !postcode.trim()
+      (
+        !address.trim() ||
+        !postcode.trim() ||
+        !city.trim()
+      )
     ) {
       setError(
-        "Fyll i postnummer för hembesök."
+        "Fyll i gatuadress, postnummer och ort för hembesök."
       );
 
       return false;
@@ -350,18 +393,68 @@ function validateContactFields() {
       return false;
     }
 
+    if (!message.trim()) {
+      setError("Beskriv problemet kort.");
+      return false;
+    }
+
     return true;
   }
 
-  function prepareMessageRequest() {
-    if (!validateContactFields()) {
-      return;
-    }
+  async function prepareMessageRequest() {
+    if (contactLoading) return;
 
-    setError(
-      "Förfrågan är klar att skickas. Nästa steg är att koppla formuläret till vår server."
-    );
+    if (!validateContactFields()) return;
+
+    setContactLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerType,
+          service,
+          supportMode,
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          company: company.trim(),
+          organisationNumber: organisationNumber.trim(),
+          address: address.trim(),
+          postcode: postcode.trim(),
+          city: city.trim(),
+          message: message.trim(),
+          website,
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setError(
+          typeof data?.error === "string"
+            ? data.error
+            : "F\u00f6rfr\u00e5gan kunde inte skickas. F\u00f6rs\u00f6k igen senare."
+        );
+        return;
+      }
+
+      setError(
+        "Servern svarade utan bekr\u00e4ftelse p\u00e5 leverans. Kontakta oss direkt."
+      );
+    } catch {
+      setError(
+        "Kunde inte ansluta till servern. F\u00f6rs\u00f6k igen senare."
+      );
+    } finally {
+      setContactLoading(false);
+    }
   }
+
   return (
     <div className="support-unified-v1">
 
@@ -373,7 +466,7 @@ function validateContactFields() {
 
           <h2>
             {intent === "booking"
-              ? "Boka support på ditt sätt."
+              ? "Boka IT-support på det sätt som passar dig."
               : "Hur kan vi hjälpa dig?"}
           </h2>
 
@@ -396,28 +489,28 @@ function validateContactFields() {
 
       <div className="support-unified-v1-progress">
         <div className="is-active">
-          <span>1</span>
+
           Behov
         </div>
 
         <i />
 
         <div>
-          <span>2</span>
+
           Kontakt
         </div>
 
         <i />
 
         <div>
-          <span>3</span>
+
           Tid
         </div>
 
         <i />
 
         <div>
-          <span>4</span>
+
           Klart
         </div>
       </div>
@@ -427,174 +520,327 @@ function validateContactFields() {
 
         <div className="support-unified-v1-content">
 
-          <section className="support-unified-v1-section">
-            <div className="support-unified-v1-section-head">
-
-
-              <div>
-                <strong>
-                  Vem gäller det?
-                </strong>
-
-                <p>
-                  Välj den typ som passar dig.
-                </p>
-              </div>
-            </div>
-
-            <div className="support-unified-v1-compact-field">
-  <label htmlFor="support-customer">
-    Välj kundtyp
-  </label>
-
-  <div className="support-unified-v1-select-wrap">
-    <select
-      id="support-customer"
-      value={customerType ?? ""}
-      onChange={(event) =>
-        setCustomerType(
-          event.target.value
-            ? (event.target.value as CustomerType)
-            : null
-        )
-      }
-      required
-    >
-      <option value="" disabled>
-        Välj vem supporten gäller
-      </option>
-
-      <option value="privat">
-        Privatperson
-      </option>
-
-      <option value="senior">
-        Senior / pensionär
-      </option>
-
-      <option value="foretag">
-        Företag
-      </option>
-    </select>
-
-    <span aria-hidden="true">↓</span>
-  </div>
-</div>
-</section>
-
 
           <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
-
-
               <div>
-                <strong>
-                  Vad behöver du hjälp med?
-                </strong>
-
-                <p>
-                  Du kan beskriva problemet mer längre ner.
-                </p>
+                <strong>Vem behöver hjälp? *</strong>
+                <p>Välj det alternativ som passar dig bäst.</p>
               </div>
             </div>
 
-            <div className="support-unified-v1-compact-field">
-  <label htmlFor="support-service">
-    Välj tjänst
-  </label>
+            <div
+              className="support-unified-v1-choice-grid support-unified-v1-choice-grid--3"
+              role="radiogroup"
+              aria-label="Vem behöver hjälp?"
+            >
+              {[
+                {
+                  value: "privat",
+                  title: "Privat",
+                  description: "IT-hjälp för dig och din familj.",
+                  icon: "person",
+                },
+                {
+                  value: "senior",
+                  title: "Senior",
+                  description: "Trygg och tydlig IT-hjälp i din egen takt.",
+                  icon: "senior",
+                },
+                {
+                  value: "foretag",
+                  title: "Företag",
+                  description: "IT-support för företaget.",
+                  icon: "business",
+                },
+              ].map((option) => {
+                const active = customerType === option.value;
 
-  <div className="support-unified-v1-select-wrap">
-    <select
-      id="support-service"
-      value={service ?? ""}
-      onChange={(event) =>
-        setService(
-          event.target.value
-            ? (event.target.value as ServiceType)
-            : null
-        )
-      }
-      required
-    >
-      <option value="" disabled>
-        Vad behöver du hjälp med?
-      </option>
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    className={[
+                      "support-unified-v1-choice",
+                      active ? "is-selected" : "",
+                    ].filter(Boolean).join(" ")}
+                    onClick={() => {
+                      setCustomerType(option.value as CustomerType);
+                      setBookingSelection(null);
+                    }}
+                  >
+                    <span
+                      className="support-unified-v1-choice-icon"
+                      aria-hidden="true"
+                    >
+                      <BookingChoiceIcon name={option.icon as BookingChoiceIconName} />
+                    </span>
 
-      {(
-        Object.entries(serviceLabels) as [
-          ServiceType,
-          string
-        ][]
-      ).map(([value, label]) => (
-        <option
-          key={value}
-          value={value}
-        >
-          {label}
-        </option>
-      ))}
-    </select>
+                    <span className="support-unified-v1-choice-copy">
+                      <strong>{option.title}</strong>
+                      <small>{option.description}</small>
+                    </span>
 
-    <span aria-hidden="true">↓</span>
-  </div>
-</div>
-</section>
+                    <span
+                      className="support-unified-v1-choice-status"
+                      aria-hidden="true"
+                    >
+                      {active ? "\u2713" : ""}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
 
 
           <section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
-
-
               <div>
-                <strong>
-                  Hur vill du få hjälp?
-                </strong>
-
-                <p>
-                  Vi anpassar nästa steg efter ditt val.
-                </p>
+                <strong>Vad behöver du hjälp med? *</strong>
+                <p>Välj det alternativ som bäst beskriver problemet.</p>
               </div>
             </div>
 
-            <div className="support-unified-v1-compact-field">
-  <label htmlFor="support-mode">
-    Välj supportform
-  </label>
+            <div
+              className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
+              role="radiogroup"
+              aria-label="Vad behöver du hjälp med?"
+            >
+              {[
+                {
+                  value: "mac",
+                  title: "Dator och program",
+                  description: "Dator, program, uppdateringar och inställningar.",
+                  icon: "computer",
+                },
+                {
+                  value: "wifi",
+                  title: "Internet och Wi-Fi",
+                  description: "Wi-Fi, router, internet och anslutning.",
+                  icon: "wifi",
+                },
+                {
+                  value: "network-cable",
+                  title: "Nätverkskablage",
+                  description: "Installation av nätverkskabel.",
+                  icon: "network-cable",
+                },
+                {
+                  value: "email",
+                  title: "E-post och konton",
+                  description: "E-post, lösenord, inloggning och konton.",
+                  icon: "mail",
+                },
+                {
+                  value: "other",
+                  title: "Annat eller osäker",
+                  description: "Välj detta om du är osäker på problemet.",
+                  icon: "help",
+                },
+              ].map((option) => {
+                const active = service === option.value;
 
-  <div className="support-unified-v1-select-wrap">
-    <select
-      id="support-mode"
-      value={supportMode ?? ""}
-      onChange={(event) =>
-        setSupportMode(
-          event.target.value
-            ? (event.target.value as SupportMode)
-            : null
-        )
-      }
-      required
-    >
-      <option value="" disabled>
-        Hur vill du få hjälp?
-      </option>
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    className={[
+                      "support-unified-v1-choice",
+                      active ? "is-selected" : "",
+                    ].filter(Boolean).join(" ")}
+                    onClick={() => {
+                      const nextService = option.value as ServiceType;
+                      setService(nextService);
+                      setCableDuration(null);
+                      if (nextService === "network-cable") {
+                        setSupportMode("hembesok");
+                      }
+                      setBookingSelection(null);
+                    }}
+                  >
+                    <span
+                      className="support-unified-v1-choice-icon"
+                      aria-hidden="true"
+                    >
+                      <BookingChoiceIcon name={option.icon as BookingChoiceIconName} />
+                    </span>
 
-      <option value="hembesok">
-        Hembesök
-      </option>
+                    <span className="support-unified-v1-choice-copy">
+                      <strong>{option.title}</strong>
+                      <small>{option.description}</small>
+                    </span>
 
-      <option value="distans">
-        Support på distans
-      </option>
+                    <span
+                      className="support-unified-v1-choice-status"
+                      aria-hidden="true"
+                    >
+                      {active ? "\u2713" : ""}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
-      <option value="telefon">
-        Telefonsupport
-      </option>
-    </select>
 
-    <span aria-hidden="true">↓</span>
-  </div>
-</div>
-</section>
+
+
+          {service === "network-cable" && (
+            <section className="support-unified-v1-section">
+              <div className="support-unified-v1-section-head">
+                <div>
+                  <strong>Hur lång tid behöver du? *</strong>
+                  <p>Välj omfattning för nätverksinstallationen.</p>
+                </div>
+              </div>
+
+              <div
+                className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
+                role="radiogroup"
+                aria-label="Installationstid för nätverkskablage"
+              >
+                {(["2h", "8h"] as const).map((duration) => {
+                  const active = cableDuration === duration;
+
+                  return (
+                    <button
+                      key={duration}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      className={[
+                        "support-unified-v1-choice",
+                        active ? "is-selected" : "",
+                      ].filter(Boolean).join(" ")}
+                      onClick={() => {
+                        setCableDuration(duration);
+                        setBookingSelection(null);
+                      }}
+                    >
+                      <span
+                        className="support-unified-v1-choice-icon support-unified-v1-choice-icon--duration"
+                        aria-hidden="true"
+                      >
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="9" />
+                          <path d="M12 6.5V12l3.5 2" />
+                        </svg>
+                      </span>
+                      <span className="support-unified-v1-choice-copy">
+                        <strong>{duration === "2h" ? "2 timmar" : "8 timmar"}</strong>
+                        <small>
+                          {duration === "2h"
+                            ? "Mindre installation"
+                            : "Större installation"}
+                        </small>
+                      </span>
+                      <span
+                        className="support-unified-v1-choice-status"
+                        aria-hidden="true"
+                      >
+                        {active ? "✓" : ""}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {supportMode === "distans" && (
+                <p role="alert">
+                  Nätverkskablage kräver besök på plats. Välj Besök.
+                </p>
+              )}
+            </section>
+          )}
+
+          <section className="support-unified-v1-section">
+            <div className="support-unified-v1-section-head">
+              <div>
+                <strong>Hur vill du få hjälp? *</strong>
+                <p>Välj det sätt som passar dig bäst.</p>
+              </div>
+            </div>
+
+            <div
+              className="support-unified-v1-choice-grid support-unified-v1-choice-grid--2"
+              role="radiogroup"
+              aria-label="Hur vill du få hjälp?"
+            >
+              {[
+                {
+                  value: "hembesok",
+                  title: "Besök",
+                  description: "Vi hjälper dig på plats.",
+                  icon: "home",
+                },
+                {
+                  value: "distans",
+                  title: "Hjälp på distans",
+                  description: "Vi hjälper dig på distans via dator eller telefon.",
+                  icon: "remote",
+                },
+              ]
+                .filter(
+                  (option) =>
+                    service !== "network-cable" ||
+                    option.value !== "distans"
+                )
+                .map((option) => {
+                const active = supportMode === option.value;
+
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    className={[
+                      "support-unified-v1-choice",
+                      active ? "is-selected" : "",
+                    ].filter(Boolean).join(" ")}
+                    onClick={() => {
+                      setSupportMode(option.value as SupportMode);
+                      setBookingSelection(null);
+                    }}
+                  >
+                    <span
+                      className="support-unified-v1-choice-icon"
+                      aria-hidden="true"
+                    >
+                      <BookingChoiceIcon name={option.icon as BookingChoiceIconName} />
+                    </span>
+
+                    <span className="support-unified-v1-choice-copy">
+                      <strong>{option.title}</strong>
+                      <small>{option.description}</small>
+                    </span>
+
+                    <span
+                      className="support-unified-v1-choice-status"
+                      aria-hidden="true"
+                    >
+                      {active ? "\u2713" : ""}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
 
 
@@ -609,7 +855,7 @@ function validateContactFields() {
                 </strong>
 
                 <p>
-                  Vi använder uppgifterna för din förfrågan och bokning.
+                  Vi använder dina uppgifter för att hantera din förfrågan eller bokning.
                 </p>
               </div>
             </div>
@@ -723,22 +969,65 @@ function validateContactFields() {
 
 
               {supportMode === "hembesok" && (
-                <label>
-                  <span>
-                    Postnummer / ort
-                  </span>
+                <>
+                  <label>
+                    <span>
+                      Gatuadress *
+                    </span>
 
-                  <input
-                    type="text"
-                    value={postcode}
-                    onChange={(event) =>
-                      setPostcode(
-                        event.target.value
-                      )
-                    }
-                    placeholder="Exempel: 114 35 Stockholm"
-                  />
-                </label>
+                    <input
+                      type="text"
+                      autoComplete="street-address"
+                      value={address}
+                      onChange={(event) =>
+                        setAddress(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Exempel: Sveavägen 10"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    <span>
+                      Postnummer *
+                    </span>
+
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="postal-code"
+                      value={postcode}
+                      onChange={(event) =>
+                        setPostcode(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Exempel: 114 35"
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    <span>
+                      Ort *
+                    </span>
+
+                    <input
+                      type="text"
+                      autoComplete="address-level2"
+                      value={city}
+                      onChange={(event) =>
+                        setCity(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Exempel: Stockholm"
+                      required
+                    />
+                  </label>
+                </>
               )}
 
             </div>
@@ -746,8 +1035,24 @@ function validateContactFields() {
 
             <label className="support-unified-v1-message">
               <span>
-                Beskriv problemet
+                Beskriv problemet *
               </span>
+
+              <div
+                aria-hidden="true"
+                hidden
+              >
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(event) =>
+                    setWebsite(event.target.value)
+                  }
+                />
+              </div>
 
               <textarea
                 value={message}
@@ -757,37 +1062,22 @@ function validateContactFields() {
                   )
                 }
                 placeholder="Exempel: Min Mac har blivit långsam och jag behöver hjälp med backup..."
+              required
               />
             </label>
 
 
-            <label className="support-unified-v1-sms">
-              <input
-                type="checkbox"
-                checked={smsConsent}
-                onChange={(event) =>
-                  setSmsConsent(
-                    event.target.checked
-                  )
-                }
-              />
-
-              <span className="support-unified-v1-sms-check">
-                ✓
-              </span>
-
-              <div>
-                <strong>
-                  SMS-bekräftelse
-                </strong>
-
-                <small>
-                  Skicka bokningsinformation och bekräftelse till mitt telefonnummer.
-                </small>
+                        <div className="support-unified-v1-confirmation">
+              <div className="support-unified-v1-confirmation-head">
+                <strong>Bokningsbekräftelse via e-post</strong>
+                <p>
+                  När din bokning är genomförd skickas en
+                  bokningsbekräftelse till din e-postadress.
+                </p>
               </div>
-            </label>
+            </div>
 
-          </section>
+</section>
 
 
           {intent === "booking" && (
@@ -805,17 +1095,16 @@ function validateContactFields() {
               </div>
 
               <BookingCalendarPicker
+                key={`${customerType ?? "none"}-${serviceKind ?? "none"}-${supportMode ?? "none"}`}
                 support={
                   supportMode === "hembesok"
                     ? "hembesok"
-                    : supportMode === "distans" ||
-                        supportMode === "telefon"
+                    : supportMode === "distans"
                       ? "distans"
-                      : customerType === "foretag"
-                        ? "foretag"
-                        : null
+                      : null
                 }
-                booking={bookingCategory}
+                customerType={customerType}
+                serviceKind={serviceKind}
                 onChange={setBookingSelection}
               />
 
@@ -823,7 +1112,7 @@ function validateContactFields() {
                 <div className="support-unified-v1-selected-time">
                   <div>
                     <span>
-                      Din valda tid
+                      Vald tid
                     </span>
 
                     <strong>
@@ -831,7 +1120,7 @@ function validateContactFields() {
                     </strong>
 
                     <small>
-                      {bookingSelection.timeLabel}
+                      kl.{" "}{bookingSelection.timeLabel}
                     </small>
                   </div>
 
@@ -860,36 +1149,35 @@ function validateContactFields() {
 
 
             <div className="support-unified-v1-final-summary">
+  <div className="support-unified-v1-summary-card">
+    <span className="support-unified-v1-summary-label">Kundtyp</span>
+    <strong>
+      {customerType
+        ? customerLabels[customerType]
+        : "Kundtyp saknas"}
+    </strong>
+  </div>
 
-              <span>
-                {customerType
-                  ? customerLabels[
-                      customerType
-                    ]
-                  : "Kundtyp saknas"}
-              </span>
+  <div className="support-unified-v1-summary-card">
+    <span className="support-unified-v1-summary-label">Tjänst</span>
+    <strong>
+      {service
+        ? service === "network-cable" && cableDuration
+          ? `${serviceLabels[service]} – ${cableDuration === "2h" ? "2 timmar" : "8 timmar"}`
+          : serviceLabels[service]
+        : "Tjänst saknas"}
+    </strong>
+  </div>
 
-              <i>·</i>
-
-              <span>
-                {service
-                  ? serviceLabels[
-                      service
-                    ]
-                  : "Tjänst saknas"}
-              </span>
-
-              <i>·</i>
-
-              <span>
-                {supportMode
-                  ? supportModeLabels[
-                      supportMode
-                    ]
-                  : "Supportform saknas"}
-              </span>
-
-            </div>
+  <div className="support-unified-v1-summary-card">
+    <span className="support-unified-v1-summary-label">Supportform</span>
+    <strong>
+      {supportMode
+        ? supportModeLabels[supportMode]
+        : "Supportform saknas"}
+    </strong>
+  </div>
+</div>
 
 
             {bookingId ? (
@@ -902,11 +1190,9 @@ function validateContactFields() {
                   Bokningsnummer: {bookingId}
                 </span>
 
-                {smsConsent && (
-                  <small>
-                    SMS-bekräftelse skickas när Twilio-integrationen aktiveras.
+                <small>
+                    Bokningsbekräftelsen skickas till din angivna e-postadress.
                   </small>
-                )}
               </div>
             ) : (
               <div className="support-unified-v1-final-actions">
@@ -927,11 +1213,12 @@ function validateContactFields() {
                     <button
                       type="button"
                       className="is-primary"
-                      onClick={
-                        prepareMessageRequest
-                      }
+                      onClick={prepareMessageRequest}
+                      disabled={contactLoading}
                     >
-                      Skicka förfrågan
+                      {contactLoading
+                        ? "Skickar..."
+                        : "Skicka f\u00f6rfr\u00e5gan"}
                     </button>
 
                   </>
@@ -943,7 +1230,7 @@ function validateContactFields() {
           </section>
 
           {error && (
-            <div className="support-unified-v1-error">
+            <div className="support-unified-v1-error" role="alert">
               {error}
             </div>
           )}

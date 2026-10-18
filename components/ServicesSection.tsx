@@ -15,7 +15,7 @@ const services = [
     category: "UNIFI NETWORK",
     description:
       "Stabilt wifi, bättre täckning och moderna nätverkslösningar med bland annat UniFi Network.",
-    image: "/images/u7-pro.png",
+    image: "/images/u7-pro-xg-new.png",
     href: "/tjanster/wifi-natverk",
   },
   {
