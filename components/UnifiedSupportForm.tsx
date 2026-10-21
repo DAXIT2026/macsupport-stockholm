@@ -629,18 +629,6 @@ function validateContactFields() {
                   description: "Installation av nätverkskabel.",
                   icon: "network-cable",
                 },
-                {
-                  value: "email",
-                  title: "E-post och konton",
-                  description: "E-post, lösenord, inloggning och konton.",
-                  icon: "mail",
-                },
-                {
-                  value: "other",
-                  title: "Annat eller osäker",
-                  description: "Välj detta om du är osäker på problemet.",
-                  icon: "help",
-                },
               ].map((option) => {
                 const active = service === option.value;
 
