@@ -185,6 +185,10 @@ const [bookingSelection, setBookingSelection] =
     useState(false);
 
   const bookingRequestInProgress = useRef(false);
+  const bookingAttemptKey = useRef<string | null>(null);
+  const bookingAttemptPayload = useRef<string | null>(null);
+  const bookingStatusUnknown = useRef(false);
+  const [bookingStatusUncertain, setBookingStatusUncertain] = useState(false);
 
   const [bookingId, setBookingId] =
     useState<string | null>(null);
@@ -212,7 +216,11 @@ const [bookingSelection, setBookingSelection] =
     return "it-visit";
   }, [customerType, service, supportMode, cableDuration]);
   async function confirmBooking() {
-    if (bookingRequestInProgress.current) {
+    if (
+      bookingRequestInProgress.current ||
+      bookingStatusUnknown.current ||
+      bookingId !== null
+    ) {
       return;
     }
 
@@ -240,14 +248,8 @@ const [bookingSelection, setBookingSelection] =
     setBookingLoading(true);
 
     try {
-      const response = await fetch(
-        "/api/booking/schedule",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+      const bookingPayload = JSON.stringify({
+
             customerType,
             serviceKind,
             support:
@@ -286,15 +288,43 @@ const [bookingSelection, setBookingSelection] =
                 ? city.trim()
                 : null,
             message: message.trim(),
+      });
 
+      if (bookingAttemptPayload.current !== bookingPayload) {
+        bookingAttemptKey.current = null;
+        bookingAttemptPayload.current = bookingPayload;
+      }
 
-          }),
+      if (!bookingAttemptKey.current) {
+        bookingAttemptKey.current = Array.from(
+          crypto.getRandomValues(new Uint8Array(16)),
+          (byte) => byte.toString(16).padStart(2, "0")
+        ).join("");
+      }
+
+      const response = await fetch(
+        "/api/booking/schedule/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Idempotency-Key": bookingAttemptKey.current,
+          },
+          body: bookingPayload,
         }
       );
-
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 502) {
+          bookingStatusUnknown.current = true;
+          setBookingStatusUncertain(true);
+          setError(
+            "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker boka igen."
+          );
+          return;
+        }
+
         setError(
           data?.error ??
             "Bokningen kunde inte genomföras."
@@ -302,13 +332,27 @@ const [bookingSelection, setBookingSelection] =
         return;
       }
 
-      setBookingId(
-        data.bookingId ??
-          data.id ??
-          "Bekräftad"
-      );
+      const confirmedBookingId =
+        typeof data?.bookingId === "string" && data.bookingId.trim()
+          ? data.bookingId.trim()
+          : typeof data?.id === "string" && data.id.trim()
+            ? data.id.trim()
+            : null;
+
+      if (!confirmedBookingId) {
+        bookingStatusUnknown.current = true;
+        setBookingStatusUncertain(true);
+        setError(
+          "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker boka igen."
+        );
+        return;
+      }
+
+      setBookingId(confirmedBookingId);
 
     } catch {
+      bookingStatusUnknown.current = true;
+      setBookingStatusUncertain(true);
       setError(
         "Bokningens status kunde inte bekräftas. Kontakta supporten innan du försöker boka igen."
       );
@@ -394,7 +438,7 @@ function validateContactFields() {
     }
 
     if (!message.trim()) {
-      setError("Beskriv problemet kort.");
+      setError("Beskriv kort vad du behöver hjälp med.");
       return false;
     }
 
@@ -569,6 +613,9 @@ function validateContactFields() {
                     onClick={() => {
                       setCustomerType(option.value as CustomerType);
                       setBookingSelection(null);
+                      if (!bookingRequestInProgress.current && !bookingStatusUnknown.current) {
+                        bookingAttemptKey.current = null;
+                      }
                     }}
                   >
                     <span
@@ -650,6 +697,9 @@ function validateContactFields() {
                         setSupportMode("hembesok");
                       }
                       setBookingSelection(null);
+                      if (!bookingRequestInProgress.current && !bookingStatusUnknown.current) {
+                        bookingAttemptKey.current = null;
+                      }
                     }}
                   >
                     <span
@@ -709,6 +759,9 @@ function validateContactFields() {
                       onClick={() => {
                         setCableDuration(duration);
                         setBookingSelection(null);
+                      if (!bookingRequestInProgress.current && !bookingStatusUnknown.current) {
+                        bookingAttemptKey.current = null;
+                      }
                       }}
                     >
                       <span
@@ -804,6 +857,9 @@ function validateContactFields() {
                     onClick={() => {
                       setSupportMode(option.value as SupportMode);
                       setBookingSelection(null);
+                      if (!bookingRequestInProgress.current && !bookingStatusUnknown.current) {
+                        bookingAttemptKey.current = null;
+                      }
                     }}
                   >
                     <span
@@ -1142,7 +1198,7 @@ function validateContactFields() {
     <strong>
       {customerType
         ? customerLabels[customerType]
-        : "Kundtyp saknas"}
+        : "Välj kundtyp"}
     </strong>
   </div>
 
@@ -1153,7 +1209,7 @@ function validateContactFields() {
         ? service === "network-cable" && cableDuration
           ? `${serviceLabels[service]} – ${cableDuration === "2h" ? "2 timmar" : "8 timmar"}`
           : serviceLabels[service]
-        : "Tjänst saknas"}
+        : "Välj tjänst"}
     </strong>
   </div>
 
@@ -1162,7 +1218,7 @@ function validateContactFields() {
     <strong>
       {supportMode
         ? supportModeLabels[supportMode]
-        : "Supportform saknas"}
+        : "Välj supportform"}
     </strong>
   </div>
 </div>
@@ -1189,11 +1245,11 @@ function validateContactFields() {
                   <button
                     type="button"
                     className="is-primary"
-                    disabled={bookingLoading || !bookingSelection}
+                    disabled={bookingLoading || !bookingSelection || bookingStatusUncertain}
                     onClick={confirmBooking}
                   >
                     {bookingLoading
-                      ? "Bekräftar..."
+                      ? "Bekräftar bokningen…"
                       : "Bekräfta bokning"}
                   </button>
                 ) : (
@@ -1205,7 +1261,7 @@ function validateContactFields() {
                       disabled={contactLoading}
                     >
                       {contactLoading
-                        ? "Skickar..."
+                        ? "Skickar förfrågan…"
                         : "Skicka f\u00f6rfr\u00e5gan"}
                     </button>
 

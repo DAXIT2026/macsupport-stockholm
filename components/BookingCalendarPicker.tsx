@@ -318,6 +318,8 @@ export default function BookingCalendarPicker({
     async function loadMonth() {
       setLoading(true);
       setError(null);
+      setSlots([]);
+      setConfigured(true);
 
       const monthStart =
         new Date(
@@ -355,66 +357,64 @@ export default function BookingCalendarPicker({
           999
         );
 
-      const availabilityEnd =
-        new Date(
-          start.getTime() +
-            20 * 24 * 60 * 60 * 1000
-        );
-
-      const end =
-        availabilityEnd < monthEnd
-          ? availabilityEnd
-          : monthEnd;
-
       try {
-        const url =
-          `/api/booking/slots?support=${encodeURIComponent(
-            currentSupport
-          )}&customerType=${encodeURIComponent(
-            currentCustomerType
-          )}&serviceKind=${encodeURIComponent(
-            currentServiceKind
-          )}&start=${encodeURIComponent(
-            start.toISOString()
-          )}&end=${encodeURIComponent(
-            end.toISOString()
-          )}`;
+        const collectedSlots: BookingSlot[] = [];
+        let allConfigured = true;
+        let chunkStart = start.getTime();
+        const monthEndMs = monthEnd.getTime();
+        const chunkDurationMs = 10 * 24 * 60 * 60 * 1000;
 
-        const response =
-          await fetch(
-            url,
-            {
-              signal:
-                controller.signal,
-            }
+        // Request at most ten days at a time from OnceHub V2.
+        while (chunkStart <= monthEndMs) {
+          const chunkEnd = Math.min(
+            chunkStart + chunkDurationMs - 1,
+            monthEndMs
           );
 
-        const data =
-          (
-            await response.json()
-          ) as SlotsResponse;
+          const url =
+            `/api/booking/slots?support=${encodeURIComponent(
+              currentSupport
+            )}&customerType=${encodeURIComponent(
+              currentCustomerType
+            )}&serviceKind=${encodeURIComponent(
+              currentServiceKind
+            )}&start=${encodeURIComponent(
+              new Date(chunkStart).toISOString()
+            )}&end=${encodeURIComponent(
+              new Date(chunkEnd).toISOString()
+            )}`;
 
-        if (
-          !response.ok
-        ) {
-          throw new Error(
-            data.error ??
-              "Lediga tider kunde inte hämtas."
-          );
+          const response = await fetch(url, {
+            signal: controller.signal,
+          });
+
+          const data = (await response.json()) as SlotsResponse;
+
+          if (!response.ok) {
+            throw new Error(
+              data.error ?? "Lediga tider kunde inte hämtas."
+            );
+          }
+
+          if (data.configured === false) {
+            allConfigured = false;
+            break;
+          }
+
+          if (!Array.isArray(data.slots)) {
+            throw new Error("Ogiltigt svar från bokningssystemet.");
+          }
+
+          collectedSlots.push(...data.slots);
+          chunkStart = chunkEnd + 1;
         }
 
-        const isConfigured =
-          data.configured !== false;
+        if (controller.signal.aborted) {
+          return;
+        }
 
-        setConfigured(
-          isConfigured
-        );
-
-        setSlots(
-          isConfigured
-            ? data.slots ?? []
-            : []
-        );
+        setConfigured(allConfigured);
+        setSlots(allConfigured ? collectedSlots : []);
       }
       catch (requestError) {
         if (
@@ -424,6 +424,7 @@ export default function BookingCalendarPicker({
         }
 
         setSlots([]);
+        setConfigured(true);
 
         setError(
           requestError instanceof Error
@@ -589,8 +590,7 @@ export default function BookingCalendarPicker({
         </div>
       )}
 
-      {configured && (
-      <div className="booking-picker-v1-layout">
+            <div className="booking-picker-v1-layout">
         <div className="booking-picker-v1-calendar">
           <div className="booking-picker-v1-head">
             <button
@@ -692,6 +692,9 @@ export default function BookingCalendarPicker({
                 const disabled =
                   !currentMonth ||
                   isPast ||
+                  loading ||
+                  Boolean(error) ||
+                  !configured ||
                   count === 0;
 
                 return (
@@ -720,17 +723,26 @@ export default function BookingCalendarPicker({
                         ? "is-today"
                         : "",
 
+                      configured &&
+                      !loading &&
+                      !error &&
                       count >= 4
                         ? "is-open"
                         : "",
 
+                      configured &&
+                      !loading &&
+                      !error &&
                       count > 0 &&
                       count <= 3
                         ? "is-low"
                         : "",
 
+                      configured &&
                       currentMonth &&
                       !isPast &&
+                      !loading &&
+                      !error &&
                       count === 0
                         ? "is-empty"
                         : "",
@@ -745,9 +757,15 @@ export default function BookingCalendarPicker({
                     {currentMonth &&
                       !isPast && (
                         <small>
-                          {count > 0
-                            ? `${count} ${count === 1 ? "tid" : "tider"}`
-                            : "Fullt"}
+                          {loading
+                            ? "Kontrolleras…"
+                            : error
+                              ? "Kan inte visas"
+                              : !configured
+                               ? "Ej tillgängligt"
+                               : count > 0
+                                 ? `${count} ${count === 1 ? "tid" : "tider"}`
+                                 : "Fullbokat"}
                         </small>
                       )}
 
@@ -876,7 +894,6 @@ export default function BookingCalendarPicker({
           )}
         </div>
       </div>
-      )}
     </div>
   );
 }
