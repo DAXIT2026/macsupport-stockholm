@@ -39,6 +39,7 @@ type ScheduleRequest = {
   location?: {
     type?: unknown;
     value?: unknown;
+    id?: unknown;
   } | null;
 };
 
@@ -347,14 +348,39 @@ export async function POST(
 
   if (
     body.location &&
-    typeof body.location.type === "string" &&
-    typeof body.location.value === "string" &&
-    body.location.value.trim()
+    typeof body.location.type === "string"
   ) {
-    payload.location = {
-      type: body.location.type,
-      value: body.location.value.trim(),
-    };
+    if (
+      body.location.type === "physical" &&
+      typeof body.location.id === "string" &&
+      body.location.id.trim()
+    ) {
+      payload.location = {
+        type: "physical",
+        value: body.location.id.trim(),
+      };
+    } else if (
+      body.location.type === "in_person_by_guest" &&
+      body.support === "hembesok" &&
+      address &&
+      postcode &&
+      city
+    ) {
+      payload.location = {
+        type: "in_person_by_guest",
+        value: `${address}, ${postcode} ${city}`,
+      };
+    } else if (
+      body.location.type !== "physical" &&
+      body.location.type !== "in_person_by_guest" &&
+      typeof body.location.value === "string" &&
+      body.location.value.trim()
+    ) {
+      payload.location = {
+        type: body.location.type,
+        value: body.location.value.trim(),
+      };
+    }
   }
 
   try {
