@@ -13,50 +13,63 @@ export const metadata: Metadata = {
 
 const plans = [
   {
-    eyebrow: "HEMMA",
-    title: "IT-support hemma",
-    price: "800",
-    suffix: "kr",
-    note: "Perfekt när du behöver hjälp på plats hemma.",
+    eyebrow: "IT-TEKNIKER",
+    title: "IT-tekniker",
+    price: "799",
+    suffix: "kr/tim",
+    vat: "inkl. moms efter RUT",
+    note: "Privatpris vid besök på plats. RUT gäller endast för godkänt arbete.",
     featured: true,
     features: [
-      "Besök på plats i hemmet",
-      "Felsökning och problemlösning",
-      "Installation och uppsättning",
-      "Rådgivning och praktiska tips",
-      "Tydlig genomgång efter arbetet",
+      "Besök – Företag: 1 280 kr/tim exkl. moms",
+      "Besök – Privat: 799 kr/tim inkl. moms efter RUT",
+      "Besök – Pensionär 65+: 599 kr/tim inkl. moms efter RUT. Avtal krävs.",
+      "Resekostnad – Företag: från 400 kr",
+      "Resekostnad – Privat och pensionär: från 500 kr",
+      "Minimidebitering vid besök: 2 timmar",
+      "Telefonsupport – Företag: 640 kr/30 min exkl. moms",
+      "Telefonsupport – Privat: 799 kr/30 min inkl. moms",
+      "Telefonsupport – Pensionär 65+: 599 kr/30 min inkl. moms. Avtal krävs.",
+      "Telefonsupport: minst 30 minuter. RUT gäller inte.",
     ],
   },
   {
-    eyebrow: "PERSONLIG",
-    title: "Personlig teknikhjälp",
-    price: "498",
-    suffix: "kr",
-    note: "Flexibel hjälp när du behöver den.",
+    eyebrow: "NÄTVERKSTEKNIKER",
+    title: "Nätverkstekniker",
+    price: "799",
+    suffix: "kr/tim",
+    vat: "inkl. moms efter RUT",
+    note: "Privatpris vid besök på plats. RUT gäller endast för godkänt arbete.",
+    featured: false,
     features: [
-      "Hjälp per timme",
-      "Du betalar för tiden vi arbetar",
-      "Distans eller på plats",
-      "Snabb och personlig återkoppling",
-      "Fokus på en stabil lösning",
+      "Besök – Företag: 1 280 kr/tim exkl. moms",
+      "Besök – Privat: 799 kr/tim inkl. moms efter RUT",
+      "Besök – Pensionär 65+: 599 kr/tim inkl. moms efter RUT. Avtal krävs.",
+      "Resekostnad – Företag: från 600 kr",
+      "Resekostnad – Privat och pensionär: från 750 kr",
+      "Telefonsupport – Företag: 640 kr/30 min exkl. moms",
+      "Telefonsupport – Privat: 799 kr/30 min inkl. moms",
+      "Telefonsupport – Pensionär 65+: 599 kr/30 min inkl. moms. Avtal krävs.",
+      "Telefonsupport: RUT gäller inte.",
     ],
   },
   {
-    eyebrow: "FÖRETAG",
-    title: "Företagssupport",
-    price: "1 280",
-    suffix: "kr",
-    note: "För företag som behöver stabil och trygg IT.",
+    eyebrow: "NÄTVERKSMONTÖR",
+    title: "Nätverksmontör",
+    price: "575",
+    suffix: "kr/tim",
+    vat: "inkl. moms efter RUT",
+    note: "Privatpris vid besök på plats. RUT gäller endast för godkänt arbete.",
+    featured: false,
     features: [
-      "Support på plats eller distans",
-      "Microsoft 365 och användarkonton",
-      "Nätverk, WiFi och UniFi",
-      "Säkerhet och backup",
-      "Löpande IT-support",
+      "Besök – Företag: 920 kr/tim exkl. moms",
+      "Besök – Privat: 575 kr/tim inkl. moms efter RUT",
+      "Besök – Pensionär 65+: 575 kr/tim inkl. moms efter RUT",
+      "Resekostnad – Företag: från 600 kr",
+      "Resekostnad – Privat och pensionär: från 750 kr",
     ],
   },
 ];
-
 const included = [
   {
     title: "Tydlig felsökning",
@@ -260,7 +273,7 @@ export default function PriserPage() {
                   <div className={styles.priceLine}>
                     <strong>{plan.price}</strong>
                     <span>{plan.suffix}</span>
-                    <small>/ inkl. moms</small>
+                    <small>{plan.vat}</small>
                   </div>
 
                   <p className={styles.priceNote}>{plan.note}</p>

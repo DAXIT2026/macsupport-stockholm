@@ -39,6 +39,7 @@ type ScheduleRequest = {
   location?: {
     type?: unknown;
     value?: unknown;
+    id?: unknown;
   } | null;
 };
 
@@ -68,7 +69,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Supporttyp saknas.",
+          "Välj hur du vill få hjälp.",
       },
       {
         status: 400,
@@ -86,11 +87,27 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Fyll i namn, e-post och bokningstid.",
+          "Ange ditt namn och din e-postadress samt välj en bokningstid.",
       },
       {
         status: 400,
       }
+    );
+  }
+
+  const startTimePattern =
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/;
+
+  if (
+    !startTimePattern.test(body.startTime) ||
+    !Number.isFinite(Date.parse(body.startTime))
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Den valda bokningstiden är ogiltig. Välj en annan tid.",
+      },
+      { status: 400 }
     );
   }
 
@@ -109,7 +126,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Namn och e-post är obligatoriska.",
+          "Namn och e-postadress är obligatoriska.",
       },
       {
         status: 400,
@@ -159,7 +176,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Välj vem supporten gäller.",
+          "Välj vem som behöver hjälp.",
       },
       {
         status: 400,
@@ -232,7 +249,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Beskriv problemet kort.",
+          "Beskriv kort vad du behöver hjälp med.",
       },
       {
         status: 400,
@@ -271,7 +288,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "OnceHub är inte färdigkonfigurerat.",
+          "Bokningstjänsten är tillfälligt otillgänglig. Försök igen senare.",
       },
       {
         status: 503,
@@ -347,14 +364,39 @@ export async function POST(
 
   if (
     body.location &&
-    typeof body.location.type === "string" &&
-    typeof body.location.value === "string" &&
-    body.location.value.trim()
+    typeof body.location.type === "string"
   ) {
-    payload.location = {
-      type: body.location.type,
-      value: body.location.value.trim(),
-    };
+    if (
+      body.location.type === "physical" &&
+      typeof body.location.id === "string" &&
+      body.location.id.trim()
+    ) {
+      payload.location = {
+        type: "physical",
+        value: body.location.id.trim(),
+      };
+    } else if (
+      body.location.type === "in_person_by_guest" &&
+      body.support === "hembesok" &&
+      address &&
+      postcode &&
+      city
+    ) {
+      payload.location = {
+        type: "in_person_by_guest",
+        value: `${address}, ${postcode} ${city}`,
+      };
+    } else if (
+      body.location.type !== "physical" &&
+      body.location.type !== "in_person_by_guest" &&
+      typeof body.location.value === "string" &&
+      body.location.value.trim()
+    ) {
+      payload.location = {
+        type: body.location.type,
+        value: body.location.value.trim(),
+      };
+    }
   }
 
   try {
@@ -390,6 +432,10 @@ export async function POST(
 
     if (!response.ok) {
       console.error("OnceHub schedule HTTP status:", response.status);
+      console.error("OnceHub validation details:", {
+        type: typeof data?.type === "string" ? data.type : undefined,
+        param: typeof data?.param === "string" ? data.param : undefined,
+      });
       console.error("OnceHub error diagnostics:", {
         code: typeof data?.code === "string" ? data.code : undefined,
         errorCode: typeof data?.error_code === "string" ? data.error_code : undefined,
@@ -406,7 +452,7 @@ export async function POST(
       return NextResponse.json(
         {
           error:
-            "Bokningen kunde inte genomföras. Försök igen eller välj en annan tid.",
+            "Bokningen kunde inte genomföras. Kontrollera dina uppgifter och försök igen, eller välj en annan tid.",
         },
         {
           status:
