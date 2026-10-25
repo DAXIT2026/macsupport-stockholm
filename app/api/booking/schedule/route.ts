@@ -69,7 +69,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Supporttyp saknas.",
+          "Välj hur du vill få hjälp.",
       },
       {
         status: 400,
@@ -87,11 +87,27 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Fyll i namn, e-post och bokningstid.",
+          "Ange ditt namn och din e-postadress samt välj en bokningstid.",
       },
       {
         status: 400,
       }
+    );
+  }
+
+  const startTimePattern =
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/;
+
+  if (
+    !startTimePattern.test(body.startTime) ||
+    !Number.isFinite(Date.parse(body.startTime))
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Den valda bokningstiden är ogiltig. Välj en annan tid.",
+      },
+      { status: 400 }
     );
   }
 
@@ -110,7 +126,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Namn och e-post är obligatoriska.",
+          "Namn och e-postadress är obligatoriska.",
       },
       {
         status: 400,
@@ -160,7 +176,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Välj vem supporten gäller.",
+          "Välj vem som behöver hjälp.",
       },
       {
         status: 400,
@@ -233,7 +249,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Beskriv problemet kort.",
+          "Beskriv kort vad du behöver hjälp med.",
       },
       {
         status: 400,
@@ -272,7 +288,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "OnceHub är inte färdigkonfigurerat.",
+          "Bokningstjänsten är tillfälligt otillgänglig. Försök igen senare.",
       },
       {
         status: 503,
@@ -436,7 +452,7 @@ export async function POST(
       return NextResponse.json(
         {
           error:
-            "Bokningen kunde inte genomföras. Försök igen eller välj en annan tid.",
+            "Bokningen kunde inte genomföras. Kontrollera dina uppgifter och försök igen, eller välj en annan tid.",
         },
         {
           status:
