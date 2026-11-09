@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import ServiceDetail from "../../../components/ServiceDetail";
+import RelatedLinksSection, { supportLinks } from "../../../components/RelatedLinksSection";
 
 import {
   getService,
@@ -51,6 +52,13 @@ export default async function ServicePage({
   return (
     <>
       <ServiceDetail service={service} />
+      {service.slug === "it-sakerhet" && (
+        <RelatedLinksSection
+          title="Mer IT-support och säkerhet"
+          description="Läs mer om IT-support, supportavtal och Microsoft 365 hos Min Datorsupport."
+          links={supportLinks}
+        />
+      )}
     </>
   );
 }

@@ -11,65 +11,32 @@ export const metadata: Metadata = {
     "Tydliga priser för personlig IT-support i Stockholm. Se våra priser för support hemma, personlig teknikhjälp och företagssupport.",
 };
 
-const plans = [
+const customerGroups = [
   {
-    eyebrow: "IT-TEKNIKER",
-    title: "IT-tekniker",
-    price: "799",
-    suffix: "kr/tim",
-    vat: "inkl. moms efter RUT",
-    note: "Privatpris vid besök på plats. RUT gäller endast för godkänt arbete.",
-    featured: true,
-    features: [
-      "Besök – Företag: 1 280 kr/tim exkl. moms",
-      "Besök – Privat: 799 kr/tim inkl. moms efter RUT",
-      "Besök – Pensionär 65+: 599 kr/tim inkl. moms efter RUT. Avtal krävs.",
-      "Resekostnad – Företag: från 400 kr",
-      "Resekostnad – Privat och pensionär: från 500 kr",
-      "Minimidebitering vid besök: 2 timmar",
-      "Telefonsupport – Företag: 640 kr/30 min exkl. moms",
-      "Telefonsupport – Privat: 799 kr/30 min inkl. moms",
-      "Telefonsupport – Pensionär 65+: 599 kr/30 min inkl. moms. Avtal krävs.",
-      "Telefonsupport: minst 30 minuter. RUT gäller inte.",
+    id: "privat", title: "Privat", image: "/icons/booking/privat-1.png", intro: "Tydliga priser för dig som privatperson.",
+    services: [
+      { title: "Datorer och program", image: "/images/process/support-losning.png", price: "799 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 500 kr", phone: "799 kr/30 min inkl. moms", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
+      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "799 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: "799 kr/30 min inkl. moms", minimum: "Minst 30 minuter per telefonsamtal" },
+      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "575 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: null, minimum: null },
     ],
   },
   {
-    eyebrow: "NÄTVERKSTEKNIKER",
-    title: "Nätverkstekniker",
-    price: "799",
-    suffix: "kr/tim",
-    vat: "inkl. moms efter RUT",
-    note: "Privatpris vid besök på plats. RUT gäller endast för godkänt arbete.",
-    featured: false,
-    features: [
-      "Besök – Företag: 1 280 kr/tim exkl. moms",
-      "Besök – Privat: 799 kr/tim inkl. moms efter RUT",
-      "Besök – Pensionär 65+: 599 kr/tim inkl. moms efter RUT. Avtal krävs.",
-      "Resekostnad – Företag: från 600 kr",
-      "Resekostnad – Privat och pensionär: från 750 kr",
-      "Telefonsupport – Företag: 640 kr/30 min exkl. moms",
-      "Telefonsupport – Privat: 799 kr/30 min inkl. moms",
-      "Telefonsupport – Pensionär 65+: 599 kr/30 min inkl. moms. Avtal krävs.",
-      "Telefonsupport: RUT gäller inte.",
+    id: "senior", title: "Senior 65+", image: "/icons/booking/senior-1.png", intro: "Personlig hjälp med tydliga villkor.",
+    services: [
+      { title: "Datorer och program", image: "/images/process/support-losning.png", price: "599 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet. Avtal krävs.", travel: "Från 500 kr", phone: "599 kr/30 min inkl. moms. Avtal krävs.", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
+      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "599 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet. Avtal krävs.", travel: "Från 750 kr", phone: "599 kr/30 min inkl. moms. Avtal krävs.", minimum: "Minst 30 minuter per telefonsamtal" },
+      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "575 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: null, minimum: null },
     ],
   },
   {
-    eyebrow: "NÄTVERKSMONTÖR",
-    title: "Nätverksmontör",
-    price: "575",
-    suffix: "kr/tim",
-    vat: "inkl. moms efter RUT",
-    note: "Privatpris vid besök på plats. RUT gäller endast för godkänt arbete.",
-    featured: false,
-    features: [
-      "Besök – Företag: 920 kr/tim exkl. moms",
-      "Besök – Privat: 575 kr/tim inkl. moms efter RUT",
-      "Besök – Pensionär 65+: 575 kr/tim inkl. moms efter RUT",
-      "Resekostnad – Företag: från 600 kr",
-      "Resekostnad – Privat och pensionär: från 750 kr",
+    id: "foretag", title: "Företag", image: "/icons/booking/foretag-1.png", intro: "Professionell IT-hjälp för verksamheten.",
+    services: [
+      { title: "Datorer och program", image: "/images/process/support-losning.png", price: "1 280 kr/tim", terms: "Exkl. moms", travel: "Från 400 kr", phone: "640 kr/30 min exkl. moms", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
+      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "1 280 kr/tim", terms: "Exkl. moms", travel: "Från 600 kr", phone: "640 kr/30 min exkl. moms", minimum: "Minst 30 minuter per telefonsamtal" },
+      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "920 kr/tim", terms: "Exkl. moms", travel: "Från 600 kr", phone: null, minimum: null },
     ],
   },
-];
+] as const;
 const included = [
   {
     title: "Tydlig felsökning",
@@ -250,49 +217,41 @@ export default function PriserPage() {
               </div>
             </div>
 
-            <div className={styles.pricingGrid}>
-              {plans.map((plan) => (
-                <article
-                  className={`${styles.priceCard} ${
-                    plan.featured ? styles.priceCardFeatured : ""
-                  }`}
-                  key={plan.title}
-                >
-                  <div className={styles.priceCardHeader}>
-                    <span>{plan.eyebrow}</span>
-
-                    {plan.featured && (
-                      <strong className={styles.recommended}>
-                        REKOMMENDERAD
-                      </strong>
-                    )}
+            <div className={styles.customerPricingGrid}>
+              {customerGroups.map((group) => (
+                <article className={styles.customerCard} key={group.id}>
+                  <div className={styles.customerHeader}>
+                    <Image src={group.image} alt="" width={112} height={112} className={styles.customerIcon} />
+                    <h2>{group.title}</h2>
+                    <p>{group.intro}</p>
                   </div>
-
-                  <h2>{plan.title}</h2>
-
-                  <div className={styles.priceLine}>
-                    <strong>{plan.price}</strong>
-                    <span>{plan.suffix}</span>
-                    <small>{plan.vat}</small>
-                  </div>
-
-                  <p className={styles.priceNote}>{plan.note}</p>
-
-                  <div className={styles.priceDivider} />
-
-                  <ul>
-                    {plan.features.map((feature) => (
-                      <li key={feature}>
-                        <i aria-hidden="true">✓</i>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link href="/support?intent=booking#support-form" className={styles.planButton}>
-                    <span>Boka nu</span>
-                    <span aria-hidden="true">→</span>
-                  </Link>
+                  <p className={styles.customerClickHint}><span className={styles.pricingAccessibilityV4} aria-hidden="true">↓</span> Tryck eller klicka på den gröna knappen nedan för att se alla priser och villkor.</p>
+                  <details className={styles.customerDetails}>
+                    <summary className={styles.customerToggle}>Tryck eller klicka här – visa alla priser <span aria-hidden="true">⌄</span></summary>
+                    <div className={styles.customerServices}>
+                      {group.services.map((service) => (
+                        <section className={styles.customerService} key={service.title} aria-label={service.title}>
+                          <div className={styles.customerServiceHeader}>
+                            <Image src={service.image} alt="" width={112} height={84} className={styles.customerServiceImage} />
+                            <h3>{service.title}</h3>
+                          </div>
+                          <div className={styles.customerServiceBody}>
+                            <span className={styles.customerPriceLabel}>Besök på plats</span>
+                            <strong className={styles.customerPrice}>{service.price}</strong>
+                            <p className={styles.customerTerms}>{service.terms}</p>
+                            <dl className={styles.customerFacts}>
+                              <div><dt>Resekostnad</dt><dd>{service.travel}</dd></div>
+                              {service.phone && <div><dt>Telefonsupport</dt><dd>{service.phone}</dd></div>}
+                              {service.minimum && <div><dt>Minimidebitering</dt><dd>{service.minimum}</dd></div>}
+                            </dl>
+                            {service.phone && <p className={styles.customerFinePrint}>RUT-avdrag gäller inte för telefonsupport.</p>}
+                            {!service.phone && <p className={styles.customerFinePrint}>Telefonsupport erbjuds inte för nätverksmontör.</p>}
+                          </div>
+                        </section>
+                      ))}
+                      <Link href="/support?intent=booking#support-form" className={styles.customerBook}>Boka support <span aria-hidden="true">→</span></Link>
+                    </div>
+                  </details>
                 </article>
               ))}
             </div>
