@@ -130,14 +130,98 @@ export async function GET(
       )}/time-slots`
     );
 
+    // Convert Stockholm calendar dates to UTC timestamps for OnceHub.
+  const stockholmDateToUtc = (date: string): string => {
+    // Normalize ISO timestamps to Stockholm calendar dates.
+    if (/^\d{4}-\d{2}-\d{2}T/.test(date)) {
+      const parsed = new Date(date);
+
+      if (Number.isNaN(parsed.getTime())) {
+        throw new Error("Invalid ISO timestamp.");
+      }
+
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Stockholm",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).formatToParts(parsed);
+
+      const year = parts.find((part) => part.type === "year")?.value;
+      const month = parts.find((part) => part.type === "month")?.value;
+      const day = parts.find((part) => part.type === "day")?.value;
+
+      if (!year || !month || !day) {
+        throw new Error("Could not determine Stockholm calendar date.");
+      }
+
+      date = `${year}-${month}-${day}`;
+    }
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new Error("Invalid calendar date format.");
+    }
+
+    const [year, month, day] = date.split("-").map(Number);
+    const utcMidnight = Date.UTC(year, month - 1, day);
+
+    const formatter = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/Stockholm",
+      timeZoneName: "longOffset",
+    });
+
+    const offsetPart = formatter
+      .formatToParts(new Date(utcMidnight))
+      .find((part) => part.type === "timeZoneName")?.value;
+
+    const match = offsetPart?.match(/^GMT([+-])(\d{2}):(\d{2})$/);
+
+    if (!match) {
+      throw new Error("Could not determine Stockholm timezone offset.");
+    }
+
+    const sign = match[1] === "+" ? 1 : -1;
+    const offsetMinutes =
+      sign * (Number(match[2]) * 60 + Number(match[3]));
+
+    return new Date(utcMidnight - offsetMinutes * 60_000).toISOString();
+  };
+
+  // Preserve precise ISO timestamps and avoid querying past availability.
+  const normalizeSlotBoundary = (
+    value: string,
+    isStart: boolean
+  ): string => {
+    const isIsoTimestamp =
+      /^\d{4}-\d{2}-\d{2}T/.test(value);
+
+    const normalized = isIsoTimestamp
+      ? new Date(value)
+      : new Date(stockholmDateToUtc(value));
+
+    if (Number.isNaN(normalized.getTime())) {
+      throw new Error("Invalid booking date.");
+    }
+
+    if (isStart) {
+      const minimumStart = new Date(Date.now() + 5 * 60_000);
+
+      if (normalized < minimumStart) {
+        return minimumStart.toISOString();
+      }
+    }
+
+    return normalized.toISOString();
+  };
+
   url.searchParams.set(
     "start_time",
-    start
+    normalizeSlotBoundary(start, true)
   );
 
   url.searchParams.set(
     "end_time",
-    end
+    normalizeSlotBoundary(end, false)
   );
 
   try {
