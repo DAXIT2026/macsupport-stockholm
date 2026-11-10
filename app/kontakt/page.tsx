@@ -24,7 +24,7 @@ export default function KontaktPage() {
           </p>
 
           <h1>
-            Hur kan vi
+            Hur kan vi{" "}
             <span>hjälpa dig?</span>
           </h1>
 
