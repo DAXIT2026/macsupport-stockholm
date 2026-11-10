@@ -33,6 +33,13 @@ jobs:
       - name: ESLint check
         run: npx eslint components/UnifiedSupportForm.tsx components/BookingCalendarPicker.tsx app/support/page.tsx
 
+      - name: PHP syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l templ-api/api/booking/config.php
+          php -l templ-api/api/booking/slots.php
+          php -l templ-api/api/booking/schedule.php
       - name: Static production build
         run: npm run build
 
