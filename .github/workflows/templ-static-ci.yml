@@ -43,3 +43,11 @@ jobs:
           test -f out/support/index.html
           test -f out/boka/index.html
           test -f out/kontakt/index.html
+
+      - name: Upload verified static build
+        uses: actions/upload-artifact@v4
+        with:
+          name: macsupport-templ-static
+          path: out/
+          if-no-files-found: error
+          retention-days: 7
