@@ -64,6 +64,59 @@ function getOnceHubCalendarIdForBooking(
         ?? getOnceHubCalendarId($support);
 }
 
+
+function isBookingCustomerType(?string $value): bool
+{
+    return in_array($value, ['privat', 'senior', 'foretag'], true);
+}
+
+function isBookingServiceKind(?string $value): bool
+{
+    return in_array(
+        $value,
+        ['it-visit', 'it-remote', 'wifi', 'cable-2h', 'cable-8h', 'offert'],
+        true
+    );
+}
+
+function isServiceCompatibleWithSupport(
+    string $service,
+    string $support
+): bool {
+    if ($service === 'it-remote') {
+        return $support === 'distans';
+    }
+
+    return $support === 'hembesok';
+}
+
+function getOnceHubCalendarIdForService(
+    string $customerType,
+    string $serviceKind
+): ?string {
+    if (
+        !isBookingCustomerType($customerType) ||
+        !isBookingServiceKind($serviceKind)
+    ) {
+        return null;
+    }
+
+    $serviceKeys = [
+        'it-visit'  => 'IT_VISIT',
+        'it-remote' => 'IT_REMOTE',
+        'wifi'      => 'WIFI',
+        'cable-2h'  => 'CABLE_2H',
+        'cable-8h'  => 'CABLE_8H',
+        'offert'    => 'OFFERT',
+    ];
+
+    $environmentKey = 'ONCEHUB_CALENDAR_' .
+        $serviceKeys[$serviceKind] .
+        '_' .
+        strtoupper($customerType);
+
+    return envValue($environmentKey);
+}
 function getOnceHubApiKey(): ?string
 {
     return envValue('ONCEHUB_API_KEY');
