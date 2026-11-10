@@ -1,0 +1,11 @@
+﻿/* MacSupport confirmed booking fireworks V46.
+   Does not modify calendar or booking functionality. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .ms-confirmation-v42-hero::before,
+  .ms-confirmation-v42-hero::after,
+  .ms-confirmation-v42-hero .ms-confirmation-v43-firework {
+    animation-duration: 4.5s;
+    animation-iteration-count: 2;
+  }
+}

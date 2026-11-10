@@ -1,0 +1,6 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+
+Host: https://www.macsupportstockholm.se
+Sitemap: https://www.macsupportstockholm.se/sitemap.xml

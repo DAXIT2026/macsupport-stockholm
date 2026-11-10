@@ -1,0 +1,24 @@
+1:"$Sreact.fragment"
+2:I[47257,["/_next/static/chunks/32q45nbzztbs7.js","/_next/static/chunks/34fk4mhvjz_kt.js"],"ClientPageRoot"]
+3:I[89977,["/_next/static/chunks/32q45nbzztbs7.js","/_next/static/chunks/34fk4mhvjz_kt.js","/_next/static/chunks/3q49arx-jd4yy.js","/_next/static/chunks/2y7f7qtvzdr5u.js"],"default"]
+6:I[97367,["/_next/static/chunks/32q45nbzztbs7.js","/_next/static/chunks/34fk4mhvjz_kt.js"],"OutletBoundary"]
+7:"$Sreact.suspense"
+b:I[97367,["/_next/static/chunks/32q45nbzztbs7.js","/_next/static/chunks/34fk4mhvjz_kt.js"],"ViewportBoundary"]
+c:I[97367,["/_next/static/chunks/32q45nbzztbs7.js","/_next/static/chunks/34fk4mhvjz_kt.js"],"MetadataBoundary"]
+d:I[27201,["/_next/static/chunks/32q45nbzztbs7.js","/_next/static/chunks/34fk4mhvjz_kt.js"],"IconMark"]
+f:I[39756,["/_next/static/chunks/32q45nbzztbs7.js","/_next/static/chunks/34fk4mhvjz_kt.js"],"default"]
+10:I[37457,["/_next/static/chunks/32q45nbzztbs7.js","/_next/static/chunks/34fk4mhvjz_kt.js"],"default"]
+a:X
+12:X
+12:C
+0:{"buildId":"MrX180vcmP0UCjUy8HrIA","data":[{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/_next/static/chunks/3q49arx-jd4yy.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/2y7f7qtvzdr5u.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"isPartial":"$@9","staleTime":"$a","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$Lb",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$Lc",null,{"children":["$","$7",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"MacSupport Stockholm | Mac- & IT-support i Stockholm"}],["$","meta","1",{"name":"description","content":"Professionell Mac- och IT-support i Stockholm för privatpersoner, seniorer och företag. Hjälp med Mac, WiFi, nätverk, Microsoft 365, säkerhet och hembesök."}],["$","meta","2",{"name":"keywords","content":"MacSupport Stockholm,Mac-support Stockholm,IT-support Stockholm,datorhjälp Stockholm,Mac hjälp Stockholm,WiFi support Stockholm,nätverk support Stockholm,Microsoft 365 support,IT-säkerhet Stockholm,hembesök IT-support Stockholm"}],["$","meta","3",{"name":"robots","content":"index, follow"}],["$","meta","4",{"name":"googlebot","content":"index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"}],["$","link","5",{"rel":"canonical","href":"https://www.macsupportstockholm.se/"}],["$","meta","6",{"property":"og:title","content":"MacSupport Stockholm | Mac- & IT-support i Stockholm"}],["$","meta","7",{"property":"og:description","content":"Professionell Mac- och IT-support i Stockholm för privatpersoner, seniorer och företag."}],["$","meta","8",{"property":"og:url","content":"https://www.macsupportstockholm.se/"}],["$","meta","9",{"property":"og:site_name","content":"MacSupport Stockholm"}],["$","meta","10",{"property":"og:locale","content":"sv_SE"}],["$","meta","11",{"property":"og:image","content":"https://www.macsupportstockholm.se/images/hero-macbook.jpg"}],["$","meta","12",{"property":"og:image:width","content":"1200"}],["$","meta","13",{"property":"og:image:height","content":"630"}],["$","meta","14",{"property":"og:image:alt","content":"MacSupport Stockholm – professionell Mac- och IT-support"}],["$","meta","15",{"property":"og:type","content":"website"}],["$","meta","16",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","17",{"name":"twitter:title","content":"MacSupport Stockholm | Mac- & IT-support i Stockholm"}],["$","meta","18",{"name":"twitter:description","content":"Professionell Mac- och IT-support i Stockholm för privatpersoner, seniorer och företag."}],["$","meta","19",{"name":"twitter:image","content":"https://www.macsupportstockholm.se/images/hero-macbook.jpg"}],["$","link","20",{"rel":"shortcut icon","href":"/icon.png"}],["$","link","21",{"rel":"icon","href":"/icon.png","type":"image/png","sizes":"512x512"}],["$","link","22",{"rel":"apple-touch-icon","href":"/apple-icon.png"}],["$","$Ld","23",{}]]}]}]}],null]}],"isPartial":"$@e","staleTime":"$a","varyParams":null},{"rsc":["$","$1","c",{"children":[null,["$","$Lf",null,{"parallelRouterKey":"children","template":["$","$L10",null,{}]}]]}],"isPartial":"$@11","staleTime":"$a","varyParams":"$12"}],"isUpgradeableISRFallback":false,"a":"$@13","rootVaryParams":null,"needsRuntimeRequest":"$@14"}
+4:{}
+5:"$0:data:0:rsc:props:children:0:props:serverProvidedParams:params"
+8:null
+14:true
+a:300
+a:C
+13:0
+e:"$undefined"
+11:"$undefined"
+9:"$undefined"
