@@ -192,6 +192,7 @@ export default function UnifiedSupportForm() {
 
   const [name, setName] =
     useState("");
+  const [lastName, setLastName] = useState("");
 
   const [email, setEmail] =
     useState("");
@@ -589,6 +590,11 @@ function validateContactFields() {
       return false;
     }
 
+    if (intent === "message" && !lastName.trim()) {
+      setError("Fyll i efternamn.");
+      return false;
+    }
+
     if (!name.trim() || !email.trim()) {
       setError("Fyll i namn och e-postadress.");
       return false;
@@ -655,7 +661,7 @@ function validateContactFields() {
     setError(null);
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/contact/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -664,7 +670,7 @@ function validateContactFields() {
           customerType,
           service,
           supportMode,
-          name: name.trim(),
+          firstName: name.trim(), lastName: lastName.trim(),
           email: email.trim(),
           phone: normalizedPhone,
           company: company.trim(),
@@ -1212,7 +1218,7 @@ setSupportMode(option.value as SupportMode);
 
               <label>
                 <span>
-                  Namn *
+                  {intent === "message" ? "Förnamn *" : "Namn *"}
                 </span>
 
                 <input
@@ -1224,9 +1230,23 @@ setSupportMode(option.value as SupportMode);
                       event.target.value
                     )
                   }
-                  placeholder="Ditt namn"
+                  placeholder={intent === "message" ? "Ditt förnamn" : "Ditt namn"}
                 />
               </label>
+
+              {intent === "message" && (
+                <label>
+                  <span>Efternamn *</span>
+                  <input
+                    type="text"
+                    autoComplete="family-name"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    placeholder="Ditt efternamn"
+                    required
+                  />
+                </label>
+              )}
 
 
               <label>
