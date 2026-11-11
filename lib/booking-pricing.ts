@@ -94,7 +94,7 @@ export function calculateBookingPrice(
   }
 
   const minimumMinutes =
-    technician === "it-technician" && mode === "onsite" ? 120 : rate.unitMinutes;
+    mode === "onsite" ? 120 : rate.unitMinutes;
 
   const billableMinutes = Math.max(durationMinutes, minimumMinutes);
   const units = Math.ceil(billableMinutes / rate.unitMinutes);

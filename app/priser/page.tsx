@@ -16,24 +16,24 @@ const customerGroups = [
     id: "privat", title: "Privat", image: "/icons/booking/privat-1.png", intro: "Tydliga priser för dig som privatperson.",
     services: [
       { title: "Datorer och program", image: "/images/process/support-losning.png", price: "799 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 500 kr", phone: "799 kr/30 min inkl. moms", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
-      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "799 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: "799 kr/30 min inkl. moms", minimum: "Minst 30 minuter per telefonsamtal" },
-      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "575 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: null, minimum: null },
+      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "799 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: "799 kr/30 min inkl. moms", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
+      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "575 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: null, minimum: "Minst 2 timmar vid besök" },
     ],
   },
   {
     id: "senior", title: "Senior 65+", image: "/icons/booking/senior-1.png", intro: "Personlig hjälp med tydliga villkor.",
     services: [
       { title: "Datorer och program", image: "/images/process/support-losning.png", price: "599 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet. Avtal krävs.", travel: "Från 500 kr", phone: "599 kr/30 min inkl. moms. Avtal krävs.", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
-      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "599 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet. Avtal krävs.", travel: "Från 750 kr", phone: "599 kr/30 min inkl. moms. Avtal krävs.", minimum: "Minst 30 minuter per telefonsamtal" },
-      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "575 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: null, minimum: null },
+      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "599 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet. Avtal krävs.", travel: "Från 750 kr", phone: "599 kr/30 min inkl. moms. Avtal krävs.", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
+      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "575 kr/tim", terms: "Inkl. moms efter RUT vid godkänt arbete i hemmet", travel: "Från 750 kr", phone: null, minimum: "Minst 2 timmar vid besök" },
     ],
   },
   {
     id: "foretag", title: "Företag", image: "/icons/booking/foretag-1.png", intro: "Professionell IT-hjälp för verksamheten.",
     services: [
       { title: "Datorer och program", image: "/images/process/support-losning.png", price: "1 280 kr/tim", terms: "Exkl. moms", travel: "Från 400 kr", phone: "640 kr/30 min exkl. moms", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
-      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "1 280 kr/tim", terms: "Exkl. moms", travel: "Från 600 kr", phone: "640 kr/30 min exkl. moms", minimum: "Minst 30 minuter per telefonsamtal" },
-      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "920 kr/tim", terms: "Exkl. moms", travel: "Från 600 kr", phone: null, minimum: null },
+      { title: "Internet och Wi-Fi", image: "/images/wifi-network.jpg", price: "1 280 kr/tim", terms: "Exkl. moms", travel: "Från 600 kr", phone: "640 kr/30 min exkl. moms", minimum: "Minst 2 timmar vid besök; minst 30 minuter per telefonsamtal" },
+      { title: "Nätverkskablage", image: "/images/natverksmontor-unifi.png", price: "920 kr/tim", terms: "Exkl. moms", travel: "Från 600 kr", phone: null, minimum: "Minst 2 timmar vid besök" },
     ],
   },
 ] as const;

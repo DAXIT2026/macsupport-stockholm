@@ -961,7 +961,7 @@ const nextService = option.value as ServiceType;
         ? 480
         : 120
       : option.value === "wifi"
-        ? 60
+        ? 120
         : 120
   )}
                       </small>
@@ -1175,7 +1175,7 @@ setSupportMode(option.value as SupportMode);
     option.value === "distans"
       ? 30
       : service === "wifi"
-        ? 60
+        ? 120
         : service === "network-cable" && cableDuration === "8h"
           ? 480
           : 120
@@ -1496,7 +1496,7 @@ const wifiPrice = calculateBookingPrice(
   customerType,
   "network-technician",
   "onsite",
-  60
+  120
 );
 
 if (!wifiPrice) return null;
@@ -1510,14 +1510,14 @@ return (
     />
 
 <p className="ms-price-overview-conditions">
-  Prisexemplet avser en timmes Wi-Fi-support.
+  Prisexemplet avser två timmars Wi-Fi-support.
   Arbetskostnaden visas enligt vald kundkategori.
   För privatpersoner och seniorer visas arbetskostnaden
   efter förutsatt RUT-avdrag när villkoren är uppfyllda.
   Resekostnaden omfattas inte av RUT-avdraget.
   Företagspriser visas exklusive moms och utan RUT-avdrag.
   Slutpriset kan variera beroende på arbetets omfattning.
-  Prisexemplet är inte ett fast pris eller en bekräftad minimidebitering.
+  Prisexemplet bygger på minst två timmars arbete vid besök på plats och är inte ett fast pris.
 </p>
   </>
 );
@@ -1701,7 +1701,7 @@ const wifiPrice = calculateBookingPrice(
   customerType,
   "network-technician",
   "onsite",
-  60
+  120
 );
 
 if (!wifiPrice) return null;
@@ -1715,14 +1715,14 @@ return (
     />
 
 <p className="ms-price-overview-conditions">
-  Prisexemplet avser en timmes Wi-Fi-support.
+  Prisexemplet avser två timmars Wi-Fi-support.
   Arbetskostnaden visas enligt vald kundkategori.
   För privatpersoner och seniorer visas arbetskostnaden
   efter förutsatt RUT-avdrag när villkoren är uppfyllda.
   Resekostnaden omfattas inte av RUT-avdraget.
   Företagspriser visas exklusive moms och utan RUT-avdrag.
   Slutpriset kan variera beroende på arbetets omfattning.
-  Prisexemplet är inte ett fast pris eller en bekräftad minimidebitering.
+  Prisexemplet bygger på minst två timmars arbete vid besök på plats och är inte ett fast pris.
 </p>
   </>
 );
@@ -1887,7 +1887,7 @@ const wifiPrice = calculateBookingPrice(
   customerType,
   "network-technician",
   "onsite",
-  60
+  120
 );
 
 if (!wifiPrice) return null;
@@ -1901,14 +1901,14 @@ return (
     />
 
 <p className="ms-price-overview-conditions">
-  Prisexemplet avser en timmes Wi-Fi-support.
+  Prisexemplet avser två timmars Wi-Fi-support.
   Arbetskostnaden visas enligt vald kundkategori.
   För privatpersoner och seniorer visas arbetskostnaden
   efter förutsatt RUT-avdrag när villkoren är uppfyllda.
   Resekostnaden omfattas inte av RUT-avdraget.
   Företagspriser visas exklusive moms och utan RUT-avdrag.
   Slutpriset kan variera beroende på arbetets omfattning.
-  Prisexemplet är inte ett fast pris eller en bekräftad minimidebitering.
+  Prisexemplet bygger på minst två timmars arbete vid besök på plats och är inte ett fast pris.
 </p>
   </>
 );
