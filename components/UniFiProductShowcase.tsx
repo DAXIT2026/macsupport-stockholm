@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 
 import {
@@ -117,6 +117,36 @@ export default function UniFiProductShowcase({
               product={product}
             />
           ))}
+        </div>
+
+        <div className="premium-shell" style={{ paddingBlock: "24px" }}>
+          <a
+            href="https://store.ui.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
+              minHeight: "48px",
+              padding: "12px 18px",
+              border: "1px solid var(--premium-green-dark)",
+              borderRadius: "12px",
+              background: "var(--premium-green-light)",
+              color: "#355b27",
+              fontWeight: 700,
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+            }}
+          >
+            {isCamera
+              ? "Utforska UniFi Protect-produkter"
+              : "Utforska UniFi-nätverksprodukter"}
+            <span aria-hidden="true">↗</span>
+          </a>
+          <p style={{ marginTop: "8px", fontSize: "13px" }}>
+            Extern länk till Ubiquitis produktkatalog. Öppnas i en ny flik.
+          </p>
         </div>
 
         <footer className="unifi-showcase-footer">

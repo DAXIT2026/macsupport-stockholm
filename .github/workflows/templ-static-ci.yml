@@ -1,0 +1,60 @@
+name: Templ Static CI
+
+on:
+  push:
+    branches:
+      - feature/templ-booking-form-20261110
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: ESLint check
+        run: npx eslint components/UnifiedSupportForm.tsx components/BookingCalendarPicker.tsx app/support/page.tsx
+
+      - name: PHP syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l templ-api/api/booking/config.php
+          php -l templ-api/api/booking/slots.php
+          php -l templ-api/api/booking/schedule.php
+      - name: Static production build
+        run: npm run build
+
+      - name: Verify exported pages
+        shell: bash
+        run: |
+          test -f out/index.html
+          test -f out/support/index.html
+          test -f out/boka/index.html
+          test -f out/kontakt/index.html
+
+      - name: Upload verified static build
+        uses: actions/upload-artifact@v4
+        with:
+          name: macsupport-templ-static
+          path: out/
+          if-no-files-found: error
+          retention-days: 7

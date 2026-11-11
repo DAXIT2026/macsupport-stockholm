@@ -1,8 +1,13 @@
 "use client";
+import ConfirmationFireworks from "./ConfirmationFireworks";
+import Image from "next/image";
+import Link from "next/link";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { BookingServiceKind } from "../lib/oncehub-calendar-routing";
+import { calculateBookingPrice } from "../lib/booking-pricing";
+import BookingPriceBreakdown from "./BookingPriceBreakdown";
 import BookingCalendarPicker, { type BookingSelection } from "./BookingCalendarPicker";
 import BookingChoiceIcon, { type BookingChoiceIconName } from "./BookingChoiceIcon";
 
@@ -26,6 +31,7 @@ type ServiceType =
 type SupportMode =
   | "hembesok"
   | "distans";
+ type BookingWizardStep =   | "customer"   | "service"   | "support"   | "contact"   | "calendar"   | "review";
 
 const customerLabels: Record<CustomerType, string> = {
   privat: "Privatperson",
@@ -106,6 +112,47 @@ function readSupportMode(
     ? (value as SupportMode)
     : null;
 }
+
+function formatChoicePrice(
+  customer: CustomerType | null,
+  technician: "it-technician" | "network-technician" | "network-installer",
+  mode: "onsite" | "remote",
+  minutes: number
+): string {
+  if (!customer) {
+    return "Välj kundkategori för att se pris.";
+  }
+
+  const price = calculateBookingPrice(customer, technician, mode, minutes);
+
+  if (!price) {
+    return "Prisuppgift saknas för detta alternativ.";
+  }
+
+  const format = (amount: number) =>
+    new Intl.NumberFormat("sv-SE", {
+      maximumFractionDigits: 0,
+    }).format(amount);
+
+  const work = `Arbete: ${format(price.labor)} kr`;
+  const travel =
+    mode === "onsite"
+      ? ` · Resa från ${format(price.travelFrom)} kr`
+      : "";
+
+  const total = ` · Totalt från ${format(price.totalFrom)} kr`;
+
+  const conditions = price.rutApplicable
+    ? " · RUT förutsätter att villkoren uppfylls"
+    : "";
+
+  const agreement = price.agreementRequired
+    ? " · Avtal krävs"
+    : "";
+
+  return `${work}${travel}${total} (${price.vatLabel})${conditions}${agreement}.`;
+}
+
 export default function UnifiedSupportForm() {
   const searchParams = useSearchParams();
 
@@ -132,6 +179,7 @@ export default function UnifiedSupportForm() {
 
   const [customerType, setCustomerType] =
     useState<CustomerType | null>(initialCustomer);
+   const [currentStep, setCurrentStep] =     useState<BookingWizardStep>("customer");
 
   const [service, setService] =
     useState<ServiceType | null>(initialService);
@@ -144,6 +192,7 @@ export default function UnifiedSupportForm() {
 
   const [name, setName] =
     useState("");
+  const [lastName, setLastName] = useState("");
 
   const [email, setEmail] =
     useState("");
@@ -151,6 +200,27 @@ export default function UnifiedSupportForm() {
   const [phone, setPhone] =
     useState("");
 
+  const phoneDigits = phone.replace(/\D/g, "");
+  const phoneNationalNumber = phoneDigits.startsWith("46")
+    ? phoneDigits.slice(2)
+    : phoneDigits.startsWith("0")
+      ? phoneDigits.slice(1)
+      : phoneDigits;
+
+  const normalizedPhone = phoneNationalNumber
+    ? `+46${phoneNationalNumber}`
+    : "";
+
+  // MACSUPPORT_PERSONNUMMER_INPUT_V3
+  // Local UI state only. Never send to booking/contact APIs.
+  const [personnummer, setPersonnummer] = useState("");
+
+  const personnummerDigits = personnummer.replace(/\D/g, "");
+
+  const maskedPersonnummer =
+    personnummerDigits.length === 12
+      ? `${personnummerDigits.slice(0, 8)}-XXXX`
+      : "";
   const [company, setCompany] =
     useState("");
 
@@ -193,6 +263,26 @@ const [bookingSelection, setBookingSelection] =
   const [bookingId, setBookingId] =
     useState<string | null>(null);
 
+  const confirmationRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!bookingId) return;
+
+    const element = confirmationRef.current;
+    if (!element) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    element.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "start",
+    });
+
+    element.focus({ preventScroll: true });
+  }, [bookingId]);
+
   const serviceKind = useMemo<BookingServiceKind | null>(() => {
     if (!customerType || !service || !supportMode) {
       return null;
@@ -215,7 +305,93 @@ const [bookingSelection, setBookingSelection] =
 
     return "it-visit";
   }, [customerType, service, supportMode, cableDuration]);
+  const wizardSteps: BookingWizardStep[] = [
+    "customer",
+    "service",
+    ...(service === "network-cable" && cableDuration
+      ? []
+      : ["support" as const]),
+    "contact",
+    "calendar",
+    "review",
+  ];
+
+  function goToNextStep() {
+    if (bookingLoading || bookingStatusUncertain || bookingId) {
+      return;
+    }
+
+    setError(null);
+
+    if (currentStep === "customer" && !customerType) {
+      setError("Välj vem supporten gäller.");
+      return;
+    }
+
+    if (currentStep === "service") {
+      if (!service) {
+        setError("Välj vad du behöver hjälp med.");
+        return;
+      }
+
+      if (service === "network-cable" && !cableDuration) {
+        setError("Välj installationens längd.");
+        return;
+      }
+    }
+
+    if (currentStep === "support") {
+      if (!supportMode) {
+        setError("Välj hur du vill få hjälp.");
+        return;
+      }
+
+      if (service === "network-cable" && supportMode !== "hembesok") {
+        setError("Nätverkskablage kräver besök på plats.");
+        return;
+      }
+    }
+
+    if (currentStep === "contact" && !validateContactFields()) {
+      return;
+    }
+
+    if (currentStep === "calendar" && !bookingSelection) {
+      setError("Välj ett ledigt datum och en tid.");
+      return;
+    }
+
+    const index = wizardSteps.indexOf(currentStep);
+
+    if (index < wizardSteps.length - 1) {
+      setCurrentStep(wizardSteps[index + 1]);
+    }
+  }
+
+  function goToPreviousStep() {
+    if (bookingLoading || bookingStatusUncertain || bookingId) {
+      return;
+    }
+
+    setError(null);
+
+    const index = wizardSteps.indexOf(currentStep);
+
+    if (index > 0) {
+      setCurrentStep(wizardSteps[index - 1]);
+    }
+  }
   async function confirmBooking() {
+    // Local static preview: never submit a real booking.
+    if (
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1") &&
+      window.location.port === "4173"
+    ) {
+      setError("Förhandsvisning: Ingen bokning kan genomföras här.");
+      return;
+    }
     if (
       bookingRequestInProgress.current ||
       bookingStatusUnknown.current ||
@@ -232,7 +408,7 @@ const [bookingSelection, setBookingSelection] =
 
     if (!serviceKind) {
       setError(
-        "Vi kunde inte välja rätt bokningskalender."
+        "Vi kunde inte hitta rätt bokningskalender."
       );
       return;
     }
@@ -264,7 +440,7 @@ const [bookingSelection, setBookingSelection] =
                 .timeZone,
             name: name.trim(),
             email: email.trim(),
-            phone: phone.trim(),
+            phone: normalizedPhone,
             location:
               bookingSelection.location,
             company:
@@ -316,7 +492,33 @@ const [bookingSelection, setBookingSelection] =
       const data = await response.json();
 
       if (!response.ok) {
-        if (response.status === 502) {
+        // MACSUPPORT_LOCAL_GATEWAY_REJECTION_V2
+        // Only handle an explicit rejection from the isolated test gateway.
+        // All other 502/503 responses retain uncertain-booking protection.
+        const isConfirmedLocalTestRejection =
+          (window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1") &&
+          window.location.port === "3101" &&
+          response.status === 503 &&
+          data?.success === false &&
+          data?.error === "Testläge: Ingen bokning har skapats.";
+
+        if (isConfirmedLocalTestRejection) {
+          bookingAttemptKey.current = null;
+          bookingAttemptPayload.current = null;
+          setError("Testläge: Ingen bokning har skapats.");
+          return;
+        }
+        if (
+          response.status === 502 || response.status === 503 ||
+          (
+            typeof data?.error === "string" &&
+            (
+              data.error.includes("Bokningsstatus kunde inte bekräftas") ||
+              data.error.includes("Bokningens status måste kontrolleras innan ett nytt försök")
+            )
+          )
+        ) {
           bookingStatusUnknown.current = true;
           setBookingStatusUncertain(true);
           setError(
@@ -388,15 +590,20 @@ function validateContactFields() {
       return false;
     }
 
-    if (
-      !name.trim() ||
-      !email.trim() ||
-      !phone.trim()
-    ) {
-      setError(
-        "Fyll i namn, e-post och telefonnummer."
-      );
+    if (intent === "message" && !lastName.trim()) {
+      setError("Fyll i efternamn.");
+      return false;
+    }
 
+    if (!name.trim() || !email.trim()) {
+      setError("Fyll i namn och e-postadress.");
+      return false;
+    }
+
+    if (!/^7\d{8}$/.test(phoneNationalNumber)) {
+      setError(
+        "Ange ett giltigt svenskt mobilnummer, till exempel 070 123 45 67."
+      );
       return false;
     }
 
@@ -454,7 +661,7 @@ function validateContactFields() {
     setError(null);
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/contact/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -463,9 +670,9 @@ function validateContactFields() {
           customerType,
           service,
           supportMode,
-          name: name.trim(),
+          firstName: name.trim(), lastName: lastName.trim(),
           email: email.trim(),
-          phone: phone.trim(),
+          phone: normalizedPhone,
           company: company.trim(),
           organisationNumber: organisationNumber.trim(),
           address: address.trim(),
@@ -565,7 +772,8 @@ function validateContactFields() {
         <div className="support-unified-v1-content">
 
 
-          <section className="support-unified-v1-section">
+          {/* MACSUPPORT_WIZARD_STEP_BOUNDARY */}
+{(intent === "message" || currentStep === "customer") && (<section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
               <div>
                 <strong>Vem behöver hjälp? *</strong>
@@ -582,19 +790,22 @@ function validateContactFields() {
                 {
                   value: "privat",
                   title: "Privat",
-                  description: "IT-hjälp för dig och din familj.",
+                  description: "Personlig IT-hjälp för dig och din familj. Vi hjälper dig med datorer, skrivare, internet och tekniska problem i hemmet.",
+
                   icon: "person",
                 },
                 {
                   value: "senior",
                   title: "Senior",
-                  description: "Trygg och tydlig IT-hjälp i din egen takt.",
+                  description: "Trygg och personlig IT-hjälp i din egen takt. Vi förklarar tydligt och hjälper dig med datorer, internet och digitala tjänster.",
+
                   icon: "senior",
                 },
                 {
                   value: "foretag",
                   title: "Företag",
-                  description: "IT-support för företaget.",
+                  description: "Professionell IT-support för företag. Vi hjälper till med datorer, nätverk, Wi-Fi, felsökning och tekniska installationer.",
+
                   icon: "business",
                 },
               ].map((option) => {
@@ -611,7 +822,13 @@ function validateContactFields() {
                       active ? "is-selected" : "",
                     ].filter(Boolean).join(" ")}
                     onClick={() => {
-                      setCustomerType(option.value as CustomerType);
+                      if (
+  bookingRequestInProgress.current ||
+  bookingStatusUnknown.current
+) {
+  return;
+}
+setCustomerType(option.value as CustomerType);
                       setBookingSelection(null);
                       if (!bookingRequestInProgress.current && !bookingStatusUnknown.current) {
                         bookingAttemptKey.current = null;
@@ -640,11 +857,12 @@ function validateContactFields() {
                 );
               })}
             </div>
-          </section>
+          </section>)}
 
 
 
-          <section className="support-unified-v1-section">
+          {/* MACSUPPORT_WIZARD_STEP_BOUNDARY */}
+{(intent === "message" || currentStep === "service") && (<section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
               <div>
                 <strong>Vad behöver du hjälp med? *</strong>
@@ -661,19 +879,22 @@ function validateContactFields() {
                 {
                   value: "mac",
                   title: "Dator och program",
-                  description: "Dator, program, uppdateringar och inställningar.",
+                  description: "Hjälp med PC, Mac, skrivare, e-post, Microsoft 365, programinstallation, säkerhetskopiering och felsökning av tekniska problem.",
+
                   icon: "computer",
                 },
                 {
                   value: "wifi",
                   title: "Internet och Wi-Fi",
-                  description: "Wi-Fi, router, internet och anslutning.",
+                  description: "Installation, konfigurering och felsökning av internet, routrar, Wi-Fi, UniFi och ansluten utrustning. Vi hjälper dig att förbättra nätverkets funktion.",
+
                   icon: "wifi",
                 },
                 {
                   value: "network-cable",
                   title: "Nätverkskablage",
-                  description: "Installation av nätverkskabel.",
+                  description: "Installation av nätverkskablar, nätverksuttag, patchpaneler och dataskåp. Arbetets omfattning beror på kabeldragning och platsens förutsättningar.",
+
                   icon: "network-cable",
                 },
               ].map((option) => {
@@ -690,7 +911,13 @@ function validateContactFields() {
                       active ? "is-selected" : "",
                     ].filter(Boolean).join(" ")}
                     onClick={() => {
-                      const nextService = option.value as ServiceType;
+                      if (
+  bookingRequestInProgress.current ||
+  bookingStatusUnknown.current
+) {
+  return;
+}
+const nextService = option.value as ServiceType;
                       setService(nextService);
                       setCableDuration(null);
                       if (nextService === "network-cable") {
@@ -712,6 +939,32 @@ function validateContactFields() {
                     <span className="support-unified-v1-choice-copy">
                       <strong>{option.title}</strong>
                       <small>{option.description}</small>
+                      <small
+                        className="ms-choice-price-hint"
+                        style={{
+                          display: "block",
+                          marginTop: "10px",
+                          fontWeight: 700,
+                          lineHeight: 1.5
+                        }}
+                      >
+                        {formatChoicePrice(
+    customerType,
+    option.value === "network-cable"
+      ? "network-installer"
+      : option.value === "wifi"
+        ? "network-technician"
+        : "it-technician",
+    "onsite",
+    option.value === "network-cable"
+      ? cableDuration === "8h"
+        ? 480
+        : 120
+      : option.value === "wifi"
+        ? 120
+        : 120
+  )}
+                      </small>
                     </span>
 
                     <span
@@ -724,12 +977,12 @@ function validateContactFields() {
                 );
               })}
             </div>
-          </section>
+          </section>)}
 
 
 
 
-          {service === "network-cable" && (
+          {(intent === "message" || currentStep === "service") && service === "network-cable" && (
             <section className="support-unified-v1-section">
               <div className="support-unified-v1-section-head">
                 <div>
@@ -757,7 +1010,13 @@ function validateContactFields() {
                         active ? "is-selected" : "",
                       ].filter(Boolean).join(" ")}
                       onClick={() => {
-                        setCableDuration(duration);
+                        if (
+  bookingRequestInProgress.current ||
+  bookingStatusUnknown.current
+) {
+  return;
+}
+setCableDuration(duration);
                         setBookingSelection(null);
                       if (!bookingRequestInProgress.current && !bookingStatusUnknown.current) {
                         bookingAttemptKey.current = null;
@@ -786,8 +1045,23 @@ function validateContactFields() {
                         <strong>{duration === "2h" ? "2 timmar" : "8 timmar"}</strong>
                         <small>
                           {duration === "2h"
-                            ? "Mindre installation"
-                            : "Större installation"}
+  ? "Mindre installation – dragning av cirka 1 nätverkskabel med nätverksuttag. Beräknad arbetstid: cirka 2 timmar. Om mer tid behövs bokar vi ett återbesök."
+  : "Större installation – dragning av cirka 5 nätverkskablar med nätverksuttag. Beräknad arbetstid: cirka 8 timmar. Om mer tid behövs bokar vi ett återbesök."}</small>
+                        <small
+                          className="ms-choice-price-hint"
+                          style={{
+                            display: "block",
+                            marginTop: "10px",
+                            fontWeight: 700,
+                            lineHeight: 1.5
+                          }}
+                        >
+                          {formatChoicePrice(
+                            customerType,
+                            "network-installer",
+                            "onsite",
+                            duration === "2h" ? 120 : 480
+                          )}
                         </small>
                       </span>
                       <span
@@ -809,7 +1083,8 @@ function validateContactFields() {
             </section>
           )}
 
-          <section className="support-unified-v1-section">
+          {/* MACSUPPORT_WIZARD_STEP_BOUNDARY */}
+{(intent === "message" || currentStep === "support") && (<section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
               <div>
                 <strong>Hur vill du få hjälp? *</strong>
@@ -826,13 +1101,15 @@ function validateContactFields() {
                 {
                   value: "hembesok",
                   title: "Besök",
-                  description: "Vi hjälper dig på plats.",
+                  description: "En tekniker kommer till dig för installation, felsökning eller praktisk IT-hjälp när utrustningen behöver undersökas på plats.",
+
                   icon: "home",
                 },
                 {
                   value: "distans",
                   title: "Hjälp på distans",
-                  description: "Vi hjälper dig på distans via dator eller telefon.",
+                  description: "Få hjälp med lämpliga dator- och programproblem via telefon eller fjärranslutning. Teknikern vägleder dig steg för steg.",
+
                   icon: "remote",
                 },
               ]
@@ -855,7 +1132,13 @@ function validateContactFields() {
                       active ? "is-selected" : "",
                     ].filter(Boolean).join(" ")}
                     onClick={() => {
-                      setSupportMode(option.value as SupportMode);
+                      if (
+  bookingRequestInProgress.current ||
+  bookingStatusUnknown.current
+) {
+  return;
+}
+setSupportMode(option.value as SupportMode);
                       setBookingSelection(null);
                       if (!bookingRequestInProgress.current && !bookingStatusUnknown.current) {
                         bookingAttemptKey.current = null;
@@ -872,6 +1155,32 @@ function validateContactFields() {
                     <span className="support-unified-v1-choice-copy">
                       <strong>{option.title}</strong>
                       <small>{option.description}</small>
+                      <small
+                        className="ms-choice-price-hint"
+                        style={{
+                          display: "block",
+                          marginTop: "10px",
+                          fontWeight: 700,
+                          lineHeight: 1.5
+                        }}
+                      >
+                        {formatChoicePrice(
+    customerType,
+    service === "network-cable"
+      ? "network-installer"
+      : service === "wifi"
+        ? "network-technician"
+        : "it-technician",
+    option.value === "hembesok" ? "onsite" : "remote",
+    option.value === "distans"
+      ? 30
+      : service === "wifi"
+        ? 120
+        : service === "network-cable" && cableDuration === "8h"
+          ? 480
+          : 120
+  )}
+                      </small>
                     </span>
 
                     <span
@@ -884,12 +1193,13 @@ function validateContactFields() {
                 );
               })}
             </div>
-          </section>
+          </section>)}
 
 
 
 
-<section className="support-unified-v1-section">
+{/* MACSUPPORT_WIZARD_STEP_BOUNDARY */}
+{(intent === "message" || currentStep === "contact") && (<section className="support-unified-v1-section">
             <div className="support-unified-v1-section-head">
 
 
@@ -908,7 +1218,7 @@ function validateContactFields() {
 
               <label>
                 <span>
-                  Namn *
+                  {intent === "message" ? "Förnamn *" : "Namn *"}
                 </span>
 
                 <input
@@ -920,9 +1230,23 @@ function validateContactFields() {
                       event.target.value
                     )
                   }
-                  placeholder="Ditt namn"
+                  placeholder={intent === "message" ? "Ditt förnamn" : "Ditt namn"}
                 />
               </label>
+
+              {intent === "message" && (
+                <label>
+                  <span>Efternamn *</span>
+                  <input
+                    type="text"
+                    autoComplete="family-name"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    placeholder="Ditt efternamn"
+                    required
+                  />
+                </label>
+              )}
 
 
               <label>
@@ -949,21 +1273,44 @@ function validateContactFields() {
                   Telefonnummer *
                 </span>
 
-                <input
-                  type="tel"
-                  autoComplete="tel"
-                  value={phone}
-                  onChange={(event) =>
-                    setPhone(
-                      event.target.value
-                    )
-                  }
-                  placeholder="+46 7X XXX XX XX"
-                />
+                <div className="ms-phone-field" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span aria-hidden="true" style={{ fontWeight: 600 }}>+46</span>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel-national"
+                    aria-label="Telefonnummer utan landsnummer"
+                    value={phoneNationalNumber}
+                    onChange={(event) => setPhone(event.target.value)}
+                    placeholder="70 123 45 67"
+                  />
+                </div>
               </label>
-
-
-              {customerType === "foretag" && (
+              {/* MACSUPPORT_PERSONNUMMER_INPUT_V3 */}
+{(customerType === "privat" || customerType === "senior") && (
+  <label>
+    <span>Personnummer (vid RUT-avdrag)</span>
+    <input
+      type="text"
+      inputMode="numeric"
+      autoComplete="off"
+      name="rut-personnummer"
+      value={personnummer}
+      onChange={(event) =>
+        setPersonnummer(event.target.value.slice(0, 13))
+      }
+      placeholder="ÅÅÅÅMMDD-XXXX"
+      maxLength={13}
+      aria-describedby="support-personnummer-help"
+    />
+    <small id="support-personnummer-help">
+      Frivilligt. Uppgiften skickas inte med bokningen.
+      Personnummer för RUT-avdrag lämnas separat
+      via en säker kanal.
+    </small>
+  </label>
+)}
+{customerType === "foretag" && (
                 <>
                   <label>
                     <span>
@@ -1113,18 +1460,19 @@ function validateContactFields() {
 
                         <div className="support-unified-v1-confirmation">
               <div className="support-unified-v1-confirmation-head">
-                <strong>Bokningsbekräftelse via e-post</strong>
+                <strong>Bekräftelse av din bokning</strong>
                 <p>
-                  När din bokning är genomförd skickas en
-                  bokningsbekräftelse till din e-postadress.
+                  När bokningen har bekräftats visas ditt bokningsnummer
+                  och dina bokningsuppgifter här på webbplatsen.
+                  Spara gärna bokningsnumret för framtida kontakt.
                 </p>
               </div>
             </div>
 
-</section>
+</section>)}
 
 
-          {intent === "booking" && (
+          {(currentStep === "calendar") && intent === "booking" && !bookingId && (
             <section className="support-unified-v1-section support-unified-v1-calendar">
               <div className="support-unified-v1-section-head">
                 <div>
@@ -1138,6 +1486,72 @@ function validateContactFields() {
                 </div>
               </div>
 
+              {customerType && service && supportMode && (() => {
+                const isCable = service === "network-cable";
+                const mode = supportMode === "hembesok" ? "onsite" : "remote";
+
+                if (service === "wifi" && mode === "onsite") {
+
+const wifiPrice = calculateBookingPrice(
+  customerType,
+  "network-technician",
+  "onsite",
+  120
+);
+
+if (!wifiPrice) return null;
+
+return (
+  <>
+    <BookingPriceBreakdown
+      price={wifiPrice}
+      mode="onsite"
+      variant="review"
+    />
+
+<p className="ms-price-overview-conditions">
+  Prisexemplet avser två timmars Wi-Fi-support.
+  Arbetskostnaden visas enligt vald kundkategori.
+  För privatpersoner och seniorer visas arbetskostnaden
+  efter förutsatt RUT-avdrag när villkoren är uppfyllda.
+  Resekostnaden omfattas inte av RUT-avdraget.
+  Företagspriser visas exklusive moms och utan RUT-avdrag.
+  Slutpriset kan variera beroende på arbetets omfattning.
+  Prisexemplet bygger på minst två timmars arbete vid besök på plats och är inte ett fast pris.
+</p>
+  </>
+);
+}
+
+                const durationMinutes = isCable
+                  ? cableDuration === "8h"
+                    ? 480
+                    : cableDuration === "2h"
+                      ? 120
+                      : null
+                  : mode === "remote"
+                    ? 30
+                    : 120;
+
+                if (durationMinutes === null) return null;
+
+                const price = calculateBookingPrice(
+                  customerType,
+                  isCable ? "network-installer" : "it-technician",
+                  mode,
+                  durationMinutes
+                );
+
+                if (!price) return null;
+
+                return (
+                  <BookingPriceBreakdown
+                    price={price}
+                    mode={mode}
+                    variant="review"
+                  />
+                );
+              })()}
               <BookingCalendarPicker
                 key={`${customerType ?? "none"}-${serviceKind ?? "none"}-${supportMode ?? "none"}`}
                 support={
@@ -1175,9 +1589,11 @@ function validateContactFields() {
               )}
             </section>
           )}
-          <section className="support-unified-v1-section support-unified-v1-final">
+          {/* MACSUPPORT_WIZARD_STEP_BOUNDARY */}
+{(intent === "message" || currentStep === "review" || Boolean(bookingId)) && (<section className="support-unified-v1-section support-unified-v1-final">
 
-            <div className="support-unified-v1-section-head">
+            {!bookingId && (<>
+<div className="support-unified-v1-section-head">
 
 
               <div>
@@ -1192,52 +1608,374 @@ function validateContactFields() {
             </div>
 
 
-            <div className="support-unified-v1-final-summary">
-  <div className="support-unified-v1-summary-card">
-    <span className="support-unified-v1-summary-label">Kundtyp</span>
-    <strong>
-      {customerType
-        ? customerLabels[customerType]
-        : "Välj kundtyp"}
-    </strong>
-  </div>
+            {/* MACSUPPORT_BOOKING_REVIEW_UX_V1 */}
+<div className="ms-booking-review-grid">
+  {/* MACSUPPORT_REVIEW_THREE_COLUMNS_V3 */}
+  <section className="ms-booking-review-card" aria-label="Dina uppgifter">
+    <h3>Dina uppgifter</h3>
 
-  <div className="support-unified-v1-summary-card">
-    <span className="support-unified-v1-summary-label">Tjänst</span>
-    <strong>
-      {service
-        ? service === "network-cable" && cableDuration
-          ? `${serviceLabels[service]} – ${cableDuration === "2h" ? "2 timmar" : "8 timmar"}`
-          : serviceLabels[service]
-        : "Välj tjänst"}
-    </strong>
+    <dl>
+      <div>
+        <dt>Kundtyp</dt>
+        <dd>{customerType ? customerLabels[customerType] : "Ej vald"}</dd>
+      </div>
+      <div>
+        <dt>Namn</dt>
+        <dd>{name || "Ej angivet"}</dd>
+      </div>
+      {email && (
+        <div>
+          <dt>E-post</dt>
+          <dd>{email}</dd>
+        </div>
+      )}
+      {phone && (
+        <div>
+          <dt>Telefon</dt>
+          <dd>{normalizedPhone}</dd>
+        </div>
+      )}
+      {customerType !== "foretag" && (
+  <div>
+    <dt>Personnummer</dt>
+    <dd>{maskedPersonnummer || "Ej angivet"}</dd>
   </div>
+)}
+{customerType === "foretag" && (
+        <>
+          <div>
+            <dt>Företag</dt>
+            <dd>{company || "Ej angivet"}</dd>
+          </div>
+          <div>
+            <dt>Organisationsnummer</dt>
+            <dd>{organisationNumber || "Ej angivet"}</dd>
+          </div>
+        </>
+      )}
+    </dl>
+  </section>
 
-  <div className="support-unified-v1-summary-card">
-    <span className="support-unified-v1-summary-label">Supportform</span>
-    <strong>
-      {supportMode
-        ? supportModeLabels[supportMode]
-        : "Välj supportform"}
-    </strong>
-  </div>
+  <section className="ms-booking-review-card" aria-label="Din bokning">
+    <h3>Din bokning</h3>
+
+    <dl>
+      <div>
+        <dt>Tjänst</dt>
+        <dd>
+          {service
+            ? service === "network-cable" && cableDuration
+              ? `${serviceLabels[service]} – ${cableDuration === "2h" ? "2 timmar" : "8 timmar"}`
+              : serviceLabels[service]
+            : "Ej vald"}
+        </dd>
+      </div>
+      <div>
+        <dt>Supportform</dt>
+        <dd>{supportMode ? supportModeLabels[supportMode] : "Ej vald"}</dd>
+      </div>
+      {bookingSelection && (
+        <div>
+          <dt>Datum och tid</dt>
+          <dd>
+            {bookingSelection.dateLabel}, kl. {bookingSelection.timeLabel}
+          </dd>
+        </div>
+      )}
+    </dl>
+  </section>
+<section className="ms-booking-price-column" aria-label="Prisöversikt">
+{intent === "booking" && customerType && service && supportMode && (() => {
+  const isCable = service === "network-cable";
+  const isWifi = service === "wifi";
+  const technician = isCable ? "network-installer" : "it-technician";
+  const mode = supportMode === "hembesok" ? "onsite" : "remote";
+
+  const durationMinutes = isCable
+    ? cableDuration === "8h" ? 480 : cableDuration === "2h" ? 120 : null
+    : mode === "remote" ? 30 : 120;
+
+  if (isWifi && mode === "onsite") {
+
+const wifiPrice = calculateBookingPrice(
+  customerType,
+  "network-technician",
+  "onsite",
+  120
+);
+
+if (!wifiPrice) return null;
+
+return (
+  <>
+    <BookingPriceBreakdown
+      price={wifiPrice}
+      mode="onsite"
+      variant="review"
+    />
+
+<p className="ms-price-overview-conditions">
+  Prisexemplet avser två timmars Wi-Fi-support.
+  Arbetskostnaden visas enligt vald kundkategori.
+  För privatpersoner och seniorer visas arbetskostnaden
+  efter förutsatt RUT-avdrag när villkoren är uppfyllda.
+  Resekostnaden omfattas inte av RUT-avdraget.
+  Företagspriser visas exklusive moms och utan RUT-avdrag.
+  Slutpriset kan variera beroende på arbetets omfattning.
+  Prisexemplet bygger på minst två timmars arbete vid besök på plats och är inte ett fast pris.
+</p>
+  </>
+);
+}
+
+  if (durationMinutes === null) return null;
+
+  const price = calculateBookingPrice(
+    customerType,
+    technician,
+    mode,
+    durationMinutes
+  );
+
+  if (!price) return null;
+
+  return (
+    <BookingPriceBreakdown
+      price={price}
+      mode={mode}
+      variant="review"
+    />
+  );
+})()}
+</section>
 </div>
 
+{message.trim() && (
+  <section className="ms-booking-description">
+    <h3>Din problembeskrivning</h3>
+    <p>{message}</p>
+  </section>
+)}
 
-            {bookingId ? (
-              <div className="support-unified-v1-booked">
-                <strong>
-                  ✓ Bokningen är bekräftad
-                </strong>
+            </>)}
+{bookingId ? (
+              <div
+                ref={confirmationRef}
+                className="ms-booking-success ms-confirmation-v42"
+                role="status"
+                tabIndex={-1}
+              >
+  <div className="ms-booking-success-header ms-confirmation-v42-hero">
+    <ConfirmationFireworks />
+    <span className="ms-confirmation-v43-firework" aria-hidden="true" />
+    <Image
+      src="/logos/logo-light-transparent.png"
+      alt="MacSupport Stockholm"
+      width={240}
+      height={90}
+      className="ms-booking-success-logo"
+    />
 
-                <span>
-                  Bokningsnummer: {bookingId}
-                </span>
+    <span className="ms-booking-success-icon" aria-hidden="true">✓</span>
 
-                <small>
-                    Bokningsbekräftelsen skickas till din angivna e-postadress.
-                  </small>
-              </div>
+    <h2>Din bokning är bekräftad!</h2>
+
+    <p>
+      Tack för att du har valt MacSupport Stockholm.
+      Här hittar du en sammanfattning av din bokning.
+    </p>
+
+    <div className="ms-booking-success-reference">
+      <span>Bokningsnummer</span>
+      <strong>{bookingId}</strong>
+    </div>
+  </div>
+
+  <div className="ms-booking-success-details ms-confirmation-v42-details">
+    <section>
+      <h3>Dina uppgifter</h3>
+      <dl>
+        <div><dt>Namn</dt><dd>{name}</dd></div>
+        {email && <div><dt>E-post</dt><dd>{email}</dd></div>}
+        {phone && <div><dt>Telefon</dt><dd>{normalizedPhone}</dd></div>}{customerType !== "foretag" && (
+  <div>
+    <dt>Personnummer</dt>
+    <dd>{maskedPersonnummer || "Ej angivet"}</dd>
+  </div>
+)}
+{customerType === "foretag" && (
+          <>
+            <div><dt>Företag</dt><dd>{company}</dd></div>
+            <div>
+              <dt>Organisationsnummer</dt>
+              <dd>{organisationNumber}</dd>
+            </div>
+          </>
+        )}
+      </dl>
+    </section>
+
+    <section>
+      <h3>Din bokning</h3>
+      <dl>
+        <div>
+          <dt>Tjänst</dt>
+          <dd>
+            {service
+              ? service === "network-cable" && cableDuration
+                ? `${serviceLabels[service]} – ${cableDuration === "2h" ? "2 timmar" : "8 timmar"}`
+                : serviceLabels[service]
+              : "Ej angiven"}
+          </dd>
+        </div>
+        <div>
+          <dt>Supportform</dt>
+          <dd>{supportMode ? supportModeLabels[supportMode] : "Ej angiven"}</dd>
+        </div>
+        {bookingSelection && (
+          <div>
+            <dt>Datum och tid</dt>
+            <dd>
+              {bookingSelection.dateLabel}, kl. {bookingSelection.timeLabel}
+            </dd>
+          </div>
+        )}
+      </dl>
+    </section>
+  </div>
+
+  {message.trim() && (
+    <section className="ms-booking-description">
+      <h3>Din problembeskrivning</h3>
+      <p>{message}</p>
+    </section>
+  )}
+
+<section className="ms-booking-success-pricing-v41" aria-label="Prisuppskattning">
+  <h3>Prisuppskattning</h3>
+
+  {(() => {
+    if (!customerType) {
+      return (
+        <p>Du får information om priset innan arbetet påbörjas.</p>
+      );
+    }
+
+    const isCable = service === "network-cable";
+    const technician = isCable ? "network-installer" : "it-technician";
+    const mode = supportMode === "hembesok" ? "onsite" : "remote";
+
+    const durationMinutes = isCable
+      ? cableDuration === "8h"
+        ? 480
+        : cableDuration === "2h"
+          ? 120
+          : null
+      : mode === "remote"
+        ? 30
+        : 120;
+
+    if (durationMinutes === null) {
+  return (
+    <p>Du får information om priset innan arbetet påbörjas.</p>
+  );
+}
+
+if (service === "wifi" && mode === "onsite") {
+
+const wifiPrice = calculateBookingPrice(
+  customerType,
+  "network-technician",
+  "onsite",
+  120
+);
+
+if (!wifiPrice) return null;
+
+return (
+  <>
+    <BookingPriceBreakdown
+      price={wifiPrice}
+      mode="onsite"
+      variant="confirmation"
+    />
+
+<p className="ms-price-overview-conditions">
+  Prisexemplet avser två timmars Wi-Fi-support.
+  Arbetskostnaden visas enligt vald kundkategori.
+  För privatpersoner och seniorer visas arbetskostnaden
+  efter förutsatt RUT-avdrag när villkoren är uppfyllda.
+  Resekostnaden omfattas inte av RUT-avdraget.
+  Företagspriser visas exklusive moms och utan RUT-avdrag.
+  Slutpriset kan variera beroende på arbetets omfattning.
+  Prisexemplet bygger på minst två timmars arbete vid besök på plats och är inte ett fast pris.
+</p>
+  </>
+);
+}
+
+    const price = calculateBookingPrice(
+      customerType,
+      technician,
+      mode,
+      durationMinutes
+    );
+
+    if (!price) {
+      return (
+        <p>Du får information om priset innan arbetet påbörjas.</p>
+      );
+    }
+
+    return (
+      <BookingPriceBreakdown
+        price={price}
+        mode={mode}
+        variant="confirmation"
+      />
+    );
+  })()}
+</section>
+  <div className="ms-confirmation-v43-info">
+  <section className="ms-confirmation-v43-info-card ms-confirmation-v43-email">
+    <span className="ms-confirmation-v43-info-icon" aria-hidden="true">✉</span>
+    <h3>Bekräftelse via e-post</h3>
+    <p>
+      Information om eventuell e-postbekräftelse
+      finns i bokningstjänstens meddelanden.
+    </p>
+  </section>
+
+  <section className="ms-confirmation-v43-info-card ms-confirmation-v43-manage">
+    <span className="ms-confirmation-v43-info-icon" aria-hidden="true">▣</span>
+    <h3>Hantera din bokning</h3>
+    <p>
+      Behöver du ändra din bokning?
+      Kontakta oss och ange ditt bokningsnummer.
+    </p>
+  </section>
+
+  <section className="ms-confirmation-v43-info-card ms-confirmation-v43-help">
+    <span className="ms-confirmation-v43-info-icon" aria-hidden="true">?</span>
+    <h3>Har du frågor?</h3>
+    <p>
+      Kontakta vår support om du behöver
+      hjälp eller har frågor om din bokning.
+    </p>
+  </section>
+</div>
+<div className="ms-booking-success-footer ms-confirmation-v42-footer">
+  <Link href="/" className="ms-confirmation-v43-home">
+    Till startsidan <span aria-hidden="true">→</span>
+  </Link>
+    <strong>Din bokning är registrerad.</strong>
+    <p>
+      Spara gärna bokningsnumret om du behöver kontakta oss.
+      Information om eventuell e-postbekräftelse finns i
+      bokningstjänstens meddelanden.
+    </p>
+  </div>
+</div>
             ) : (
               <div className="support-unified-v1-final-actions">
 
@@ -1245,7 +1983,15 @@ function validateContactFields() {
                   <button
                     type="button"
                     className="is-primary"
-                    disabled={bookingLoading || !bookingSelection || bookingStatusUncertain}
+                    disabled={
+  bookingLoading ||
+  !bookingSelection ||
+  bookingStatusUncertain ||
+  (typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1") &&
+    window.location.port === "4173")
+}
                     onClick={confirmBooking}
                   >
                     {bookingLoading
@@ -1262,7 +2008,7 @@ function validateContactFields() {
                     >
                       {contactLoading
                         ? "Skickar förfrågan…"
-                        : "Skicka f\u00f6rfr\u00e5gan"}
+                        : "Skicka förfrågan"}
                     </button>
 
                   </>
@@ -1271,8 +2017,29 @@ function validateContactFields() {
               </div>
             )}
 
-          </section>
+          </section>)}
 
+          {intent === "booking" && !bookingId && (
+            <nav aria-label="Bokningssteg" className="support-unified-v1-final-actions">
+              <button
+                type="button"
+                onClick={goToPreviousStep}
+                disabled={currentStep === "customer" || bookingLoading || bookingStatusUncertain}
+              >
+                Tillbaka
+              </button>
+              {currentStep !== "review" && (
+                <button
+                  type="button"
+                  className="is-primary"
+                  onClick={goToNextStep}
+                  disabled={bookingLoading || bookingStatusUncertain}
+                >
+                  Fortsätt
+                </button>
+              )}
+            </nav>
+          )}
           {error && (
             <div className="support-unified-v1-error" role="alert">
               {error}

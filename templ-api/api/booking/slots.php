@@ -8,7 +8,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
 }
 
 $support = isset($_GET['support']) ? (string) $_GET['support'] : null;
-$booking = isset($_GET['booking']) ? (string) $_GET['booking'] : null;
+$customerType = isset($_GET['customerType']) ? (string) $_GET['customerType'] : null;
+$serviceKind = isset($_GET['serviceKind']) ? (string) $_GET['serviceKind'] : null;
 $start   = isset($_GET['start']) ? (string) $_GET['start'] : null;
 $end     = isset($_GET['end']) ? (string) $_GET['end'] : null;
 
@@ -16,8 +17,12 @@ if (!isBookingSupportType($support)) {
     jsonResponse(['error' => 'Ogiltig supporttyp.'], 400);
 }
 
-if (!isBookingCategory($booking)) {
-    jsonResponse(['error' => 'Ogiltig bokningskategori.'], 400);
+if (!isBookingCustomerType($customerType) || !isBookingServiceKind($serviceKind)) {
+    jsonResponse(['error' => 'Ogiltig kundtyp eller tjänst.'], 400);
+}
+
+if (!isServiceCompatibleWithSupport($serviceKind, $support)) {
+    jsonResponse(['error' => 'Tjänsten är inte tillgänglig för vald supporttyp.'], 400);
 }
 
 if (!$start || !$end) {
@@ -25,7 +30,7 @@ if (!$start || !$end) {
 }
 
 $apiKey = getOnceHubApiKey();
-$calendarId = getOnceHubCalendarIdForBooking($booking, $support);
+$calendarId = getOnceHubCalendarIdForService($customerType, $serviceKind);
 
 if (!$apiKey || !$calendarId) {
     jsonResponse([

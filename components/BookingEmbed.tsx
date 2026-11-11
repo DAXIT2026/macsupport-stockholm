@@ -372,7 +372,7 @@ export default function BookingEmbed() {
 
     try {
       const response = await fetch(
-        "/api/booking/schedule",
+        "/api/booking/schedule/",
         {
           method: "POST",
 

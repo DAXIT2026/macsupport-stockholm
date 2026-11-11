@@ -409,3 +409,80 @@
   background: #dff0e3;
   border-color: #a9d2b3;
 }
+
+/* MACSUPPORT_COMPACT_PRICE_OVERVIEW_V1 */
+
+.ms-price-overview {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid #cfe5d5;
+  border-radius: 16px;
+  background: #f7fbf8;
+  color: #243b2d;
+}
+
+.ms-price-overview-header,
+.ms-price-overview-row,
+.ms-price-overview-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.ms-price-overview-header h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.ms-price-overview-header > span {
+  color: #476b51;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ms-price-overview-row {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.ms-price-overview-row strong {
+  white-space: nowrap;
+}
+
+.ms-price-overview-total {
+  padding-top: 16px;
+  border-top: 1px solid #cfe5d5;
+  font-weight: 700;
+}
+
+.ms-price-overview-total strong {
+  color: #1f6336;
+  font-size: 25px;
+  white-space: nowrap;
+}
+
+.ms-price-overview-conditions {
+  margin: 0;
+  color: #506657;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+@media (max-width: 480px) {
+  .ms-price-overview {
+    padding: 16px;
+  }
+
+  .ms-price-overview-header,
+  .ms-price-overview-row,
+  .ms-price-overview-total {
+    flex-wrap: wrap;
+  }
+
+  .ms-price-overview-total strong {
+    font-size: 22px;
+  }
+}

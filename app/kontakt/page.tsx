@@ -1,7 +1,18 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Kontakt",
+  description:
+    "Kontakta MacSupport Stockholm för personlig Mac- och IT-support. Ring oss eller boka hjälp för privatpersoner, seniorer och företag.",
+  alternates: {
+    canonical: "https://www.macsupportstockholm.se/kontakt/",
+  },
+};
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import UnifiedSupportForm from "@/components/UnifiedSupportForm";
+import SupportBookingFlow from "@/components/SupportBookingFlow";
+import OpenContactFormButton from "@/components/OpenContactFormButton";
 
 export default function KontaktPage() {
   return (
@@ -13,7 +24,7 @@ export default function KontaktPage() {
           </p>
 
           <h1>
-            Hur kan vi
+            Hur kan vi{" "}
             <span>hjälpa dig?</span>
           </h1>
 
@@ -110,7 +121,7 @@ export default function KontaktPage() {
           </p>
 
           <Link
-            href="/kontakt?intent=booking#contact-form"
+            href="/support/"
             className="contact-ref-v5-button contact-ref-v5-button-soft"
           >
             <span>Boka support</span>
@@ -134,15 +145,11 @@ export default function KontaktPage() {
             som möjligt.
           </p>
 
-          <a
-            href="#contact-form"
-            className="contact-ref-v5-button contact-ref-v5-button-soft"
-          >
-            <span>Öppna formuläret</span>
-            <span aria-hidden="true">→</span>
-          </a>
+          <OpenContactFormButton />
         </article>
       </section>
+
+
 
       <section
         className="contact-ref-v5-main"
@@ -170,7 +177,7 @@ export default function KontaktPage() {
               </div>
             }
           >
-            <UnifiedSupportForm />
+            <SupportBookingFlow />
           </Suspense>
         </div>
 

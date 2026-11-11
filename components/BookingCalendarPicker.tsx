@@ -542,7 +542,7 @@ export default function BookingCalendarPicker({
     return (
       <div className="booking-picker-v1-empty">
         <strong>
-          Välj supportform först
+          Välj hur du vill få hjälp först
         </strong>
 
         <p>

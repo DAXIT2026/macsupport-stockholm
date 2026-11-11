@@ -7,6 +7,7 @@ import "./booking-choice-cards.css";
 import "./booking-calendar-polish.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import FloatingContactAssistant from "../components/FloatingContactAssistant";
 import ScrollToTop from "../components/ScrollToTop";
 
 export const metadata: Metadata = {
@@ -148,6 +149,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <FloatingContactAssistant />
       </body>
     </html>
   );

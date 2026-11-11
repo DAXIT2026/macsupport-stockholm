@@ -1,4 +1,4 @@
-﻿name: MacSupport CI
+name: MacSupport CI
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: ESLint check
-        run: npx eslint components/BookingCalendarPicker.tsx components/UnifiedSupportForm.tsx app/api/booking/slots/route.ts app/api/booking/schedule/route.ts
+        run: npx eslint components/BookingCalendarPicker.tsx components/UnifiedSupportForm.tsx app/support/page.tsx app/priser/page.tsx lib/booking-pricing.ts
 
       - name: Production build
         run: npm run build

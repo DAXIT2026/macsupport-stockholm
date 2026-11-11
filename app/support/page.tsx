@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Support & bokning | Macsupport Stockholm",
   description:
     "Beskriv vad du behöver hjälp med, välj supportform och fortsätt till bokning eller skicka en förfrågan.",
+  alternates: {
+    canonical: "https://www.macsupportstockholm.se/support/",
+  },
 };
 
 export default function SupportPage() {
@@ -22,15 +25,15 @@ export default function SupportPage() {
               </span>
 
               <h1>
-                Ett ställe för hela
+                Boka personlig IT-support
                 <br />
-                din supportförfrågan.
+                i Stockholm.
               </h1>
 
               <p>
-                Berätta vad du behöver hjälp med.
-                Därefter kan du välja en ledig tid
-                eller skicka din förfrågan direkt.
+                Välj vem som behöver hjälp,
+                beskriv problemet och boka
+                en ledig tid som passar dig.
               </p>
 
               <div className="support-hub-v1-intro-trust">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import RelatedLinksSection, { supportLinks } from "../../components/RelatedLinksSection";
 
 import SupportPrincipleVisual from "../../components/SupportPrincipleVisual";
 import AboutAudienceVisual from "../../components/AboutAudienceVisual";
@@ -311,7 +312,13 @@ export default function OmOssPage() {
         </section>
 
 
-                  <section className="about-final-section">
+                  <RelatedLinksSection
+          title="Läs mer om IT-support och våra tjänster"
+          description="Utforska fler IT-tjänster hos Min Datorsupport."
+          links={supportLinks}
+        />
+
+        <section className="about-final-section">
 
             <div className="premium-shell">
 
